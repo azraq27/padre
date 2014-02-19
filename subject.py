@@ -171,6 +171,7 @@ def index_subjects():
 
 index_subjects()
 
+_all_subjects = [Subject.load(x) for x in sorted(subject_ids)]
 def subjects(label=None,only_included=True):
 	'''returns a list of subject objects for all subjects with valid JSON files
 	
@@ -179,7 +180,7 @@ def subjects(label=None,only_included=True):
 	if *only_included* is True, will exclude any subjects with ``subject.include``
 	set to False
 	'''
-	all_subjs = [Subject.load(x) for x in sorted(subject_ids)]
+	all_subjs = list(_all_subjects)
 	if label:
 		all_subjs = [x for x in all_subjs if len(x.dsets_of_type(label))]
 	if only_included:

@@ -65,25 +65,26 @@ You can request lists from the library, meeting whatever criteria you specify.</
 <div class="section" id="directory-structure">
 <h2>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>::
-Data/
-<a href="#id1"><span class="problematic" id="id2">|</span></a>&#8211; [subj_id]/
-|   <a href="#id3"><span class="problematic" id="id4">|</span></a>&#8211; [subj_id].json                                          # config file, containing subject meta-data
-|       <a href="#id5"><span class="problematic" id="id6">|</span></a>&#8211; raw/                                                                # directory with all of the raw data,
+<div><div class="highlight-python"><pre>Data/
+|-- [subj_id]/
+|   |-- [subj_id].json                                          # config file, containing subject meta-data
+|       |-- raw/                                                                # directory with all of the raw data,
 |       |                                                                               # not necessarily organized
-|       <a href="#id7"><span class="problematic" id="id8">|</span></a>&#8211; sessions/                                                   # data organized by scanning &#8220;session&#8221;,
+|       |-- sessions/                                                   # data organized by scanning "session",
 |               |                                                                       # as in, one physical visit to the scanner
-|           <a href="#id9"><span class="problematic" id="id10">|</span></a>&#8211; [session_name]/
-|               |       <a href="#id11"><span class="problematic" id="id12">|</span></a>&#8211; [datasets]                                  # all of the datasets, arbitrarily named
-|               |       <a href="#id13"><span class="problematic" id="id14">|</span></a>&#8211; [scan_sheets]
-|               |       <a href="#id15"><span class="problematic" id="id16">|</span></a>&#8211; [behavioral files]
-|               |       <a href="#id17"><span class="problematic" id="id18">|</span></a>&#8211; [other meta]                                # other files associated with a session
-|               <a href="#id19"><span class="problematic" id="id20">|</span></a>&#8211; ...
-<a href="#id21"><span class="problematic" id="id22">|</span></a>&#8211; ..</p>
-<p>Analyses/
-<a href="#id23"><span class="problematic" id="id24">|</span></a>&#8211; [analysis_name]/                                            # directories with self-contained analyses,
+|           |-- [session_name]/
+|               |       |-- [datasets]                                  # all of the datasets, arbitrarily named
+|               |       |-- [scan_sheets]
+|               |       |-- [behavioral files]
+|               |       |-- [other meta]                                # other files associated with a session
+|               |-- ...
+|-- ..
+
+Analyses/
+|-- [analysis_name]/                                            # directories with self-contained analyses,
 |                                                                                       # organized however they want
-<a href="#id25"><span class="problematic" id="id26">|</span></a>&#8211; ...</p>
+|-- ...</pre>
+</div>
 </div></blockquote>
 </div>
 <div class="section" id="subject-objects">

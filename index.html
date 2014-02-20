@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to PaDRe’s documentation! &mdash; PaDRe 0.5 documentation</title>
+    <title>Welcome to PaDRe (Patient Data Repository) documentation! &mdash; PaDRe 0.5 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="PaDRe 0.5 documentation" href="#" /> 
+    <link rel="top" title="PaDRe 0.5 documentation" href="#" />
+    <link rel="next" title="How to use this library" href="setup.html" /> 
   </head>
   <body>
     <div class="related">
@@ -32,6 +33,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="setup.html" title="How to use this library"
+             accesskey="N">next</a> |</li>
         <li><a href="#">PaDRe 0.5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -41,11 +45,52 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-padre-s-documentation">
-<h1>Welcome to PaDRe&#8217;s documentation!<a class="headerlink" href="#welcome-to-padre-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Contents:</p>
+  <div class="section" id="welcome-to-padre-patient-data-repository-documentation">
+<h1>Welcome to PaDRe (Patient Data Repository) documentation!<a class="headerlink" href="#welcome-to-padre-patient-data-repository-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This library provides an organized way to query patient data libraries.</p>
+<p>At a minimum, read the <a class="reference internal" href="organization.html"><em>Organization of the Data</em></a> page to orient yourself to the
+directory structure and <a class="reference internal" href="setup.html"><em>How to use this library</em></a>.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>A quick usage example to get you started:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">padre</span>
+
+<span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">padre</span><span class="o">.</span><span class="n">subjects</span><span class="p">():</span>
+        <span class="k">print</span> <span class="s">&#39;Processing subject </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">subject</span>
+        <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="n">subject</span><span class="o">.</span><span class="n">dsets</span><span class="p">:</span>
+                <span class="n">do_something_to_a_dset</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="the-contents">
+<h1>The Contents<a class="headerlink" href="#the-contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<ul class="simple">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">How to use this library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#recommended-method">Recommended Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#the-not-recommended-method">The Not-Recommended Method</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="organization.html">Organization of the Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="organization.html#principles">Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organization.html#directory-structure">Directory structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organization.html#subject-objects">Subject Objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="padre.html">padre - PaDRe Library Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="padre.html#global-functions">Global Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="padre.html#helper-functions">Helper Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="padre.html#directory-and-file-locations">Directory and File Locations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subject.html">epi.subject - Subject Objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="subject.html#accessing-datasets">Accessing Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subject.html#session-format">Session Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subject.html#helper-methods">Helper Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subject.html#maintenance-functions">Maintenance Functions</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -66,12 +111,16 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to PaDRe&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#">Welcome to PaDRe (Patient Data Repository) documentation!</a></li>
+<li><a class="reference internal" href="#the-contents">The Contents</a><ul>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
+  <h4>Next topic</h4>
+  <p class="topless"><a href="setup.html"
+                        title="next chapter">How to use this library</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
@@ -100,6 +149,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="setup.html" title="How to use this library"
+             >next</a> |</li>
         <li><a href="#">PaDRe 0.5 documentation</a> &raquo;</li> 
       </ul>
     </div>

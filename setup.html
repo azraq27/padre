@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>How to use this library &mdash; PaDRe 0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PaDRe 0.5 documentation" href="index.html" />
+    <link rel="next" title="Organization of the Data" href="organization.html" />
+    <link rel="prev" title="Welcome to PaDRe (Patient Data Repository) documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="organization.html" title="Organization of the Data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PaDRe (Patient Data Repository) documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="how-to-use-this-library">
+<h1>How to use this library<a class="headerlink" href="#how-to-use-this-library" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="recommended-method">
+<h2>Recommended Method<a class="headerlink" href="#recommended-method" title="Permalink to this headline">¶</a></h2>
+<p>Since python is a great language, and there are lots of convenient functions in this library for
+working with the data, the recommended method for accessing the data is including the library
+in your python scripts.</p>
+<p>Doing this is simple, you just need to make sure python can find it. For example, if your analysis
+is in a directory called <tt class="docutils literal"><span class="pre">Analyses/test_analysis</span></tt> (i.e., two directory levels in from the root
+of the epilepsy directory). As long as you run your scripts from that directory,
+you can just add the following code at the top of any script to import the library:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;../..&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">epi</span>
+</pre></div>
+</div>
+<p>The first two lines tell Python to search two directories up for any modules, then you simply import
+the library</p>
+<p>Alternatively, if you want to make it more &#8220;robust&#8221; (e.g., to be able to run the script from any
+location), you can specify the absolute location relative to the location of the script. For example,
+if you keep your scripts in a directory called <tt class="docutils literal"><span class="pre">Analyses/test_analysis/scripts</span></tt>, the following
+code can also be used to include the epi library:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__file__</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">)))</span>
+
+<span class="kn">import</span> <span class="nn">epi</span>
+</pre></div>
+</div>
+<p>Not as pretty, but more stable and portable. <tt class="docutils literal"><span class="pre">__file__</span></tt> is a Python reference to the filename of
+the current script. Joining three <tt class="docutils literal"><span class="pre">..</span></tt>&#8216;s moves you up three directories, and using <tt class="docutils literal"><span class="pre">os.path.abspath</span></tt>
+provides the absolute path, which will be valid from any relative location.</p>
+</div>
+<div class="section" id="the-not-recommended-method">
+<h2>The Not-Recommended Method<a class="headerlink" href="#the-not-recommended-method" title="Permalink to this headline">¶</a></h2>
+<p>If you hate Python, kittens, and love, there are several command-line-ready scripts that will print
+out raw lists of subjects and datasets for use in any way that you please. In this scenario, you can
+write a script in c-shell and awk, and just make a single call to the epi library script at the top to
+give you your list of subjects or datasets.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">How to use this library</a><ul>
+<li><a class="reference internal" href="#recommended-method">Recommended Method</a></li>
+<li><a class="reference internal" href="#the-not-recommended-method">The Not-Recommended Method</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to PaDRe (Patient Data Repository) documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="organization.html"
+                        title="next chapter">Organization of the Data</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/setup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="organization.html" title="Organization of the Data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to PaDRe (Patient Data Repository) documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bill Gross.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>padre - PaDRe Library Functions &mdash; PaDRe 0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PaDRe 0.5 documentation" href="index.html" />
+    <link rel="next" title="epi.subject - Subject Objects" href="subject.html" />
+    <link rel="prev" title="Organization of the Data" href="organization.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="subject.html" title="epi.subject - Subject Objects"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="organization.html" title="Organization of the Data"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="padre-padre-library-functions">
+<h1>padre - PaDRe Library Functions<a class="headerlink" href="#padre-padre-library-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="global-functions">
+<h2>Global Functions<a class="headerlink" href="#global-functions" title="Permalink to this headline">¶</a></h2>
+<p>Several functions are available at the root-level of the library, the most important of which
+is the <tt class="xref py py-meth docutils literal"><span class="pre">padre.subjects()</span></tt> function, which is a shortcut to the function <tt class="xref py py-meth docutils literal"><span class="pre">padre.subject.subjects()</span></tt></p>
+<p>Using this list, it is easy to filter again to find a specific subset of subjects. For example,
+to get a list of all subjects who have had a left ATL surgery:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">subjects</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">padre</span><span class="o">.</span><span class="n">subjects</span><span class="p">()</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">surgery_type</span><span class="o">==</span><span class="s">&#39;left atl&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="helper-functions">
+<h2>Helper Functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following functions are also imported to the root level to make using them easier.
+For example, <tt class="xref py py-meth docutils literal"><span class="pre">padre.utils.run()</span></tt> can be called as <tt class="xref py py-meth docutils literal"><span class="pre">padre.run()</span></tt></p>
+<blockquote>
+<div><p><tt class="xref py py-meth docutils literal"><span class="pre">padre.utils.run()</span></tt></p>
+<p><tt class="xref py py-meth docutils literal"><span class="pre">padre.utils.run_in()</span></tt></p>
+<p><tt class="xref py py-meth docutils literal"><span class="pre">padre.utils.flatten()</span></tt></p>
+</div></blockquote>
+</div>
+<div class="section" id="directory-and-file-locations">
+<h2>Directory and File Locations<a class="headerlink" href="#directory-and-file-locations" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">padre - PaDRe Library Functions</a><ul>
+<li><a class="reference internal" href="#global-functions">Global Functions</a></li>
+<li><a class="reference internal" href="#helper-functions">Helper Functions</a></li>
+<li><a class="reference internal" href="#directory-and-file-locations">Directory and File Locations</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="organization.html"
+                        title="previous chapter">Organization of the Data</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="subject.html"
+                        title="next chapter">epi.subject - Subject Objects</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/padre.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="subject.html" title="epi.subject - Subject Objects"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="organization.html" title="Organization of the Data"
+             >previous</a> |</li>
+        <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bill Gross.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

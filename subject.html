@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>epi.subject - Subject Objects &mdash; PaDRe 0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PaDRe 0.5 documentation" href="index.html" />
+    <link rel="prev" title="padre - PaDRe Library Functions" href="padre.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="padre.html" title="padre - PaDRe Library Functions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="epi-subject-subject-objects">
+<h1>epi.subject - Subject Objects<a class="headerlink" href="#epi-subject-subject-objects" title="Permalink to this headline">¶</a></h1>
+<p><strong>Loading a subject from the disk:</strong></p>
+<blockquote>
+<div><p><em>Standard instance variables:</em></p>
+<blockquote>
+<div><dl class="attribute">
+<dt id="epi.subject.Subject.subject_id">
+<tt class="descclassname">Subject.</tt><tt class="descname">subject_id</tt><a class="headerlink" href="#epi.subject.Subject.subject_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="epi.subject.Subject.include">
+<tt class="descclassname">Subject.</tt><tt class="descname">include</tt><a class="headerlink" href="#epi.subject.Subject.include" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="epi.subject.Subject.notes">
+<tt class="descclassname">Subject.</tt><tt class="descname">notes</tt><a class="headerlink" href="#epi.subject.Subject.notes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</div></blockquote>
+<div class="section" id="accessing-datasets">
+<h2>Accessing Datasets<a class="headerlink" href="#accessing-datasets" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>Datasets can be accessed several ways. Each of these methods deliver the filenames, organized
+in different ways. All datasets are stored in the directory returned by <tt class="xref py py-meth docutils literal"><span class="pre">epi.sessions_subject_dir()</span></tt>.</p>
+<dl class="class">
+<dt id="epi.subject.Subject">
+<em class="property">class </em><tt class="descclassname">epi.subject.</tt><tt class="descname">Subject</tt><a class="headerlink" href="#epi.subject.Subject" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="epi.subject.Subject.sessions">
+<tt class="descname">sessions</tt><a class="headerlink" href="#epi.subject.Subject.sessions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The following two shortcut methods(<tt class="docutils literal"><span class="pre">subject.labels</span></tt> and <tt class="docutils literal"><span class="pre">subject.dsets</span></tt>) are convenient
+but don&#8217;t cover every possibility. For example, if the anatomy scan for a functional session
+was lost, but there is another anatomy scan obtained at another date, these datasets will
+appear normally as <tt class="docutils literal"><span class="pre">subject.labels['functional']</span></tt> and <tt class="docutils literal"><span class="pre">subject.labels['anatomy']</span></tt> with
+no reference to the fact that they were obtained in different sessions. If you write your
+script session-centric, you can explicitly address these exception cases.</p>
+</div>
+<dl class="attribute">
+<dt id="epi.subject.Subject.labels">
+<tt class="descname">labels</tt><a class="headerlink" href="#epi.subject.Subject.labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="epi.subject.Subject.dsets">
+<tt class="descname">dsets</tt><a class="headerlink" href="#epi.subject.Subject.dsets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="session-format">
+<h2>Session Format<a class="headerlink" href="#session-format" title="Permalink to this headline">¶</a></h2>
+<p>Sessions are stored as simple dictionaries, but have a standard format. In addition to the
+&#8220;standard&#8221; data listed here, there may also be extra meta-data added in particular subjects</p>
+<p>Sessions are usually labeled by the date, although the actual label is arbitrary, and should
+not be relied upon. Sessions should always include:</p>
+<blockquote>
+<div><dl class="data">
+<dt>
+<tt class="descname">session['date']</tt></dt>
+<dd><p>The session date stored as a standard string of format &#8220;YYYY-MM-DD&#8221;</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descname">session['type']</tt></dt>
+<dd><p>A descriptive label to classify this session, like &#8220;preop&#8221; or &#8220;postop&#8221;</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descname">session['labels']</tt></dt>
+<dd><p>A dictionary containing all of the datasets, organized by descriptive label.</p>
+<p><em>Example</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+        <span class="s">&#39;anatomy&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&#39;anatomy-dset.nii.gz&#39;</span>
+        <span class="p">],</span>
+        <span class="s">&#39;functional&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&#39;functional-dset-1.nii.gz&#39;</span><span class="p">,</span>
+                <span class="s">&#39;functional-dset-2.nii.gz&#39;</span>
+        <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="helper-methods">
+<h2>Helper Methods<a class="headerlink" href="#helper-methods" title="Permalink to this headline">¶</a></h2>
+<p>These methods are designed to make manipulating the data a little easier</p>
+<blockquote>
+<div></div></blockquote>
+</div>
+<div class="section" id="maintenance-functions">
+<h2>Maintenance Functions<a class="headerlink" href="#maintenance-functions" title="Permalink to this headline">¶</a></h2>
+<p>These functions require write-access to the repository, so should not be used in standard scripts</p>
+<blockquote>
+<div></div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">epi.subject - Subject Objects</a><ul>
+<li><a class="reference internal" href="#accessing-datasets">Accessing Datasets</a></li>
+<li><a class="reference internal" href="#session-format">Session Format</a></li>
+<li><a class="reference internal" href="#helper-methods">Helper Methods</a></li>
+<li><a class="reference internal" href="#maintenance-functions">Maintenance Functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="padre.html"
+                        title="previous chapter">padre - PaDRe Library Functions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/subject.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="padre.html" title="padre - PaDRe Library Functions"
+             >previous</a> |</li>
+        <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bill Gross.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

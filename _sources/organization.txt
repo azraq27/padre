@@ -23,7 +23,7 @@ Directory structure
 		|	|-- raw/						# directory with all of the raw data,
 		|	|							# not necessarily organized
 		|	|-- sessions/						# data organized by scanning "session",
-		|		|					# as in, one physical visit to the scanner
+		|		|						# as in, one physical visit to the scanner
 		|	    |-- [session_name]/	
 		|		|	|-- [datasets]				# all of the datasets, arbitrarily named
 		|		|	|-- [scan_sheets]
@@ -34,7 +34,7 @@ Directory structure
 	
 		Analyses/
 		|-- [analysis_name]/						# directories with self-contained analyses,
-		|							# organized however they want
+		|								# organized however they want
 		|-- ...
 
 Subject Objects

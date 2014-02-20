@@ -65,134 +65,36 @@ You can request lists from the library, meeting whatever criteria you specify.</
 <div class="section" id="directory-structure">
 <h2>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><table border="1" class="docutils">
-<colgroup>
-<col width="8%" />
-<col width="13%" />
-<col width="13%" />
-<col width="15%" />
-<col width="16%" />
-<col width="34%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>Data/</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr class="row-even"><td>&nbsp;</td>
-<td>[subj_id]/</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr class="row-odd"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>[subj_id].json</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>config file, containing subject meta-data</td>
-</tr>
-<tr class="row-even"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>raw/</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>directory with all of the raw data,
-not necessarily organized</td>
-</tr>
-<tr class="row-odd"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>sessions/</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>data organized by scanning &#8220;session&#8221;,
-as in, one physical visit to the scanner</td>
-</tr>
-<tr class="row-even"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>[session_name]/</td>
-<td>&nbsp;</td>
-<td>config file, containing subject meta-data</td>
-</tr>
-<tr class="row-odd"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>[datasets]</td>
-<td>all of the datasets, arbitrarily named</td>
-</tr>
-<tr class="row-even"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>[scan_sheets]</td>
-<td>&nbsp;</td>
-</tr>
-<tr class="row-odd"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>[behavioral files]</td>
-<td>&nbsp;</td>
-</tr>
-<tr class="row-even"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>[other meta]</td>
-<td>other files associated with a session</td>
-</tr>
-<tr class="row-odd"><td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>...</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr class="row-even"><td>&nbsp;</td>
-<td>...</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr class="row-odd"><td>Analyses/</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr class="row-even"><td>&nbsp;</td>
-<td>[analysis_name]/</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>directories with self-contained analyses,
-organized however they want</td>
-</tr>
-<tr class="row-odd"><td>&nbsp;</td>
-<td>...</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
+<div><dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">Data/
+<a href="#id1"><span class="problematic" id="id2">|</span></a>&#8211; [subj_id]/
+|   <a href="#id3"><span class="problematic" id="id4">|</span></a>&#8211; [subj_id].json                                          # config file, containing subject meta-data
+|       <a href="#id5"><span class="problematic" id="id6">|</span></a>&#8211; raw/                                                                # directory with all of the raw data,
+|       |                                                                               # not necessarily organized
+|       <a href="#id7"><span class="problematic" id="id8">|</span></a>&#8211; sessions/                                                   # data organized by scanning &#8220;session&#8221;,
+|               |                                                                       # as in, one physical visit to the scanner
+|           <a href="#id9"><span class="problematic" id="id10">|</span></a>&#8211; [session_name]/
+|               |       <a href="#id11"><span class="problematic" id="id12">|</span></a>&#8211; [datasets]                                  # all of the datasets, arbitrarily named
+|               |       <a href="#id13"><span class="problematic" id="id14">|</span></a>&#8211; [scan_sheets]
+|               |       <a href="#id15"><span class="problematic" id="id16">|</span></a>&#8211; [behavioral files]
+|               |       <a href="#id17"><span class="problematic" id="id18">|</span></a>&#8211; [other meta]                                # other files associated with a session
+|               <a href="#id19"><span class="problematic" id="id20">|</span></a>&#8211; ...
+<a href="#id21"><span class="problematic" id="id22">|</span></a>&#8211; ..</p>
+<p class="last">Analyses/
+<a href="#id23"><span class="problematic" id="id24">|</span></a>&#8211; [analysis_name]/                                            # directories with self-contained analyses,
+|                                                                                       # organized however they want
+<a href="#id25"><span class="problematic" id="id26">|</span></a>&#8211; ...</p>
+</dd>
+</dl>
 </div></blockquote>
 </div>
 <div class="section" id="subject-objects">
 <h2>Subject Objects<a class="headerlink" href="#subject-objects" title="Permalink to this headline">¶</a></h2>
-<p>Most of the data from the library is returned in the form of <a class="reference internal" href="subject.html"><em>epi.subject - Subject Objects</em></a>. These objects contain
+<p>Most of the data from the library is returned in the form of <a class="reference internal" href="subject.html"><em>padre.subject - Subject Objects</em></a>. These objects contain
 the subject number, meta-data about the subject, as well as the disk location of all files associated
 with the subject. The information that is populated into these objects comes from the [subj id].json
-file in each subject directory. See the <a class="reference internal" href="subject.html"><em>epi.subject - Subject Objects</em></a> page for details on this class.</p>
+file in each subject directory. See the <a class="reference internal" href="subject.html"><em>padre.subject - Subject Objects</em></a> page for details on this class.</p>
 </div>
 </div>
 

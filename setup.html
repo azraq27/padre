@@ -58,12 +58,12 @@ working with the data, the recommended method for accessing the data is includin
 in your python scripts.</p>
 <p>Doing this is simple, you just need to make sure python can find it. For example, if your analysis
 is in a directory called <tt class="docutils literal"><span class="pre">Analyses/test_analysis</span></tt> (i.e., two directory levels in from the root
-of the epilepsy directory). As long as you run your scripts from that directory,
+of the library directory). As long as you run your scripts from that directory,
 you can just add the following code at the top of any script to import the library:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;../..&quot;</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">epi</span>
+<span class="kn">import</span> <span class="nn">padre</span>
 </pre></div>
 </div>
 <p>The first two lines tell Python to search two directories up for any modules, then you simply import
@@ -71,11 +71,11 @@ the library</p>
 <p>Alternatively, if you want to make it more &#8220;robust&#8221; (e.g., to be able to run the script from any
 location), you can specify the absolute location relative to the location of the script. For example,
 if you keep your scripts in a directory called <tt class="docutils literal"><span class="pre">Analyses/test_analysis/scripts</span></tt>, the following
-code can also be used to include the epi library:</p>
+code can also be used to include the padre library:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__file__</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">)))</span>
 
-<span class="kn">import</span> <span class="nn">epi</span>
+<span class="kn">import</span> <span class="nn">padre</span>
 </pre></div>
 </div>
 <p>Not as pretty, but more stable and portable. <tt class="docutils literal"><span class="pre">__file__</span></tt> is a Python reference to the filename of
@@ -86,7 +86,7 @@ provides the absolute path, which will be valid from any relative location.</p>
 <h2>The Not-Recommended Method<a class="headerlink" href="#the-not-recommended-method" title="Permalink to this headline">¶</a></h2>
 <p>If you hate Python, kittens, and love, there are several command-line-ready scripts that will print
 out raw lists of subjects and datasets for use in any way that you please. In this scenario, you can
-write a script in c-shell and awk, and just make a single call to the epi library script at the top to
+write a script in c-shell and awk, and just make a single call to the padre library script at the top to
 give you your list of subjects or datasets.</p>
 </div>
 </div>

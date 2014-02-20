@@ -1,7 +1,7 @@
-epi.subject - Subject Objects
+padre.subject - Subject Objects
 =================
 
-.. currentmodule:: epi.subject
+.. currentmodule:: padre.subject
 .. autoclass:: Subject
 	
 **Loading a subject from the disk:**
@@ -25,9 +25,9 @@ Accessing Datasets
 --------------------
 
 	Datasets can be accessed several ways. Each of these methods deliver the filenames, organized
-	in different ways. All datasets are stored in the directory returned by :meth:`epi.sessions_subject_dir`.
+	in different ways. All datasets are stored in the directory returned by :meth:`padre.sessions_subject_dir`.
 
-	.. currentmodule:: epi.subject
+	.. currentmodule:: padre.subject
 	
 	.. class:: Subject
 		

@@ -59,7 +59,16 @@
 <div class="section" id="global-functions">
 <h2>Global Functions<a class="headerlink" href="#global-functions" title="Permalink to this headline">¶</a></h2>
 <p>Several functions are available at the root-level of the library, the most important of which
-is the <tt class="xref py py-meth docutils literal"><span class="pre">padre.subjects()</span></tt> function, which is a shortcut to the function <tt class="xref py py-meth docutils literal"><span class="pre">padre.subject.subjects()</span></tt></p>
+is the <tt class="xref py py-meth docutils literal"><span class="pre">padre.subjects()</span></tt> function, which is a shortcut to the function <a class="reference internal" href="#padre.subject.subjects" title="padre.subject.subjects"><tt class="xref py py-meth docutils literal"><span class="pre">padre.subject.subjects()</span></tt></a></p>
+<dl class="staticmethod">
+<dt id="padre.subject.subjects">
+<em class="property">static </em><tt class="descclassname">subject.</tt><tt class="descname">subjects</tt><big>(</big><em>label=None</em>, <em>only_included=True</em><big>)</big><a class="headerlink" href="#padre.subject.subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a list of subject objects for all subjects with valid JSON files</p>
+<p>if <em>label</em> is set, it will only return subjects who have datasets with that label</p>
+<p>if <em>only_included</em> is True, will exclude any subjects with <tt class="docutils literal"><span class="pre">subject.include</span></tt>
+set to False</p>
+</dd></dl>
+
 <p>Using this list, it is easy to filter again to find a specific subset of subjects. For example,
 to get a list of all subjects who have had a left ATL surgery:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">subjects</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">padre</span><span class="o">.</span><span class="n">subjects</span><span class="p">()</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">surgery_type</span><span class="o">==</span><span class="s">&#39;left atl&#39;</span><span class="p">]</span>
@@ -78,20 +87,26 @@ For example, <tt class="xref py py-meth docutils literal"><span class="pre">padr
 </div>
 <div class="section" id="module-padre.config">
 <span id="directory-and-file-locations"></span><h2>Directory and File Locations<a class="headerlink" href="#module-padre.config" title="Permalink to this headline">¶</a></h2>
-<p>Standard directory and filename locations are stored in the <tt class="xref py py-class docutils literal"><span class="pre">epi.config</span></tt> class, and imported
+<p>Standard directory and filename locations are stored in the <a class="reference internal" href="#module-padre.config" title="padre.config"><tt class="xref py py-class docutils literal"><span class="pre">padre.config</span></tt></a> class, and imported
 to the root level for convenience.</p>
 <p><em>Directories:</em></p>
 <blockquote>
 <div><dl class="data">
+<dt id="padre.config.padre_root">
+<tt class="descclassname">padre.config.</tt><tt class="descname">padre_root</tt><a class="headerlink" href="#padre.config.padre_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Root directory of repository</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="padre.config.data_dir">
 <tt class="descclassname">padre.config.</tt><tt class="descname">data_dir</tt><a class="headerlink" href="#padre.config.data_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>[epi_root]/Data</p>
+<dd><p>[padre_root]/Data</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="padre.config.analyses_dir">
 <tt class="descclassname">padre.config.</tt><tt class="descname">analyses_dir</tt><a class="headerlink" href="#padre.config.analyses_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>[epi_root]/Analyses</p>
+<dd><p>[padre_root]/Analyses</p>
 </dd></dl>
 
 <dl class="staticmethod">

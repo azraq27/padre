@@ -1,4 +1,4 @@
-'''Standard directory and filename locations are stored in the :class:`epi.config` class, and imported
+'''Standard directory and filename locations are stored in the :class:`padre.config` class, and imported
 to the root level for convenience.
 '''
 
@@ -6,9 +6,9 @@ import os
 
 verbose = True
 
-epi_root = os.path.dirname(os.path.abspath(__file__ + '/..')) #: Root directory of repository
-data_dir = os.path.join(epi_root,'Data') #: [epi_root]/Data
-analyses_dir = os.path.join(epi_root,'Analyses') #: [epi_root]/Analyses
+padre_root = os.path.dirname(os.path.abspath(__file__ + '/..')) #: Root directory of repository
+data_dir = os.path.join(padre_root,'Data') #: [padre_root]/Data
+analyses_dir = os.path.join(padre_root,'Analyses') #: [padre_root]/Analyses
 
 def subject_dir(subject):
 	'''returns subject directory for given subject'''

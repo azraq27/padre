@@ -1,4 +1,4 @@
-import epi
+import padre
 import json,os
 
  
@@ -16,7 +16,7 @@ class Subject(object):
 	'''abstract container for subject information
 	
 	Subject objects can either be returned by one of the high-level lookup functions
-	as part of a subject list (e.g., :meth:`epi.subjects` ), or created individually using one of the class
+	as part of a subject list (e.g., :meth:`padre.subjects` ), or created individually using one of the class
 	creation functions
 	'''
 	
@@ -58,12 +58,12 @@ class Subject(object):
 	@classmethod
 	def load(cls,subject_id):
 		''' returns a subject object initialized using JSON file '''
-		json_file = epi.subject_json(subject_id)
+		json_file = padre.subject_json(subject_id)
 		try:
 			with open(json_file) as f:
 				subj = cls(subject_id,json.loads(f.read()))
 		except ValueError:
-			epi.error('Could not load valid JSON file for subject %s' % subject_id)
+			padre.error('Could not load valid JSON file for subject %s' % subject_id)
 			subj = None
 		subj._update_shortcuts()
 		return subj
@@ -71,7 +71,7 @@ class Subject(object):
 	@classmethod
 	def create(cls,subject_id):
 		''' creates a new subject (loads old JSON if present and valid) '''
-		if os.path.exists(epi.subject_json(subject_id)):
+		if os.path.exists(padre.subject_json(subject_id)):
 			try:
 				subj = cls.load(subject_id)
 			except ValueError:
@@ -95,7 +95,7 @@ class Subject(object):
 	def save(self,json_file=None):
 		''' save current state to JSON file (overwrites) '''
 		if json_file==None:
-			json_file = epi.subject_json(self.subject_id)
+			json_file = padre.subject_json(self.subject_id)
 		save_dict = dict(self.__dict__)
 		# Delete the shortcuts -- they will be autocreated at every load
 		del(save_dict['labels'])
@@ -106,9 +106,9 @@ class Subject(object):
 	def init_directories(self):
 		''' create directories that these scripts expect on the disk '''
 		for p in [
-				epi.subject_dir(self),
-				epi.raw_subject_dir(self),
-				epi.sessions_subject_dir(self)
+				padre.subject_dir(self),
+				padre.raw_subject_dir(self),
+				padre.sessions_subject_dir(self)
 			]:
 			if not os.path.exists(p):
 				os.makedirs(p)
@@ -121,7 +121,7 @@ class Subject(object):
 		'''
 		if session_name in self.sessions:
 			raise SessionExists
-		session_dir = os.path.join(epi.sessions_subject_dir(self),session_name)
+		session_dir = os.path.join(padre.sessions_subject_dir(self),session_name)
 		if not os.path.exists(session_dir):
 			os.makedirs(session_dir)
 		self.sessions[session_name] = _default_session()
@@ -154,11 +154,11 @@ subject_ids = set()
 tasks = set()
 root_level_attrs = set()
 def index_subjects():
-	if os.path.exists(epi.data_dir):
-		for subject_id in os.listdir(epi.data_dir):
-			if os.path.exists(epi.subject_json(subject_id)):
+	if os.path.exists(padre.data_dir):
+		for subject_id in os.listdir(padre.data_dir):
+			if os.path.exists(padre.subject_json(subject_id)):
 				try:
-					with open(epi.subject_json(subject_id)) as subj_json:
+					with open(padre.subject_json(subject_id)) as subj_json:
 						subject_data = json.loads(subj_json.read())
 					[root_level_attrs.add(x) for x in subject_data.keys()]
 					subject_ids.add(subject_id)
@@ -166,8 +166,8 @@ def index_subjects():
 						if 'labels' in subject_data['sessions'][session]:
 							[tasks.add(x) for x in subject_data['sessions'][session]['labels']]
 				except ValueError:
-					print epi.subject_json(subject_id)
-					epi.error('Could not load valid JSON file for subject %s' % subject_id)
+					print padre.subject_json(subject_id)
+					padre.error('Could not load valid JSON file for subject %s' % subject_id)
 
 index_subjects()
 

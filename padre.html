@@ -35,6 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="subject.html" title="padre.subject - Subject Objects"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -51,6 +54,8 @@
             
   <div class="section" id="padre-padre-library-functions">
 <h1>padre - PaDRe Library Functions<a class="headerlink" href="#padre-padre-library-functions" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-padre"></span><p>PaDRe &#8211; Patient Data Repository</p>
+<p>Library to organize patient imaging data</p>
 <div class="section" id="global-functions">
 <h2>Global Functions<a class="headerlink" href="#global-functions" title="Permalink to this headline">¶</a></h2>
 <p>Several functions are available at the root-level of the library, the most important of which
@@ -71,8 +76,49 @@ For example, <tt class="xref py py-meth docutils literal"><span class="pre">padr
 <p><tt class="xref py py-meth docutils literal"><span class="pre">padre.utils.flatten()</span></tt></p>
 </div></blockquote>
 </div>
-<div class="section" id="directory-and-file-locations">
-<h2>Directory and File Locations<a class="headerlink" href="#directory-and-file-locations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-padre.config">
+<span id="directory-and-file-locations"></span><h2>Directory and File Locations<a class="headerlink" href="#module-padre.config" title="Permalink to this headline">¶</a></h2>
+<p>Standard directory and filename locations are stored in the <tt class="xref py py-class docutils literal"><span class="pre">epi.config</span></tt> class, and imported
+to the root level for convenience.</p>
+<p><em>Directories:</em></p>
+<blockquote>
+<div><dl class="data">
+<dt id="padre.config.data_dir">
+<tt class="descclassname">padre.config.</tt><tt class="descname">data_dir</tt><a class="headerlink" href="#padre.config.data_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>[epi_root]/Data</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="padre.config.analyses_dir">
+<tt class="descclassname">padre.config.</tt><tt class="descname">analyses_dir</tt><a class="headerlink" href="#padre.config.analyses_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>[epi_root]/Analyses</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="padre.config.subject_dir">
+<em class="property">static </em><tt class="descclassname">config.</tt><tt class="descname">subject_dir</tt><big>(</big><em>subject</em><big>)</big><a class="headerlink" href="#padre.config.subject_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns subject directory for given subject</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="padre.config.raw_subject_dir">
+<em class="property">static </em><tt class="descclassname">config.</tt><tt class="descname">raw_subject_dir</tt><big>(</big><em>subject</em><big>)</big><a class="headerlink" href="#padre.config.raw_subject_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>[subject_dir]/raw</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="padre.config.sessions_subject_dir">
+<em class="property">static </em><tt class="descclassname">config.</tt><tt class="descname">sessions_subject_dir</tt><big>(</big><em>subject</em><big>)</big><a class="headerlink" href="#padre.config.sessions_subject_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>[subject_dir]/sessions</p>
+</dd></dl>
+
+</div></blockquote>
+<dl class="staticmethod">
+<dt id="padre.config.subject_json">
+<em class="property">static </em><tt class="descclassname">config.</tt><tt class="descname">subject_json</tt><big>(</big><em>subject</em><big>)</big><a class="headerlink" href="#padre.config.subject_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>location of subject&#8217;s JSON file</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -87,7 +133,7 @@ For example, <tt class="xref py py-meth docutils literal"><span class="pre">padr
 <li><a class="reference internal" href="#">padre - PaDRe Library Functions</a><ul>
 <li><a class="reference internal" href="#global-functions">Global Functions</a></li>
 <li><a class="reference internal" href="#helper-functions">Helper Functions</a></li>
-<li><a class="reference internal" href="#directory-and-file-locations">Directory and File Locations</a></li>
+<li><a class="reference internal" href="#module-padre.config">Directory and File Locations</a></li>
 </ul>
 </li>
 </ul>
@@ -126,6 +172,9 @@ For example, <tt class="xref py py-meth docutils literal"><span class="pre">padr
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="subject.html" title="padre.subject - Subject Objects"
              >next</a> |</li>

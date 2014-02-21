@@ -138,8 +138,8 @@ class Subject(object):
 				for label in self.sessions[session]['labels']:
 					if label not in self.labels:
 						self.labels[label] = []
-					self.labels[label] += os.path.join(session_dir,self.sessions[session]['labels'][label])
-					self.dsets += os.path.join(session_dir,self.sessions[session]['labels'][label])
+					self.labels[label] += [os.path.join(session_dir,x) for x in self.sessions[session]['labels'][label]]
+					self.dsets += [os.path.join(session_dir,x) for x in self.sessions[session]['labels'][label]]
 
 	def session_for_label(self,label):
 		''' returns the first session that matches *label*'''

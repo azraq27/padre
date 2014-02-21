@@ -103,6 +103,7 @@ class Subject(object):
 		del(save_dict['dsets'])
 		with open(json_file,'w') as f:
 			f.write(json.dumps(save_dict, sort_keys=True, indent=2))
+		self._update_shortcuts()
 	
 	def init_directories(self):
 		''' create directories that these scripts expect on the disk '''
@@ -184,7 +185,7 @@ def subjects(label=None,only_included=True):
 	'''
 	all_subjs = list(_all_subjects)
 	if label:
-		all_subjs = [x for x in all_subjs if len(x.labels[label]))]
+		all_subjs = [x for x in all_subjs if len(x.labels[label])]
 	if only_included:
 		all_subjs = [x for x in all_subjs if x.include]
 	

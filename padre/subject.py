@@ -62,10 +62,11 @@ class Subject(object):
 		try:
 			with open(json_file) as f:
 				subj = cls(subject_id,json.loads(f.read()))
-		except ValueError:
+		except ValueError,IOError:
 			padre.error('Could not load valid JSON file for subject %s' % subject_id)
 			subj = None
-		subj._update_shortcuts()
+		else:
+			subj._update_shortcuts()
 		return subj
 
 	@classmethod

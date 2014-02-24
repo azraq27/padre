@@ -190,3 +190,21 @@ def subjects(label=None,only_included=True):
 		all_subjs = [x for x in all_subjs if x.include]
 	
 	return all_subjs
+
+class DatabaseConsistencyError(Exception):
+	pass
+
+def _files_exist():
+	'''make sure all the files that should be there, are still there'''
+	for s in p.subjects():
+	    for dset in s.dsets:
+	        if not os.path.exists(dset):
+				raise DatabaseConsistencyError("dataset is missing: %s" % dset)
+	    for sess in s.sessions:
+	        if 'scan_sheets' in sess:
+	            if not os.path.exists(os.path.join(p.sessions_subject_dir(s),sess,sess['scan_sheets'])):
+					raise DatabaseConsistencyError("scan sheets PDF is missing: %s" % sess['scan_sheets'])
+
+def sanity_check():
+	'''runs internal checks to find errors'''
+	_files_exist()

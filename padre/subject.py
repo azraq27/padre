@@ -212,13 +212,13 @@ class DatabaseConsistencyError(Exception):
 
 def _files_exist():
 	'''make sure all the files that should be there, are still there'''
-	for s in p.subjects():
+	for s in padre.subjects():
 	    for dset in s.dsets:
 	        if not os.path.exists(dset):
 				raise DatabaseConsistencyError("dataset is missing: %s" % dset)
 	    for sess in s.sessions:
 	        if 'scan_sheets' in sess:
-	            if not os.path.exists(os.path.join(p.sessions_subject_dir(s),sess,sess['scan_sheets'])):
+	            if not os.path.exists(os.path.join(padre.sessions_subject_dir(s),sess,sess['scan_sheets'])):
 					raise DatabaseConsistencyError("scan sheets PDF is missing: %s" % sess['scan_sheets'])
 
 def sanity_check():

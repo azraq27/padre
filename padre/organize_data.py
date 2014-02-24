@@ -1,9 +1,9 @@
 import os
 import filecmp
 import re
-import epi
+import padre
 
-data_dir = os.path.join(epi.epi_root,'Data')
+data_dir = os.path.join(padre.padre_root,'Data')
 subdirs = ['sessions','raw','analyses','clinical','other']
 
 def max_diff(dset_a,dset_b):
@@ -72,9 +72,9 @@ def categorize_dset(dset):
 					return d
 
 def scan_subjects_dir():
-	for subject_id in os.listdir(epi.data_dir):
-		subj = epi.Subject.create(subject_id)
-		for session in os.listdir(epi.sessions_subject_dir(subj)):
+	for subject_id in os.listdir(padre.data_dir):
+		subj = padre.Subject.create(subject_id)
+		for session in os.listdir(padre.sessions_subject_dir(subj)):
 			if session not in subj.sessions:
 				subj.new_session(session)
 				try:
@@ -85,7 +85,7 @@ def scan_subjects_dir():
 			already_found_dsets = []
 			for set_type in subj.sessions[session]['sets']:
 				already_found_dsets += subj.sessions[session]['sets'][set_type]
-			for dset in sorted(os.listdir(os.path.join(epi.sessions_subject_dir(subj),session))):
+			for dset in sorted(os.listdir(os.path.join(padre.sessions_subject_dir(subj),session))):
 				if dset not in already_found_dsets:
 					type_guess = categorize_dset(dset)
 					if type_guess:

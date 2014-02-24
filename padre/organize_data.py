@@ -7,6 +7,9 @@ data_dir = os.path.join(padre.padre_root,'Data')
 subdirs = ['sessions','raw','analyses','clinical','other']
 
 def max_diff(dset_a,dset_b):
+	for dset in [dset_a,dset_b]:
+		if not os.path.exists(dset):
+			raise IOError('Could not find file: %s' % dset)
 	try:
 		with open(os.devnull,'w') as null:
 			return float(subprocess.check_output(['3dBrickStat','-max','3dcalc( -a %s -b %s -expr abs(a-b) )' %(dset_a,dset_b)],stderr=null))

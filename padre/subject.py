@@ -1,5 +1,5 @@
 import padre
-import json,os
+import json,os,shutil
 
  
 def _default_session(): 
@@ -127,6 +127,22 @@ class Subject(object):
 		if not os.path.exists(session_dir):
 			os.makedirs(session_dir)
 		self.sessions[session_name] = _default_session()
+	
+	def delete_session(self,session_name,purge=False):
+		''' delete a session
+		
+		By default, will only delete the references to the data within the JSON file.
+		If ``purge`` is given as ``True``, then it will also delete the files from
+		the disk (be careful!). ``purge`` will also automatically call ``save``.'''
+		del(self.sessions[session_name])
+		if purge:
+			session_dir = os.path.join(padre.sessions_subject_dir(self),session_name)
+			if os.path.exists(session_dir):
+				shutil.rmtree(session_dir)
+			self.save()
+		else:
+			self._update_shortcuts()
+		
 	
 	def _update_shortcuts(self):
 		''' update the shortcut objects "labels" and "dsets" based on "sessions" '''

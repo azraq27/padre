@@ -98,6 +98,36 @@ def scan_subjects_dir():
 		subj.save()
 	
 
+def find_dup_sessions():
+	''' find sessions that are complete duplicates and delete them
+	
+	**Not complete**'''
+	raise Exception('This function is not complete')
+	for subj in p.subjects():
+	    for sess in subj.sessions:
+	        if sum([len(subj.sessions[sess]['labels'][x]) for x in subj.sessions[sess]['labels']])==0:
+	            continue
+	        matches = dict(subj.sessions)
+	        del(matches[sess])
+	        for label in subj.sessions[sess]['labels']:
+	            for dset in subj.sessions[sess]['labels'][label]:
+	                loop_matches = list(matches)
+	                for other_dir in loop_matches:
+	                    match = False
+	                    try:
+	                        for other_label in subj.sessions[other_dir]['labels']:
+	                            for other_dset in subj.sessions[other_dir]['labels'][other_label]:
+	                                d = org.max_diff(os.path.join(p.sessions_subject_dir(subj),sess,dset),os.path.join(p.sessions_subject_dir(subj),other_dir,other_dset))
+	                                if d<1.0:
+	                                    match = True
+	                                    raise ValueError
+	                    except ValueError:
+	                        pass
+	                    if not match:
+	                        del(matches[other_dir])
+	        if matches:
+	            print '%s: %s is duplicated within %s' % (subj,sess,matches.keys()[0])
+
 if __name__=='__main__':
 	import sys
 	label = categorize_dset(sys.argv[1])

@@ -158,10 +158,10 @@ class Subject(object):
 					self.dsets += [os.path.join(session_dir,x) for x in self.sessions[session]['labels'][label]]
 
 	def session_for_label(self,label):
-		''' returns the first session that matches *label*'''
+		''' returns the name of the first session that matches *label*'''
 		for session in self.sessions:
 			if label in self.sessions[session]['labels']:
-				return self.sessions[session]
+				return session
 	
 	def __repr__(self):
 		return "subject(%s)" % (self.subject_id)

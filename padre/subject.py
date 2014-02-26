@@ -171,15 +171,17 @@ class Subject(object):
 		else:
 			include_sessions = self.sessions.keys()
 		for sess in include_sessions:
-			if session_type:
-				if self.sessions[sess]['type']!=session_type:
-					continue
-			if label:
-				include_labels = [label]
-			else:
-				include_labels = self.sessions[sess]['labels']
-			for label in include_labels:
-				return_dsets += self.sessions[sess]['labels'][label]
+			if sess in self.sessions:
+				if session_type:
+					if self.sessions[sess]['type']!=session_type:
+						continue
+				if label:
+					include_labels = [label]
+				else:
+					include_labels = self.sessions[sess]['labels']
+				for label in include_labels:
+					if label in self.sessions[sess]['labels']:
+						return_dsets += self.sessions[sess]['labels'][label]
 		return return_dsets
 	
 	def __repr__(self):

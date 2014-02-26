@@ -163,6 +163,25 @@ class Subject(object):
 			if label in self.sessions[session]['labels']:
 				return session
 	
+	def dsets_for(self,label=None,session=None,session_type=None):
+		''' returns a list of datasets matching all of the given parameters '''
+		return_dsets = []
+		if sessions:
+			include_sessions = [session]
+		else:
+			include_sessions = self.sessions.keys()
+		for sess in include_sessions:
+			if session_type:
+				if self.sessions[sess]['type']!=session_type:
+					continue
+			if label:
+				include_labels = [label]
+			else:
+				include_labels = self.sessions[sess]['labels']
+			for label in include_labels:
+				return_dsets += self.sessions[sess]['labels'][label]
+		return return_dsets
+	
 	def __repr__(self):
 		return "subject(%s)" % (self.subject_id)
 	

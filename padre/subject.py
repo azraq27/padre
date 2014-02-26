@@ -166,7 +166,7 @@ class Subject(object):
 	def dsets_for(self,label=None,session=None,session_type=None):
 		''' returns a list of datasets matching all of the given parameters '''
 		return_dsets = []
-		if sessions:
+		if session:
 			include_sessions = [session]
 		else:
 			include_sessions = self.sessions.keys()

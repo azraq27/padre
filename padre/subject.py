@@ -181,7 +181,7 @@ class Subject(object):
 					include_labels = self.sessions[sess]['labels']
 				for label in include_labels:
 					if label in self.sessions[sess]['labels']:
-						return_dsets += os.path.join(padre.sessions_subject_dir(self),sess,self.sessions[sess]['labels'][label])
+						return_dsets += [os.path.join(padre.sessions_subject_dir(self),sess,x) for x in self.sessions[sess]['labels'][label]]
 		return return_dsets
 	
 	def __repr__(self):

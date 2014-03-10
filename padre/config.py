@@ -14,11 +14,11 @@ def subject_dir(subject):
 	'''returns subject directory for given subject'''
 	return os.path.join(data_dir,str(subject))
 
-def raw_subject_dir(subject):
+def raw_dir(subject):
 	'''[subject_dir]/raw'''
 	return os.path.join(subject_dir(subject),'raw')
 
-def sessions_subject_dir(subject):
+def sessions_dir(subject):
 	'''[subject_dir]/sessions'''
 	return os.path.join(subject_dir(subject),'sessions')
 

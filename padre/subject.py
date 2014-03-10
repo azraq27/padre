@@ -1,4 +1,4 @@
-import padre
+import padre as p
 import json,os,shutil
 
  
@@ -16,7 +16,7 @@ class Subject(object):
 	'''abstract container for subject information
 	
 	Subject objects can either be returned by one of the high-level lookup functions
-	as part of a subject list (e.g., :meth:`padre.subjects` ), or created individually using one of the class
+	as part of a subject list (e.g., :meth:`p.subjects` ), or created individually using one of the class
 	creation functions
 	'''
 	
@@ -58,21 +58,22 @@ class Subject(object):
 	@classmethod
 	def load(cls,subject_id):
 		''' returns a subject object initialized using JSON file '''
-		json_file = padre.subject_json(subject_id)
+		json_file = p.subject_json(subject_id)
 		try:
 			with open(json_file) as f:
 				subj = cls(subject_id,json.loads(f.read()))
 		except (ValueError,IOError):
-			padre.error('Could not load valid JSON file for subject %s' % subject_id)
+			p.error('Could not load valid JSON file for subject %s' % subject_id)
 			subj = None
 		else:
+			self._make_sessions_absolute()
 			subj._update_shortcuts()
 		return subj
 
 	@classmethod
 	def create(cls,subject_id):
 		''' creates a new subject (loads old JSON if present and valid) '''
-		if os.path.exists(padre.subject_json(subject_id)):
+		if os.path.exists(p.subject_json(subject_id)):
 			try:
 				subj = cls.load(subject_id)
 			except ValueError:
@@ -96,21 +97,23 @@ class Subject(object):
 	def save(self,json_file=None):
 		''' save current state to JSON file (overwrites) '''
 		if json_file==None:
-			json_file = padre.subject_json(self.subject_id)
+			json_file = p.subject_json(self.subject_id)
 		save_dict = dict(self.__dict__)
 		# Delete the shortcuts -- they will be autocreated at every load
 		del(save_dict['labels'])
 		del(save_dict['dsets'])
+		self._make_sessions_relative()
 		with open(json_file,'w') as f:
 			f.write(json.dumps(save_dict, sort_keys=True, indent=2))
+		self._make_sessions_absolute()
 		self._update_shortcuts()
 	
 	def init_directories(self):
 		''' create directories that these scripts expect on the disk '''
 		for p in [
-				padre.subject_dir(self),
-				padre.raw_subject_dir(self),
-				padre.sessions_subject_dir(self)
+				p.subject_dir(self),
+				p.raw_subject_dir(self),
+				p.sessions_dir(self)
 			]:
 			if not os.path.exists(p):
 				os.makedirs(p)
@@ -123,7 +126,7 @@ class Subject(object):
 		'''
 		if session_name in self.sessions:
 			raise SessionExists
-		session_dir = os.path.join(padre.sessions_subject_dir(self),session_name)
+		session_dir = os.path.join(p.sessions_dir(self),session_name)
 		if not os.path.exists(session_dir):
 			os.makedirs(session_dir)
 		self.sessions[session_name] = _default_session()
@@ -136,7 +139,7 @@ class Subject(object):
 		the disk (be careful!). ``purge`` will also automatically call ``save``.'''
 		del(self.sessions[session_name])
 		if purge:
-			session_dir = os.path.join(padre.sessions_subject_dir(self),session_name)
+			session_dir = os.path.join(p.sessions_dir(self),session_name)
 			if os.path.exists(session_dir):
 				shutil.rmtree(session_dir)
 			self.save()
@@ -149,14 +152,30 @@ class Subject(object):
 		self.labels = {}
 		self.dsets = []
 		for session in self.sessions:
-			session_dir = os.path.join(padre.sessions_subject_dir(self),session)
+			session_dir = os.path.join(p.sessions_dir(self),session)
 			if 'labels' in self.sessions[session]:
 				for label in self.sessions[session]['labels']:
 					if label not in self.labels:
 						self.labels[label] = []
 					self.labels[label] += [os.path.join(session_dir,x) for x in self.sessions[session]['labels'][label]]
 					self.dsets += [os.path.join(session_dir,x) for x in self.sessions[session]['labels'][label]]
-
+	
+	def _make_sessions_absolute(self):
+		'''updates the sessions dict to make all references absolute'''
+		for session in self.sessions:
+			session_dir = os.path.join(p.sessions_dir(self),session)
+			if 'labels' in self.sessions[session]:
+				for label in self.sessions[session]['labels']:
+					self.sessions[session]['labels'][label] = [os.path.join(session_dir,os.path.split(x)[1]) for x in self.sessions[session]['labels'][label]]
+	
+	def _make_sessions_relative(self):
+		'''updates the sessions dict to make all references relative to standard directories'''
+		for session in self.sessions:
+			session_dir = os.path.join(p.sessions_dir(self),session)
+			if 'labels' in self.sessions[session]:
+				for label in self.sessions[session]['labels']:
+					self.sessions[session]['labels'][label] = [os.path.split(x)[1] for x in self.sessions[session]['labels'][label]]
+	
 	def session_for_label(self,label):
 		''' returns the name of the first session that matches *label*'''
 		for session in self.sessions:
@@ -181,7 +200,7 @@ class Subject(object):
 					include_labels = self.sessions[sess]['labels']
 				for label in include_labels:
 					if label in self.sessions[sess]['labels']:
-						return_dsets += [os.path.join(padre.sessions_subject_dir(self),sess,x) for x in self.sessions[sess]['labels'][label]]
+						return_dsets += [os.path.join(p.sessions_dir(self),sess,x) for x in self.sessions[sess]['labels'][label]]
 		return return_dsets
 	
 	def __repr__(self):
@@ -194,11 +213,11 @@ subject_ids = set()
 tasks = set()
 root_level_attrs = set()
 def index_subjects():
-	if os.path.exists(padre.data_dir):
-		for subject_id in os.listdir(padre.data_dir):
-			if os.path.exists(padre.subject_json(subject_id)):
+	if os.path.exists(p.data_dir):
+		for subject_id in os.listdir(p.data_dir):
+			if os.path.exists(p.subject_json(subject_id)):
 				try:
-					with open(padre.subject_json(subject_id)) as subj_json:
+					with open(p.subject_json(subject_id)) as subj_json:
 						subject_data = json.loads(subj_json.read())
 					[root_level_attrs.add(x) for x in subject_data.keys()]
 					subject_ids.add(subject_id)
@@ -206,8 +225,8 @@ def index_subjects():
 						if 'labels' in subject_data['sessions'][session]:
 							[tasks.add(x) for x in subject_data['sessions'][session]['labels']]
 				except ValueError:
-					print padre.subject_json(subject_id)
-					padre.error('Could not load valid JSON file for subject %s' % subject_id)
+					print p.subject_json(subject_id)
+					p.error('Could not load valid JSON file for subject %s' % subject_id)
 
 index_subjects()
 
@@ -233,13 +252,13 @@ class DatabaseConsistencyError(Exception):
 
 def _files_exist():
 	'''make sure all the files that should be there, are still there'''
-	for s in padre.subjects():
+	for s in p.subjects():
 	    for dset in s.dsets:
 	        if not os.path.exists(dset):
 				raise DatabaseConsistencyError("dataset is missing: %s" % dset)
 	    for sess in s.sessions:
 	        if 'scan_sheets' in sess:
-	            if not os.path.exists(os.path.join(padre.sessions_subject_dir(s),sess,sess['scan_sheets'])):
+	            if not os.path.exists(os.path.join(p.sessions_dir(s),sess,sess['scan_sheets'])):
 					raise DatabaseConsistencyError("scan sheets PDF is missing: %s" % sess['scan_sheets'])
 
 def sanity_check():

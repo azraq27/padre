@@ -30,9 +30,6 @@ The Contents
    organization
    padre
    subject
-   utils
-   afni
-   eprime
 
 Indices and tables
 ==================

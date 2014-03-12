@@ -10,6 +10,7 @@ padre_root = os.path.dirname(os.path.abspath(__file__ + '/..')) #: Root director
 data_dir = os.path.join(padre_root,'Data') #: [padre_root]/Data
 analyses_dir = os.path.join(padre_root,'Analyses') #: [padre_root]/Analyses
 
+
 def subject_dir(subject):
 	'''returns subject directory for given subject'''
 	return os.path.join(data_dir,str(subject))

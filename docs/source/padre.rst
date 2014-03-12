@@ -1,5 +1,5 @@
 padre - PaDRe Library Functions
-==========================
+================================
 
 .. automodule:: padre
 
@@ -45,8 +45,8 @@ Directory and File Locations
 			:annotation:
 		
 		.. automethod:: padre.config.subject_dir		
-		.. automethod:: padre.config.raw_subject_dir
-		.. automethod:: padre.config.sessions_subject_dir
+		.. automethod:: padre.config.raw_dir
+		.. automethod:: padre.config.sessions_dir
 
 	.. automethod:: padre.config.subject_json
 

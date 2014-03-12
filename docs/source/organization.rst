@@ -36,6 +36,16 @@ Directory structure
 		|-- [analysis_name]/				# directories with self-contained analyses,
 		|						# organized however they want
 		|-- ...
+		
+		Shared/
+		|-- Atlases/					# standard atlas volumes
+		|   |-- atlases.json				# file describing the atlases
+		|   |-- [datasets]
+		|
+		|-- Stimfiles/					# shared stimfiles (the same for each subject)
+		    |-- stimfiles.json				# file describing the stimfiles
+		    |-- [files]
+		
 
 Subject Objects
 ----------------

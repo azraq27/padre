@@ -35,14 +35,16 @@ atlases = {}
 stimfiles = {}
 '''dictionary with location of shared stimfiles'''
 
-def _load_atlas():
+def _load_atlases():
 	'''load atlas information from JSON file, autoloaded on import'''
 	atlas_json = os.path.join(atlas_dir,'atlases.json')
 	if os.path.exists(atlas_json):
 		with open(atlas_json) as f:
 			atlases = json.loads(f.read())
+	for atlas in atlases:
+		atlases[atlas]['file'] = os.path.join(atlas_dir,atlases[atlas]['file'])	
 
-_load_atlas()
+_load_atlases()
 
 def _load_stimfiles():
 	'''loads the shared stimfile information from JSON file, autoloaded on module import'''
@@ -50,5 +52,7 @@ def _load_stimfiles():
 	if os.path.exists(stimfile_json):
 		with open(stimfile_json) as f:
 			stimfiles = json.loads(f.read())
+	for stim in stimfiles:
+		stimfiles[stim]['file'] = os.path.join(stimfile_dir,stimfiles[stim]['file'])
 
 _load_stimfiles()

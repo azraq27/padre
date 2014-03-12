@@ -66,7 +66,7 @@ class Subject(object):
 			p.error('Could not load valid JSON file for subject %s' % subject_id)
 			subj = None
 		else:
-			self._make_sessions_absolute()
+			subj._make_sessions_absolute()
 			subj._update_shortcuts()
 		return subj
 

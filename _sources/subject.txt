@@ -92,6 +92,8 @@ Helper Methods
 These methods are designed to make manipulating the data a little easier
 
 	.. automethod:: Subject.session_for_label
+	
+	.. automethod:: Subject.session_for_dset
 
 Maintenance Functions
 ----------------------

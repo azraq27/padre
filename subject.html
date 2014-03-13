@@ -8,7 +8,7 @@
     
     <title>padre.subject - Subject Objects &mdash; PaDRe 0.5 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -34,14 +34,47 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="padre.html" title="padre - PaDRe Library Functions"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">padre.subject - Subject Objects</a><ul>
+<li><a class="reference internal" href="#accessing-datasets">Accessing Datasets</a></li>
+<li><a class="reference internal" href="#session-format">Session Format</a></li>
+<li><a class="reference internal" href="#helper-methods">Helper Methods</a></li>
+<li><a class="reference internal" href="#maintenance-functions">Maintenance Functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="padre.html"
+                        title="previous chapter">padre - PaDRe Library Functions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/subject.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -50,43 +83,24 @@
             
   <div class="section" id="padre-subject-subject-objects">
 <h1>padre.subject - Subject Objects<a class="headerlink" href="#padre-subject-subject-objects" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="padre.subject.Subject">
-<em class="property">class </em><tt class="descclassname">padre.subject.</tt><tt class="descname">Subject</tt><big>(</big><em>subject_id</em>, <em>*initial_data</em><big>)</big><a class="headerlink" href="#padre.subject.Subject" title="Permalink to this definition">¶</a></dt>
-<dd><p>abstract container for subject information</p>
-<p>Subject objects can either be returned by one of the high-level lookup functions
-as part of a subject list (e.g., <tt class="xref py py-meth docutils literal"><span class="pre">p.subjects()</span></tt> ), or created individually using one of the class
-creation functions</p>
-</dd></dl>
-
 <p><strong>Loading a subject from the disk:</strong></p>
 <blockquote>
-<div><dl class="classmethod">
-<dt id="padre.subject.Subject.load">
-<em class="property">classmethod </em><tt class="descclassname">Subject.</tt><tt class="descname">load</tt><big>(</big><em>subject_id</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns a subject object initialized using JSON file</p>
-</dd></dl>
-
-<p><em>Standard instance variables:</em></p>
+<div><p><em>Standard instance variables:</em></p>
 <blockquote>
 <div><dl class="attribute">
 <dt id="padre.subject.Subject.subject_id">
 <tt class="descclassname">Subject.</tt><tt class="descname">subject_id</tt><a class="headerlink" href="#padre.subject.Subject.subject_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Experimental id - also available by casting as string (e.g., <tt class="docutils literal"><span class="pre">str(subject)</span></tt>
-or <tt class="docutils literal"><span class="pre">'%s'</span> <span class="pre">%</span> <span class="pre">subject</span></tt>)</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="padre.subject.Subject.include">
 <tt class="descclassname">Subject.</tt><tt class="descname">include</tt><a class="headerlink" href="#padre.subject.Subject.include" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bool value of whether this subject should normally be used</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="padre.subject.Subject.notes">
 <tt class="descclassname">Subject.</tt><tt class="descname">notes</tt><a class="headerlink" href="#padre.subject.Subject.notes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Free text notes on the subject</p>
-</dd></dl>
+<dd></dd></dl>
 
 </div></blockquote>
 </div></blockquote>
@@ -96,16 +110,12 @@ or <tt class="docutils literal"><span class="pre">'%s'</span> <span class="pre">
 <div><p>Datasets can be accessed several ways. Each of these methods deliver the filenames, organized
 in different ways. All datasets are stored in the directory returned by <tt class="xref py py-meth docutils literal"><span class="pre">padre.sessions_subject_dir()</span></tt>.</p>
 <dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">padre.subject.</tt><tt class="descname">Subject</tt></dt>
+<dt id="padre.subject.Subject">
+<em class="property">class </em><tt class="descclassname">padre.subject.</tt><tt class="descname">Subject</tt><a class="headerlink" href="#padre.subject.Subject" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
 <dt id="padre.subject.Subject.sessions">
 <tt class="descname">sessions</tt><a class="headerlink" href="#padre.subject.Subject.sessions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary organized by scanning session. Each entry contains several keys relating
-to session meta-data as well as a dictionary <tt class="docutils literal"><span class="pre">subject.sessions['labels']</span></tt>. The keys
-for this dataset are the descriptive labels for each dataset (e.g., &#8220;anatomy&#8221;, &#8220;field_map&#8221;),
-and the values are lists of the dataset filenames.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -119,16 +129,12 @@ script session-centric, you can explicitly address these exception cases.</p>
 <dl class="attribute">
 <dt id="padre.subject.Subject.labels">
 <tt class="descname">labels</tt><a class="headerlink" href="#padre.subject.Subject.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of all the datasets available for this subject, organized by descriptive
-label (collapsed across session).</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="padre.subject.Subject.dsets">
 <tt class="descname">dsets</tt><a class="headerlink" href="#padre.subject.Subject.dsets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A flat list of all datasets available for this subject, collapsed across session and
-dataset type.</p>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -177,94 +183,18 @@ not be relied upon. Sessions should always include:</p>
 <h2>Helper Methods<a class="headerlink" href="#helper-methods" title="Permalink to this headline">¶</a></h2>
 <p>These methods are designed to make manipulating the data a little easier</p>
 <blockquote>
-<div><dl class="method">
-<dt id="padre.subject.Subject.session_for_label">
-<tt class="descclassname">Subject.</tt><tt class="descname">session_for_label</tt><big>(</big><em>label</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.session_for_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the name of the first session that matches <em>label</em></p>
-</dd></dl>
-
-</div></blockquote>
+<div></div></blockquote>
 </div>
 <div class="section" id="maintenance-functions">
 <h2>Maintenance Functions<a class="headerlink" href="#maintenance-functions" title="Permalink to this headline">¶</a></h2>
 <p>These functions require write-access to the repository, so should not be used in standard scripts</p>
 <blockquote>
-<div><dl class="classmethod">
-<dt id="padre.subject.Subject.create">
-<em class="property">classmethod </em><tt class="descclassname">Subject.</tt><tt class="descname">create</tt><big>(</big><em>subject_id</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>creates a new subject (loads old JSON if present and valid)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="padre.subject.Subject.save">
-<tt class="descclassname">Subject.</tt><tt class="descname">save</tt><big>(</big><em>json_file=None</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>save current state to JSON file (overwrites)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="padre.subject.Subject.add_attr">
-<tt class="descclassname">Subject.</tt><tt class="descname">add_attr</tt><big>(</big><em>attribute</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.add_attr" title="Permalink to this definition">¶</a></dt>
-<dd><p>adds a new root-level attribute</p>
-<p>This attribute will be available directly by calling subject.attribute,
-and will persist across sessions (if the subject is saved)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="padre.subject.Subject.new_session">
-<tt class="descclassname">Subject.</tt><tt class="descname">new_session</tt><big>(</big><em>session_name</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.new_session" title="Permalink to this definition">¶</a></dt>
-<dd><p>create a new session</p>
-<p>Inserts the proper data structure into the JSON file, as well as creating
-the directory on disk.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="padre.subject.Subject.init_directories">
-<tt class="descclassname">Subject.</tt><tt class="descname">init_directories</tt><big>(</big><big>)</big><a class="headerlink" href="#padre.subject.Subject.init_directories" title="Permalink to this definition">¶</a></dt>
-<dd><p>create directories that these scripts expect on the disk</p>
-</dd></dl>
-
-</div></blockquote>
+<div></div></blockquote>
 </div>
 </div>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">padre.subject - Subject Objects</a><ul>
-<li><a class="reference internal" href="#accessing-datasets">Accessing Datasets</a></li>
-<li><a class="reference internal" href="#session-format">Session Format</a></li>
-<li><a class="reference internal" href="#helper-methods">Helper Methods</a></li>
-<li><a class="reference internal" href="#maintenance-functions">Maintenance Functions</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="padre.html"
-                        title="previous chapter">padre - PaDRe Library Functions</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/subject.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -275,9 +205,6 @@ the directory on disk.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="padre.html" title="padre - PaDRe Library Functions"
              >previous</a> |</li>

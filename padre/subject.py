@@ -223,10 +223,10 @@ class Subject(object):
 		print '\tinclude = %s' % str(self.include)
 		print '\tnotes = %s' % self.notes
 		print '\tattributes:'
-		print '\t\t%s' % str(set(self.__dict__.keys()) - set(['dsets', 'sessions', 'subject_id', 'labels', 'include', 'notes']))
+		print '\t\t%s' % ' '.join(set(self.__dict__.keys()) - set(['dsets', 'sessions', 'subject_id', 'labels', 'include', 'notes']))
 		print '----sessions---' + '-'*35
 		for sess in self.sessions:
-			print '[[ %s:' % sess
+			print '|-- %s:' % sess
 			print '\tdate: %s' % self.sessions[sess]['date']
 			print '\ttype: %s' % self.sessions[sess]['type']
 			print '\tother attributes:'

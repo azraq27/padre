@@ -225,16 +225,16 @@ class Subject(object):
 		print '\tattributes:'
 		print '\t\t%s' % str(set(self.__dict__.keys()) - set(['dsets', 'sessions', 'subject_id', 'labels', 'include', 'notes']))
 		print '----sessions---' + '-'*35
-		for sess in s.sessions:
+		for sess in self.sessions:
 			print '[[ %s:' % sess
-			print '\tdate: %s' % s.sessions[sess]['date']
-			print '\ttype: %s' % s.sessions[sess]['type']
+			print '\tdate: %s' % self.sessions[sess]['date']
+			print '\ttype: %s' % self.sessions[sess]['type']
 			print '\tother attributes:'
-			print '\t\t%s' % str(set(s.sessions[sess].keys()) - set(['date', 'type', 'labels']))
+			print '\t\t%s' % str(set(self.sessions[sess].keys()) - set(['date', 'type', 'labels']))
 			print '\tdatasets:'
-			for label in s.sessions[sess]['labels']:
+			for label in self.sessions[sess]['labels']:
 				print '\t\t%s:'  % label
-				for dset in s.sessions[sess]['labels'][label]:
+				for dset in self.sessions[sess]['labels'][label]:
 					print '\t\t\t%s' % dset
 
 subject_ids = set()

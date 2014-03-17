@@ -1,5 +1,5 @@
 padre.subject - Subject Objects
-=================
+================================
 
 .. currentmodule:: padre.subject
 .. autoclass:: Subject
@@ -33,7 +33,9 @@ Accessing Datasets
 		
 		.. autoinstanceattribute:: sessions
 			:annotation:
-	
+		
+		.. automethod:: dsets_for
+		
 		.. warning::
 	
 			The following two shortcut methods(``subject.labels`` and ``subject.dsets``) are convenient
@@ -90,6 +92,8 @@ Helper Methods
 These methods are designed to make manipulating the data a little easier
 
 	.. automethod:: Subject.session_for_label
+	
+	.. automethod:: Subject.session_for_dset
 
 Maintenance Functions
 ----------------------

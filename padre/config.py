@@ -37,6 +37,7 @@ stimfiles = {}
 
 def _load_atlases():
 	'''load atlas information from JSON file, autoloaded on import'''
+	global atlases
 	atlas_json = os.path.join(atlas_dir,'atlases.json')
 	if os.path.exists(atlas_json):
 		with open(atlas_json) as f:
@@ -48,6 +49,7 @@ _load_atlases()
 
 def _load_stimfiles():
 	'''loads the shared stimfile information from JSON file, autoloaded on module import'''
+	global stimfiles
 	stimfile_json = os.path.join(stimfile_dir,'stimfiles.json')
 	if os.path.exists(stimfile_json):
 		with open(stimfile_json) as f:

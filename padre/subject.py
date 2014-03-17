@@ -182,6 +182,13 @@ class Subject(object):
 			if label in self.sessions[session]['labels']:
 				return session
 	
+	def session_for_dset(self,dset):
+		''' returns the name of the first session that matches *dset*'''
+		for session in self.sessions:
+			for label in self.sessions[session]['labels']:
+				if dset in self.sessions[session]['labels'][label]:
+					return session
+	
 	def dsets_for(self,label=None,session=None,session_type=None):
 		''' returns a list of datasets matching all of the given parameters '''
 		return_dsets = []
@@ -208,6 +215,27 @@ class Subject(object):
 	
 	def __str__(self):
 		return self.subject_id
+	
+	def pretty_print(self):
+		'''prints out a text representation of the subject data'''
+		print 'Subject %s:' % self.subject_id
+		print '='*50
+		print '\tinclude = %s' % str(self.include)
+		print '\tnotes = %s' % self.notes
+		print '\tattributes:'
+		print '\t\t%s' % str(set(self.__dict__.keys()) - set(['dsets', 'sessions', 'subject_id', 'labels', 'include', 'notes']))
+		print '----sessions---' + '-'*35
+		for sess in s.sessions:
+		    print '[[ %s:' % sess
+			print '\tdate: %s' % s.sessions[sess]['date']
+			print '\ttype: %s' % s.sessions[sess]['type']
+			print '\tother attributes:'
+			print '\t\t%s' % str(set(s.sessions[sess].keys()) - set(['date', 'type', 'labels']))
+			print '\tdatasets:'
+		    for label in s.sessions[sess]['labels']:
+		        print '\t\t%s:'  % label
+				for dset in s.sessions[sess]['labels'][label]:
+		        print '\t\t\t%s' % dset
 
 subject_ids = set()
 tasks = set()

@@ -232,10 +232,10 @@ class Subject(object):
 			print '\tother attributes:'
 			print '\t\t%s' % str(set(s.sessions[sess].keys()) - set(['date', 'type', 'labels']))
 			print '\tdatasets:'
-		    for label in s.sessions[sess]['labels']:
-		        print '\t\t%s:'  % label
+			for label in s.sessions[sess]['labels']:
+				print '\t\t%s:'  % label
 				for dset in s.sessions[sess]['labels'][label]:
-		        print '\t\t\t%s' % dset
+					print '\t\t\t%s' % dset
 
 subject_ids = set()
 tasks = set()

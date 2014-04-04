@@ -270,7 +270,7 @@ def subjects(label=None,only_included=True):
     '''
     all_subjs = list(_all_subjects)
     if label:
-        all_subjs = [x for x in all_subjs if label in x.labels and len(x.labels[label])]
+        all_subjs = [x for x in all_subjs if len(x.dsets(label))]
     if only_included:
         all_subjs = [x for x in all_subjs if x.include]
     

@@ -24,32 +24,17 @@ padre.subject - Subject Objects
 Accessing Datasets
 --------------------
 
-	Datasets can be accessed several ways. Each of these methods deliver the filenames, organized
-	in different ways. All datasets are stored in the directory returned by :meth:`padre.sessions_subject_dir`.
+	Datasets can be accessed several ways. The functions :meth:`sessions` and :meth:`dsets` return
+	the sessions or datasets that match given parameters. All filenames are passed as absolute
+	references, so you don't have to worry about directories
 
 	.. currentmodule:: padre.subject
 	
 	.. class:: Subject
 		
-		.. autoinstanceattribute:: sessions
-			:annotation:
+		.. automethod:: sessions
 		
-		.. automethod:: dsets_for
-		
-		.. warning::
-	
-			The following two shortcut methods(``subject.labels`` and ``subject.dsets``) are convenient
-			but don't cover every possibility. For example, if the anatomy scan for a functional session
-			was lost, but there is another anatomy scan obtained at another date, these datasets will 
-			appear normally as ``subject.labels['functional']`` and ``subject.labels['anatomy']`` with
-			no reference to the fact that they were obtained in different sessions. If you write your
-			script session-centric, you can explicitly address these exception cases.
-	
-		.. autoinstanceattribute:: labels
-			:annotation:
-	
-		.. autoinstanceattribute:: dsets
-			:annotation:
+		.. automethod:: dsets
 	
 
 		

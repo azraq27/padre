@@ -34,21 +34,14 @@ class Subject(object):
 		self.notes = ''
 		'''Free text notes on the subject'''
 		
-		self.sessions = {}
-		'''Dictionary organized by scanning session. Each entry contains several keys relating
-		to session meta-data as well as a dictionary ``subject.sessions['labels']``. The keys
+		self._sessions = {}
+		'''Private variable holding the full session dictionary. Should be used through
+        the function :meth:`sessions`
+        
+        Dictionary organized by scanning session. Each entry contains several keys relating
+		to session meta-data as well as a dictionary ``subject._sessions['labels']``. The keys
 		for this dataset are the descriptive labels for each dataset (e.g., "anatomy", "field_map"),
 		and the values are lists of the dataset filenames.
-		'''
-		
-		self.labels = {}
-		'''A dictionary of all the datasets available for this subject, organized by descriptive
-		label (collapsed across session).
-		'''
-		
-		self.dsets = []
-		'''A flat list of all datasets available for this subject, collapsed across session and
-		dataset type.
 		'''
 		
 		for dictionary in initial_data:
@@ -65,9 +58,6 @@ class Subject(object):
 		except (ValueError,IOError):
 			p.error('Could not load valid JSON file for subject %s' % subject_id)
 			subj = None
-		else:
-			subj._make_sessions_absolute()
-			subj._update_shortcuts()
 		return subj
 
 	@classmethod
@@ -102,11 +92,8 @@ class Subject(object):
 		# Delete the shortcuts -- they will be autocreated at every load
 		del(save_dict['labels'])
 		del(save_dict['dsets'])
-		self._make_sessions_relative()
 		with open(json_file,'w') as f:
 			f.write(json.dumps(save_dict, sort_keys=True, indent=2))
-		self._make_sessions_absolute()
-		self._update_shortcuts()
 	
 	def init_directories(self):
 		''' create directories that these scripts expect on the disk '''
@@ -124,12 +111,12 @@ class Subject(object):
 		Inserts the proper data structure into the JSON file, as well as creating
 		the directory on disk.
 		'''
-		if session_name in self.sessions:
+		if session_name in self._sessions:
 			raise SessionExists
 		session_dir = os.path.join(p.sessions_dir(self),session_name)
 		if not os.path.exists(session_dir):
 			os.makedirs(session_dir)
-		self.sessions[session_name] = _default_session()
+		self._sessions[session_name] = _default_session()
 	
 	def delete_session(self,session_name,purge=False):
 		''' delete a session
@@ -137,77 +124,72 @@ class Subject(object):
 		By default, will only delete the references to the data within the JSON file.
 		If ``purge`` is given as ``True``, then it will also delete the files from
 		the disk (be careful!). ``purge`` will also automatically call ``save``.'''
-		del(self.sessions[session_name])
+		del(self._sessions[session_name])
 		if purge:
 			session_dir = os.path.join(p.sessions_dir(self),session_name)
 			if os.path.exists(session_dir):
 				shutil.rmtree(session_dir)
-			self.save()
-		else:
-			self._update_shortcuts()
+			self.save()		
+	
+	def _make_dset_absolute(self,dset,session):
+		'''adds the appropriate directory prefix to a file'''
+        return os.path.join(p.sessions_dir(self),session,dset)
 		
+    def sessions(self,label=None,session=None,session_type=None,dset=None):
+        '''returns a dictionary containing all of the sessions matching all the given parameters'''
+        return_dict = {}
+    	if session:
+            if session in self._sessions:
+                return_dict[session] = self._sessions[session]
+    	elif dset:
+            for sess in self._sessions:
+                for label in self._sessions[sess]['labels']:
+                    if dset in self._sessions[sess]['labels'][label]:
+                        return_dict[sess] = self._sessions[sess]
+        else:
+        	for sess in self._sessions:
+    			if session_type:
+    				if self._sessions[sess]['type']!=session_type:
+    					continue
+    			if label:
+    				if label not in self._sessions[sess]['labels']:
+                        continue
+                return_dict[sess] = self._sessions[sess]
+        
+        for sess in return_dict:
+            for label in return_dict[sess]['labels']:
+                return_dict[sess]['labels'][label] = [self._make_dset_absolute(x,sess) for x in return_dict[sess]['labels'][label]]
+    	return return_dict
+    
+	def dsets(self,label=None,session=None,session_type=None):
+		''' returns a list of datasets matching all of the given parameters 
+        
+		.. warning::
 	
-	def _update_shortcuts(self):
-		''' update the shortcut objects "labels" and "dsets" based on "sessions" '''
-		self.labels = {}
-		self.dsets = []
-		for session in self.sessions:
-			session_dir = os.path.join(p.sessions_dir(self),session)
-			if 'labels' in self.sessions[session]:
-				for label in self.sessions[session]['labels']:
-					if label not in self.labels:
-						self.labels[label] = []
-					self.labels[label] += [os.path.join(session_dir,x) for x in self.sessions[session]['labels'][label]]
-					self.dsets += [os.path.join(session_dir,x) for x in self.sessions[session]['labels'][label]]
-	
-	def _make_sessions_absolute(self):
-		'''updates the sessions dict to make all references absolute'''
-		for session in self.sessions:
-			session_dir = os.path.join(p.sessions_dir(self),session)
-			if 'labels' in self.sessions[session]:
-				for label in self.sessions[session]['labels']:
-					self.sessions[session]['labels'][label] = [os.path.join(session_dir,os.path.split(x)[1]) for x in self.sessions[session]['labels'][label]]
-	
-	def _make_sessions_relative(self):
-		'''updates the sessions dict to make all references relative to standard directories'''
-		for session in self.sessions:
-			session_dir = os.path.join(p.sessions_dir(self),session)
-			if 'labels' in self.sessions[session]:
-				for label in self.sessions[session]['labels']:
-					self.sessions[session]['labels'][label] = [os.path.split(x)[1] for x in self.sessions[session]['labels'][label]]
-	
-	def session_for_label(self,label):
-		''' returns the name of the first session that matches *label*'''
-		for session in self.sessions:
-			if label in self.sessions[session]['labels']:
-				return session
-	
-	def session_for_dset(self,dset):
-		''' returns the name of the first session that matches *dset*'''
-		for session in self.sessions:
-			for label in self.sessions[session]['labels']:
-				if dset in self.sessions[session]['labels'][label]:
-					return session
-	
-	def dsets_for(self,label=None,session=None,session_type=None):
-		''' returns a list of datasets matching all of the given parameters '''
+			This method is convenient but don't cover every possibility. For example, if the 
+            anatomy scan for a functional session was lost, but there is another anatomy scan 
+            obtained at another date, these datasets will appear normally as ``subject.dsets('functional')``
+            and ``subject.dsets('anatomy')`` with no reference to the fact that they were obtained 
+            in different sessions. If you write your script session-centric, you can explicitly 
+            address these exception cases.
+        '''
 		return_dsets = []
 		if session:
 			include_sessions = [session]
 		else:
-			include_sessions = self.sessions.keys()
+			include_sessions = self._sessions.keys()
 		for sess in include_sessions:
-			if sess in self.sessions:
+			if sess in self._sessions:
 				if session_type:
-					if self.sessions[sess]['type']!=session_type:
+					if self._sessions[sess]['type']!=session_type:
 						continue
 				if label:
 					include_labels = [label]
 				else:
-					include_labels = self.sessions[sess]['labels']
+					include_labels = self._sessions[sess]['labels']
 				for label in include_labels:
-					if label in self.sessions[sess]['labels']:
-						return_dsets += [os.path.join(p.sessions_dir(self),sess,x) for x in self.sessions[sess]['labels'][label]]
+					if label in self._sessions[sess]['labels']:
+                        return_dsets += [self._make_dset_absolute(x,sess) for x in self._sessions[sess]['labels'][label]]
 		return return_dsets
 	
 	def __repr__(self):
@@ -225,16 +207,16 @@ class Subject(object):
 		print '\tattributes:'
 		print '\t\t%s' % ' '.join(set(self.__dict__.keys()) - set(['dsets', 'sessions', 'subject_id', 'labels', 'include', 'notes']))
 		print '----sessions---' + '-'*35
-		for sess in self.sessions:
+		for sess in self._sessions:
 			print '|-- %s:' % sess
-			print '\tdate: %s' % self.sessions[sess]['date']
-			print '\ttype: %s' % self.sessions[sess]['type']
+			print '\tdate: %s' % self._sessions[sess]['date']
+			print '\ttype: %s' % self._sessions[sess]['type']
 			print '\tother attributes:'
-			print '\t\t%s' % str(set(self.sessions[sess].keys()) - set(['date', 'type', 'labels']))
+			print '\t\t%s' % ' '.join(set(self._sessions[sess].keys()) - set(['date', 'type', 'labels']))
 			print '\tdatasets:'
-			for label in self.sessions[sess]['labels']:
+			for label in self._sessions[sess]['labels']:
 				print '\t\t%s:'  % label
-				for dset in self.sessions[sess]['labels'][label]:
+				for dset in self._sessions[sess]['labels'][label]:
 					print '\t\t\t%s' % dset
 
 subject_ids = set()

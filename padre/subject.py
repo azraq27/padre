@@ -22,7 +22,8 @@ class Subject(object):
     
     def __init__(self,subject_id,*initial_data):
         for key in root_level_attrs:
-            setattr(self, key, None)
+            if key != 'sessions':
+                setattr(self, key, None)
         
         self.subject_id = subject_id
         '''Experimental id - also available by casting as string (e.g., ``str(subject)``

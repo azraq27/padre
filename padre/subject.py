@@ -12,6 +12,21 @@ def _default_session():
 class SessionExists(LookupError):
     pass
 
+class Session(dict):
+    '''customized dictionary to add a couple helper methods'''
+    def __init__(self):
+        dict.__init__(self)
+        self.current_session = None
+    
+    def __enter__(self):
+        if len(self.keys()):
+            self.current_session = self.keys()[0]
+            return self.get(self.current_session)
+        return None
+    
+    def __exit__(self, type, value, traceback):
+        pass
+
 class Subject(object):
     '''abstract container for subject information
     
@@ -141,7 +156,7 @@ class Subject(object):
     
     def sessions(self,label=None,session=None,session_type=None,dset=None):
         '''returns a dictionary containing all of the sessions matching all the given parameters'''
-        return_dict = {}
+        return_dict = Session()
         if session:
             if session in self._sessions:
                 return_dict[session] = self._sessions[session]

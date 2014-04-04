@@ -46,7 +46,10 @@ class Subject(object):
         
         for dictionary in initial_data:
             for key in dictionary:
-                setattr(self, key, dictionary[key])
+                if key=='sessions':
+                    self._sessions = dictionary[key]
+                else:
+                    setattr(self, key, dictionary[key])
     
     @classmethod
     def load(cls,subject_id):

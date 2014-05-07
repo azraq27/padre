@@ -32,7 +32,7 @@ def padre_list(args):
         nl.notify('I\'m sorry, I couldn\'t understand "%s"' %args.something)
         return
     if best_match[0]=='atlases':
-        if args.q:
+        if args.quiet:
             print '\n'.join(p.atlases.keys())
         else:
             for atlas in p.atlases:

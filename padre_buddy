@@ -53,7 +53,7 @@ def padre_report(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-q','--quiet',action='store_true',help='just print the bare information (good for scripts)')
+    parser.add_argument('--quiet','-q',action='store_true',help='just print the bare information (good for scripts)')
     subparsers = parser.add_subparsers(title='commands')
     
     parser_get = subparsers.add_parser('get',help='retrieve one thing')

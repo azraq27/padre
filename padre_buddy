@@ -37,10 +37,10 @@ def padre_list(args):
         else:
             for atlas in p.atlases:
                 print atlas,
-                if 'space' in atlas:
-                    print ' (%s)' % atlas['space'],
+                if 'space' in p.atlases[atlas]:
+                    print ' (%s)' % p.atlases[atlas]['space'],
                 if 'notes' in atlas:
-                    print ': ' + atlas['notes'],
+                    print ': ' + p.atlases[atlas]['notes'],
                 print ''
     if best_match[0]=='subjects':
         print p.subjects()

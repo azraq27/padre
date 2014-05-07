@@ -32,7 +32,16 @@ def padre_list(args):
         nl.notify('I\'m sorry, I couldn\'t understand "%s"' %args.something)
         return
     if best_match[0]=='atlases':
-        print p.atlases
+        if args.q:
+            print '\n'.join(p.atlases.keys())
+        else:
+            for atlas in p.atlases:
+                print atlas,
+                if 'space' in atlas:
+                    print ' (%s)' % atlas['space'],
+                if 'notes' in atlas:
+                    print ': ' + atlas['notes'],
+                print ''
     if best_match[0]=='subjects':
         print p.subjects()
 
@@ -44,6 +53,7 @@ def padre_report(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('-q','--quiet',action='store_true',help='just print the bare information (good for scripts)')
     subparsers = parser.add_subparsers(title='commands')
     
     parser_get = subparsers.add_parser('get',help='retrieve one thing')

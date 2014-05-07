@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+import argparse
+from fuzzywuzzy import process
+import padre as p
+import neural as nl
+
+fuzzyness = 80
+
+listable_objects = {
+    'atlases': ['atlases','templates'],
+    'subjects': ['subjects','patients']
+}
+
+def report(miss):
+    '''tries to keep a central list of all misses'''
+    try:
+        import urllib,urllib2
+        data = {'miss':miss}
+        data_enc = urllib.urlencode(data)
+        urllib2.urlopen('http://wolflion.org/cgi-bin/report.py?%s' % data_enc)
+    except:
+        pass
+
+def padre_get(args):
+    pass
+
+def padre_list(args):
+    possible_names = [x for s in listable_objects.values() for x in s]
+    best_match = process.extractOne(args.something,possible_names)
+    if best_match[1]<fuzzyness:
+        report(args.something)
+        nl.notify('I\'m sorry, I couldn\'t understand "%s"' %args.something)
+        return
+    if best_match[0]=='atlases':
+        print p.atlases
+    if best_match[0]=='subjects':
+        print p.subjects()
+
+def padre_add(args):
+    pass
+
+def padre_report(args):
+    pass
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(title='commands')
+    
+    parser_get = subparsers.add_parser('get',help='retrieve one thing')
+    parser_get.add_argument('something',help='something identifying what you want')
+    parser_get.set_defaults(func=padre_get)
+    
+    parser_list = subparsers.add_parser('list',help='retrieve a list of things')
+    parser_list.add_argument('something',help='something identifying all the things you want')
+    parser_list.set_defaults(func=padre_list)
+    
+    parser_add = subparsers.add_parser('add',help='add a new subject, or append to an existing one')
+    parser_add.add_argument('something',help='something identifying what you want')
+    parser_add.set_defaults(func=padre_add)
+    
+    parser_report = subparsers.add_parser('report',help='get database statistics')
+    parser_report.add_argument('something',help='something identifying what you want')
+    parser_report.set_defaults(func=padre_report)
+    
+    args = parser.parse_args()
+    args.func(args)

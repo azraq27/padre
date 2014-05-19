@@ -177,7 +177,7 @@ class Subject(object):
         
         for sess in return_dict:
             for label in return_dict[sess]['labels']:
-                return_dict[sess]['labels'][label] = [self._make_dset_absolute(x,sess) for x in return_dict[sess]['labels'][label] if incomplete or ('incomplete' in return_dict[sess] and x not in return_dict[sess]['incomplete']) ]
+                return_dict[sess]['labels'][label] = [self._make_dset_absolute(x,sess) for x in return_dict[sess]['labels'][label] if incomplete or ('incomplete' in self._sessions[sess] and x not in self._sessions[sess]['incomplete']) ]
         return return_dict
     
     def dsets(self,label=None,session=None,session_type=None,incomplete=False):
@@ -208,7 +208,7 @@ class Subject(object):
                     include_labels = self._sessions[sess]['labels']
                 for label in include_labels:
                     if label in self._sessions[sess]['labels']:
-                        return_dsets += [self._make_dset_absolute(x,sess) for x in self._sessions[sess]['labels'][label] if incomplete or ('incomplete' in return_dict[sess] and x not in return_dict[sess]['incomplete'])]
+                        return_dsets += [self._make_dset_absolute(x,sess) for x in self._sessions[sess]['labels'][label] if incomplete or ('incomplete' in self._sessions[sess] and x not in self._sessions[sess]['incomplete'])]
         return return_dsets
     
     def __repr__(self):

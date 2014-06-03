@@ -265,9 +265,14 @@ def index_subjects():
                     print p.subject_json(subject_id)
                     p.error('Could not load valid JSON file for subject %s' % subject_id)
 
-index_subjects()
+_all_subjects = None
+def load_subjects():
+    _all_subjects = [Subject.load(x) for x in sorted(subject_ids)]
 
-_all_subjects = [Subject.load(x) for x in sorted(subject_ids)]
+index_subjects()
+load_subjects()
+
+
 def subjects(label=None,only_included=True):
     '''returns a list of subject objects for all subjects with valid JSON files
     

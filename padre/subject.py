@@ -267,6 +267,7 @@ def index_subjects():
 
 _all_subjects = None
 def load_subjects():
+    global _all_subjects
     _all_subjects = [Subject.load(x) for x in sorted(subject_ids)]
 
 index_subjects()

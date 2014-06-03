@@ -1,8 +1,15 @@
 #!/usr/bin/env python
-import argparse
+# depends on:
+#   neural
+#   padre
+#   fuzzywuzzy
+#   openpyxl
+
+import argparse,os
 from fuzzywuzzy import process
 import padre as p
 import neural as nl
+import openpyxl
 
 fuzzyness = 80
 
@@ -10,6 +17,11 @@ listable_objects = {
     'atlases': ['atlases','templates'],
     'subjects': ['subjects','patients']
 }
+
+all_subjects = p.subject._all_subjects
+all_labels = p.subject.tasks
+all_attrs = p.subject.root_level_attrs
+
 
 def report(miss):
     '''tries to keep a central list of all misses'''
@@ -22,7 +34,9 @@ def report(miss):
         pass
 
 def padre_get(args):
-    pass
+    subject_match = process.extractOne(args.something,all_subjects)
+    if best_match[1]>=fuzzyness:
+        best_match[0].pretty_print()
 
 def padre_list(args):
     possible_names = [x for s in listable_objects.values() for x in s]
@@ -45,7 +59,61 @@ def padre_list(args):
     if best_match[0]=='subjects':
         print p.subjects()
 
+
+def read_neuropsych_from_excel(excel_file):
+    '''read the neuropsych variables from an excel file
+    
+    assumes the format given in "ExampleNeuropsych.xlsx"
+    if the file "metadata.json" exists, will read the key ``approved_columns`` to restrict import
+    to only those columns
+    '''
+    data_row = lambda sheet,row: [sheet.cell(row=row,column=i+1).value for i in xrange(sheet.get_highest_column())]
+    column_named = lambda header,row,name: row[header.index(name)]
+    approved_columns = None
+    if os.path.exists(os.path.join(p.padre_root,'metadata.json')):
+        with open(os.path.join(p.padre_root,'metadata.json')) as f:
+            metadata = json.loads(f.read())
+        if 'approved_columns' in metadata:
+            approved_columns = metadata['approved_columns']
+    wb = openpyxl.load_workbook(excel_file)
+    for sheet_name in wb.get_sheet_names():
+        sheet = wb.get_sheet_by_name(sheet_name)
+        if sheet.calculate_dimension() != 'A1:A1':
+            # There's some data in this worksheet
+            header = data_row(sheet,1)
+            import_cols = []
+            for col in header:
+                if col and col.lower()!='name' and col.lower()!='subject_id':
+                    if approved_columns and col.lower() not in approved_columns:
+                        nl.notify('Ignoring column: %s (not a designated column name)' % col,level=nl.level.warning)
+                    else:
+                        import_cols.append(col)
+            for row_i in xrange(2,sheet.get_highest_row()+1):
+                row = data_row(sheet,row_i)
+                if ((isinstance(row[0],basestring) and row[0][0]=='#') or
+                    ''.join([str(x) for x in row if x])==''):
+                    # This row starts with a "#" or doesn't contain any data
+                    continue
+                subject_id = column_named(header,row,'subject_id')
+                if subject_id==None or subject_id=='':
+                    nl.notify('No subject_id listed for the following row:\n\t%s' % '  '.join([str(x) for x in row]),level=nl.level.error)
+                    continue
+                s = p.Subject.load(subject_id)
+                if s:
+                    with nl.notify('Importing for subject %s' % s):
+                        for col in import_cols:
+                            nl.notify('%s = %s' % (col,str(column_named(header,row,col))))
+                else:
+                    nl.notify('Couldn\'t find subject %s' % subject_id,level=nl.level.error)
+
 def padre_add(args):
+    if args.neuropsych:
+        read_neuropsych_from_excel(args.neuropsych)
+
+def padre_remove(args):
+    pass
+
+def padre_set(args):
     pass
 
 def padre_report(args):
@@ -54,19 +122,35 @@ def padre_report(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--quiet','-q',action='store_true',help='just print the bare information (good for scripts)')
+    specify_group = parser.add_argument_group(title='explicitly specify object',description='(certain commands are also able to parse fuzzy keyword arguments)')
+    specify_group.add_argument('-s','--subject',help='subject id')
+    specify_group.add_argument('-n','--session',help='session identifier, by convention date of the scanning session in the format YYYYMMDD, but could really be any unique string')
+    specify_group.add_argument('-l','--label',help='label for dataset (the type of dataset; anatomy, sdtones)')
     subparsers = parser.add_subparsers(title='commands')
     
     parser_get = subparsers.add_parser('get',help='retrieve one thing')
-    parser_get.add_argument('something',help='something identifying what you want')
+    parser_get.add_argument('something',nargs='*',help='keywords identifying what you want')
     parser_get.set_defaults(func=padre_get)
     
     parser_list = subparsers.add_parser('list',help='retrieve a list of things')
-    parser_list.add_argument('something',help='something identifying all the things you want')
+    parser_list.add_argument('something',nargs='*',help='keyword identifying all the things you want')
     parser_list.set_defaults(func=padre_list)
     
-    parser_add = subparsers.add_parser('add',help='add a new subject, or append to an existing one')
-    parser_add.add_argument('something',help='something identifying what you want')
+    parser_add = subparsers.add_parser('add',help='add a new subject, or append data to an existing one')
+    parser_add.add_argument('-d','--dset',help='filename to dataset to add')
+    parser_add.add_argument('-p','--neuropsych',help='filename to neuropsych file to add')
+    parser_add.add_argument('-t','--scansheet',help='filename to PDF of scan sheet to add')
     parser_add.set_defaults(func=padre_add)
+    
+    parser_remove = subparsers.add_parser('remove',help='remove a file or dataset from a subject')
+    parser_remove.add_argument('-d','--dset',help='dataset name to remove')
+    parser_remove.add_argument('-p','--neuropsych',help='neuropsych name to remove')
+    parser_remove.set_defaults(func=padre_remove)
+    
+    parser_set = subparsers.add_parser('set',help='set an attribute of a subject')
+    parser_set.add_argument('attr_name',help='name of attribute')
+    parser_set.add_argument('new_value',help='value to set')
+    parser_set.set_defaults(func=padre_set)  
     
     parser_report = subparsers.add_parser('report',help='get database statistics')
     parser_report.add_argument('something',help='something identifying what you want')

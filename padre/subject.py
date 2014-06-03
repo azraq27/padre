@@ -94,6 +94,16 @@ class Subject(object):
 
         return subj
     
+    def import_raw(self,new_dir,remove=False):
+        '''copies the directory ``dir`` into the raw directory, and deletes original if ``remove`` is ``True``'''
+        dest_dir = os.path.join(p.raw_dir(self),os.path.split(new_dir.rstrip('/'))[1])
+        if os.path.exists(dset_dir):
+            raise OSError('Cannot import "%s" into subject %s - directory already exists' % (new_dir,self))
+        if remove:
+            shutil.move(new_dir,dest_dir)
+        else:
+            shutil.copytree(new_dir,dest_dir)
+    
     def add_attr(self,attribute):
         '''adds a new root-level attribute
         

@@ -109,12 +109,13 @@ def read_neuropsych_from_excel(excel_file):
                     with nl.notify('Importing for subject %s' % s):
                         for col in import_cols:
                             data = column_named(header,row,col)
-                            if column_transforms and col in column_transforms:
-                                data = (lambda x: eval(column_transforms[col]))(data)
-                            nl.notify('setting %s = %s' % (col,repr(data)))
-                            if col not in dir(s):
-                                s.add_attr(col)
-                            setattr(s,col,data)
+                            if data!=None and data!='' and data.lower()!='na':
+                                if column_transforms and col in column_transforms:
+                                    data = (lambda x: eval(column_transforms[col]))(data)
+                                nl.notify('setting %s = %s' % (col,repr(data)))
+                                if col not in dir(s):
+                                    s.add_attr(col)
+                                setattr(s,col,data)
                     s.save()
                 else:
                     nl.notify('Couldn\'t find subject %s' % subject_id,level=nl.level.error)

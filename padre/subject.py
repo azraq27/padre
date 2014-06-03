@@ -118,9 +118,7 @@ class Subject(object):
         if json_file==None:
             json_file = p.subject_json(self.subject_id)
         save_dict = dict(self.__dict__)
-        # Delete the shortcuts -- they will be autocreated at every load
-        del(save_dict['labels'])
-        del(save_dict['dsets'])
+        save_dict['sessions'] = save_dict.pop('_sessions')
         with open(json_file,'w') as f:
             f.write(json.dumps(save_dict, sort_keys=True, indent=2))
     

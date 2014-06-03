@@ -64,17 +64,23 @@ def read_neuropsych_from_excel(excel_file):
     '''read the neuropsych variables from an excel file
     
     assumes the format given in "ExampleNeuropsych.xlsx"
-    if the file "metadata.json" exists, will read the key ``approved_columns`` to restrict import
-    to only those columns
+    if the file "metadata.json" exists, will use the following keys:
+        :approved_columns:  list of names of columns that will be imported
+        :column_transforms: dictionary containing column names as keys and string values
+                            that will be executed as a ``lambda x: [value]`` to transform
+                            the imported values
     '''
     data_row = lambda sheet,row: [sheet.cell(row=row,column=i+1).value for i in xrange(sheet.get_highest_column())]
     column_named = lambda header,row,name: row[header.index(name)]
     approved_columns = None
+    column_transforms = None
     if os.path.exists(os.path.join(p.padre_root,'metadata.json')):
         with open(os.path.join(p.padre_root,'metadata.json')) as f:
             metadata = json.loads(f.read())
         if 'approved_columns' in metadata:
             approved_columns = metadata['approved_columns']
+        if 'column_transforms' in metadata:
+            column_transforms = metadata['column_transforms']
     wb = openpyxl.load_workbook(excel_file)
     for sheet_name in wb.get_sheet_names():
         sheet = wb.get_sheet_by_name(sheet_name)
@@ -102,7 +108,10 @@ def read_neuropsych_from_excel(excel_file):
                 if s:
                     with nl.notify('Importing for subject %s' % s):
                         for col in import_cols:
-                            nl.notify('%s = %s' % (col,str(column_named(header,row,col))))
+                            data = column_named(header,row,col)
+                            if column_transforms and col in column_transforms:
+                                data = (lambda x: eval(column_transforms[col]))(data)
+                            nl.notify('%s = %s' % (col,repr(data)))
                 else:
                     nl.notify('Couldn\'t find subject %s' % subject_id,level=nl.level.error)
 

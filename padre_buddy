@@ -69,11 +69,15 @@ def read_neuropsych_from_excel(excel_file):
         :column_transforms: dictionary containing column names as keys and string values
                             that will be executed as a ``lambda x: [value]`` to transform
                             the imported values
+        :column_groups:     dictionary with keys as group names and values as lists of 
+                            column names. Will import given column names under the attribute
+                            group name
     '''
     data_row = lambda sheet,row: [sheet.cell(row=row,column=i+1).value for i in xrange(sheet.get_highest_column())]
     column_named = lambda header,row,name: row[header.index(name)]
     approved_columns = None
     column_transforms = None
+    column_groups = None
     if os.path.exists(os.path.join(p.padre_root,'metadata.json')):
         with open(os.path.join(p.padre_root,'metadata.json')) as f:
             metadata = json.loads(f.read())
@@ -81,6 +85,13 @@ def read_neuropsych_from_excel(excel_file):
             approved_columns = metadata['approved_columns']
         if 'column_transforms' in metadata:
             column_transforms = metadata['column_transforms']
+        if 'column_groups' in metadata:
+            # in the JSON file they're listed as group->column, so invert that
+            inverse_groups = metadata['column_groups']
+            column_groups = {}
+            for group in inverse_groups:
+                for col in inverse_groups[group]:
+                    column_groups[col] = group
     wb = openpyxl.load_workbook(excel_file)
     for sheet_name in wb.get_sheet_names():
         sheet = wb.get_sheet_by_name(sheet_name)
@@ -109,13 +120,21 @@ def read_neuropsych_from_excel(excel_file):
                     with nl.notify('Importing for subject %s' % s):
                         for col in import_cols:
                             data = column_named(header,row,col)
-                            if data!=None and data!='' and data.lower()!='na':
+                            if data!=None and data!='' and not (isinstance(data,basestring) and data.lower()=='na'):
                                 if column_transforms and col in column_transforms:
                                     data = (lambda x: eval(column_transforms[col]))(data)
-                                nl.notify('setting %s = %s' % (col,repr(data)))
-                                if col not in dir(s):
-                                    s.add_attr(col)
-                                setattr(s,col,data)
+                                if column_groups and col in column_groups:
+                                    nl.notify('setting %s.%s = %s' % (column_groups[col],col,repr(data)))
+                                    if column_groups[col] not in dir(s):
+                                        s.add_attr(column_groups[col])
+                                    if not isinstance(getattr(s,column_groups[col]),dict):
+                                        setattr(s,column_groups[col],{})
+                                    getattr(s,column_groups[col])[col] = data
+                                else:
+                                    nl.notify('setting %s = %s' % (col,repr(data)))
+                                    if col not in dir(s):
+                                        s.add_attr(col)
+                                    setattr(s,col,data)
                     s.save()
                 else:
                     nl.notify('Couldn\'t find subject %s' % subject_id,level=nl.level.error)

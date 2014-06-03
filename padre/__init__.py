@@ -13,3 +13,6 @@ def error(msg):
 
 import subject
 from subject import Subject,subjects
+
+def load(s):
+    return Subject.load(s)

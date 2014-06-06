@@ -47,6 +47,18 @@ Sessions are stored as simple dictionaries, but have a standard format. In addit
 Sessions are usually labeled by the date, although the actual label is arbitrary, and should
 not be relied upon. Sessions should always include:
 
+	.. data:: session['subject']
+	
+		Autopopulated with the subject id from the parent subject object (so that the
+		session dictionary can be passed around and matched back to the original subject
+		later)
+	
+	.. data:: session['name']
+	
+		Autopopulated from the key value in the sessions dictionary. Can be any arbitrary
+		value, although the date usually works well as most people only have one session
+		per day
+
 	.. data:: session['date']
 	
 		The session date stored as a standard string of format "YYYY-MM-DD"

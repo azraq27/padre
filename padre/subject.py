@@ -66,6 +66,11 @@ class Subject(object):
                     self._sessions = dictionary[key]
                 else:
                     setattr(self, key, dictionary[key])
+        
+        # Autopopulate ``subject`` and ``name`` fields in sessions:
+        for session in self._sessions:
+            self._sessions[session]['subject'] = self.subject_id
+            self._sessions[session]['name'] = session
     
     @classmethod
     def load(cls,subject_id):
@@ -119,6 +124,10 @@ class Subject(object):
             json_file = p.subject_json(self.subject_id)
         save_dict = dict(self.__dict__)
         save_dict['sessions'] = save_dict.pop('_sessions')
+        for session in save_dict['sessions']:
+            for k in ['subject','name']:
+                if k in save_dict['sessions'][session]:
+                    del(save_dict['sessions'][session][k])
         with open(json_file,'w') as f:
             f.write(json.dumps(save_dict, sort_keys=True, indent=2))
     

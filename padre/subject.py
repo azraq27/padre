@@ -162,12 +162,14 @@ class Subject(object):
         '''adds the appropriate directory prefix to a file'''
         return os.path.join(p.sessions_dir(self),session,dset)
     
-    def sessions(self,label=None,session=None,session_type=None,dset=None,incomplete=False):
-        '''returns a dictionary containing all of the sessions matching all the given parameters'''
+    def sessions(self,session=None,label=None,type=None,dset=None,incomplete=False):
+        '''returns a dictionary containing all of the sessions matching all the given parameters
+        
+        if session name is explicitly given, will only return that session'''
         return_dict = Session()
         if session:
             if session in self._sessions:
-                return_dict[session] = self._sessions[session]
+                return self._sessions[session]
         elif dset:
             for sess in self._sessions:
                 for label in self._sessions[sess]['labels']:
@@ -175,8 +177,8 @@ class Subject(object):
                         return_dict[sess] = self._sessions[sess]
         else:
             for sess in self._sessions:
-                if session_type:
-                    if self._sessions[sess]['type']!=session_type:
+                if type:
+                    if self._sessions[sess]['type']!=type:
                         continue
                 if label:
                     if label not in self._sessions[sess]['labels']:
@@ -188,7 +190,7 @@ class Subject(object):
                 return_dict[sess]['labels'][label] = [self._make_dset_absolute(x,sess) for x in return_dict[sess]['labels'][label] if incomplete or 'incomplete' not in self._sessions[sess] or x not in self._sessions[sess]['incomplete']]
         return return_dict
     
-    def dsets(self,label=None,session=None,session_type=None,incomplete=False):
+    def dsets(self,label=None,session=None,type=None,incomplete=False):
         ''' returns a list of datasets matching all of the given parameters 
         
         .. warning::
@@ -207,8 +209,8 @@ class Subject(object):
             include_sessions = self._sessions.keys()
         for sess in include_sessions:
             if sess in self._sessions:
-                if session_type:
-                    if self._sessions[sess]['type']!=session_type:
+                if type:
+                    if self._sessions[sess]['type']!=type:
                         continue
                 if label:
                     include_labels = [label]

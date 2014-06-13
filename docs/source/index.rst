@@ -18,7 +18,7 @@ directory structure and :doc:`setup`.
 	
 		for subject in padre.subjects():
 			print 'Processing subject %s' % subject
-			for dset in subject.dsets:
+			for dset in subject.dsets():
 				do_something_to_a_dset(dset)
 
 The Contents

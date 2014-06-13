@@ -36,6 +36,7 @@ class SessionFinder(dict):
     def __getitem__(self,key):
         sess = dict.__getitem__(self,key)
         if self.session_dir:
+            print repr(sess)
             for label in sess['labels']:
                 sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if incomplete or dset not in sess['incomplete']]
         return sess

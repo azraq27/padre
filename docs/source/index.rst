@@ -21,6 +21,7 @@ directory structure and :doc:`setup`.
 			for dset in subject.dsets():
 				do_something_to_a_dset(dset)
 
+
 The Contents
 =============
 .. toctree::

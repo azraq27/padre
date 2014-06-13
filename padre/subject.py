@@ -29,15 +29,28 @@ class Session(dict):
 
 class SessionFinder(dict):
     '''behaves as either a dictionary of sessions or a function to search for a session'''
-    def __call__(self,session=None,label=None,type=None,dset=None,incomplete=False):
+    def __init__(self,*args):
+        dict.__init__(self,args)
+        self.session_dir = None
+    
+    def __getitem__(self,key):
+        sess = dict.__getitem__(self,key)
+        if self.session_dir:
+            for label in sess['labels']:
+                sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if incomplete or dset not in sess['incomplete']]
+        return sess
+    
+    def __call__(self,label=None,type=None,dset=None,incomplete=False):
         '''returns a dictionary containing all of the sessions matching all the given parameters
-        
-        if session name is explicitly given, will only return that session'''
+            :label:         session contains datasets with given label
+            :type:          session is of given type
+            :dset:          session contains dset with given filename
+            :incomplete:    if ``False`` will filter out incomplete datasets in returned session
+        '''
         return_dict = Session()
-        if session:
-            if session in self:
-                return self[session]
-        elif dset:
+        if dset:
+            if os.sep in dset:
+                dset = os.path.basename(dset.rstrip(os.sep))
             for sess in self:
                 for label in self[sess]['labels']:
                     if dset in self[sess]['labels'][label]:
@@ -52,9 +65,6 @@ class SessionFinder(dict):
                         continue
                 return_dict[sess] = self[sess]
         
-        for sess in return_dict:
-            for label in return_dict[sess]['labels']:
-                return_dict[sess]['labels'][label] = [self._make_dset_absolute(x,sess) for x in return_dict[sess]['labels'][label] if incomplete or 'incomplete' not in self[sess] or x not in self[sess]['incomplete']]
         return return_dict
 
 class Subject(object):
@@ -93,6 +103,8 @@ class Subject(object):
                     self.sessions = SessionFinder(dictionary[key])
                 else:
                     setattr(self, key, dictionary[key])
+        
+        self.sessions.session_dir = p.sessions_dir(self)
         
         # Autopopulate ``subject`` and ``name`` fields in sessions:
         for session in self.sessions:
@@ -179,7 +191,7 @@ class Subject(object):
         session_dir = os.path.join(p.sessions_dir(self),session_name)
         if not os.path.exists(session_dir):
             os.makedirs(session_dir)
-        self.sessions[session_name] = SessionFinder(default_session())
+        self.sessions[session_name] = default_session()
     
     def delete_session(self,session_name,purge=False):
         ''' delete a session
@@ -194,6 +206,7 @@ class Subject(object):
                 shutil.rmtree(session_dir)
             self.save()     
     
+    @classmethod
     def _make_dset_absolute(self,dset,session):
         '''adds the appropriate directory prefix to a file'''
         return os.path.join(p.sessions_dir(self),session,dset)

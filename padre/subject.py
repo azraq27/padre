@@ -29,20 +29,21 @@ class Session(dict):
 
 class SessionFinder(dict):
     '''behaves as either a dictionary of sessions or a function to search for a session'''
-    def __init__(self,*args):
-        dict.__init__(self,args)
+    def __init__(self,*args,**kwargs):
+        '''will be initialized with session dictionary
+        defaults to ``incomplete`` = ``False``, which will not return dsets that are marked "incomplete"'''
+        dict.__init__(self,*args,**kwargs)
         self.session_dir = None
+        self.incomplete = False
     
     def __getitem__(self,key):
         sess = dict.__getitem__(self,key)
         if self.session_dir:
-            print repr(self)
-            print '%s - %s: %s' % (self.session_dir,repr(key),repr(sess))
             for label in sess['labels']:
-                sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if incomplete or dset not in sess['incomplete']]
+                sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if self.incomplete or ('incomplete' in sess and dset not in sess['incomplete'])]
         return sess
     
-    def __call__(self,label=None,type=None,dset=None,incomplete=False):
+    def __call__(self,label=None,type=None,dset=None):
         '''returns a dictionary containing all of the sessions matching all the given parameters
             :label:         session contains datasets with given label
             :type:          session is of given type

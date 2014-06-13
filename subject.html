@@ -8,7 +8,7 @@
     
     <title>padre.subject - Subject Objects &mdash; PaDRe 0.5 documentation</title>
     
-    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/rtd.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -41,43 +41,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">PaDRe 0.5 documentation</a> &raquo;</li> 
       </ul>
-    </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">padre.subject - Subject Objects</a><ul>
-<li><a class="reference internal" href="#accessing-datasets">Accessing Datasets</a></li>
-<li><a class="reference internal" href="#session-format">Session Format</a></li>
-<li><a class="reference internal" href="#helper-methods">Helper Methods</a></li>
-<li><a class="reference internal" href="#maintenance-functions">Maintenance Functions</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="padre.html"
-                        title="previous chapter">padre - PaDRe Library Functions</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/subject.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -129,47 +93,25 @@ or <tt class="docutils literal"><span class="pre">'%s'</span> <span class="pre">
 <div class="section" id="accessing-datasets">
 <h2>Accessing Datasets<a class="headerlink" href="#accessing-datasets" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>Datasets can be accessed several ways. Each of these methods deliver the filenames, organized
-in different ways. All datasets are stored in the directory returned by <tt class="xref py py-meth docutils literal"><span class="pre">padre.sessions_subject_dir()</span></tt>.</p>
+<div><p>Datasets can be accessed several ways. The functions <tt class="xref py py-meth docutils literal"><span class="pre">sessions()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">dsets()</span></tt> return
+the sessions or datasets that match given parameters. All filenames are passed as absolute
+references, so you don&#8217;t have to worry about directories</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><tt class="descclassname">padre.subject.</tt><tt class="descname">Subject</tt></dt>
-<dd><dl class="attribute">
-<dt id="padre.subject.Subject.sessions">
-<tt class="descname">sessions</tt><a class="headerlink" href="#padre.subject.Subject.sessions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary organized by scanning session. Each entry contains several keys relating
-to session meta-data as well as a dictionary <tt class="docutils literal"><span class="pre">subject.sessions['labels']</span></tt>. The keys
-for this dataset are the descriptive labels for each dataset (e.g., &#8220;anatomy&#8221;, &#8220;field_map&#8221;),
-and the values are lists of the dataset filenames.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="padre.subject.Subject.dsets_for">
-<tt class="descname">dsets_for</tt><big>(</big><em>label=None</em>, <em>session=None</em>, <em>session_type=None</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.dsets_for" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="padre.subject.Subject.dsets">
+<tt class="descname">dsets</tt><big>(</big><em>label=None</em>, <em>session=None</em>, <em>type=None</em>, <em>incomplete=False</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.dsets" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns a list of datasets matching all of the given parameters</p>
-</dd></dl>
-
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">The following two shortcut methods(<tt class="docutils literal"><span class="pre">subject.labels</span></tt> and <tt class="docutils literal"><span class="pre">subject.dsets</span></tt>) are convenient
-but don&#8217;t cover every possibility. For example, if the anatomy scan for a functional session
-was lost, but there is another anatomy scan obtained at another date, these datasets will
-appear normally as <tt class="docutils literal"><span class="pre">subject.labels['functional']</span></tt> and <tt class="docutils literal"><span class="pre">subject.labels['anatomy']</span></tt> with
-no reference to the fact that they were obtained in different sessions. If you write your
-script session-centric, you can explicitly address these exception cases.</p>
+<p class="last">This method is convenient but don&#8217;t cover every possibility. For example, if the 
+anatomy scan for a functional session was lost, but there is another anatomy scan 
+obtained at another date, these datasets will appear normally as <tt class="docutils literal"><span class="pre">subject.dsets('functional')</span></tt>
+and <tt class="docutils literal"><span class="pre">subject.dsets('anatomy')</span></tt> with no reference to the fact that they were obtained 
+in different sessions. If you write your script session-centric, you can explicitly 
+address these exception cases.</p>
 </div>
-<dl class="attribute">
-<dt id="padre.subject.Subject.labels">
-<tt class="descname">labels</tt><a class="headerlink" href="#padre.subject.Subject.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of all the datasets available for this subject, organized by descriptive
-label (collapsed across session).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="padre.subject.Subject.dsets">
-<tt class="descname">dsets</tt><a class="headerlink" href="#padre.subject.Subject.dsets" title="Permalink to this definition">¶</a></dt>
-<dd><p>A flat list of all datasets available for this subject, collapsed across session and
-dataset type.</p>
 </dd></dl>
 
 </dd></dl>
@@ -184,6 +126,22 @@ dataset type.</p>
 not be relied upon. Sessions should always include:</p>
 <blockquote>
 <div><dl class="data">
+<dt>
+<tt class="descname">session['subject']</tt></dt>
+<dd><p>Autopopulated with the subject id from the parent subject object (so that the
+session dictionary can be passed around and matched back to the original subject
+later)</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descname">session['name']</tt></dt>
+<dd><p>Autopopulated from the key value in the sessions dictionary. Can be any arbitrary
+value, although the date usually works well as most people only have one session
+per day</p>
+</dd></dl>
+
+<dl class="data">
 <dt>
 <tt class="descname">session['date']</tt></dt>
 <dd><p>The session date stored as a standard string of format &#8220;YYYY-MM-DD&#8221;</p>
@@ -219,19 +177,7 @@ not be relied upon. Sessions should always include:</p>
 <h2>Helper Methods<a class="headerlink" href="#helper-methods" title="Permalink to this headline">¶</a></h2>
 <p>These methods are designed to make manipulating the data a little easier</p>
 <blockquote>
-<div><dl class="method">
-<dt id="padre.subject.Subject.session_for_label">
-<tt class="descclassname">Subject.</tt><tt class="descname">session_for_label</tt><big>(</big><em>label</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.session_for_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the name of the first session that matches <em>label</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="padre.subject.Subject.session_for_dset">
-<tt class="descclassname">Subject.</tt><tt class="descname">session_for_dset</tt><big>(</big><em>dset</em><big>)</big><a class="headerlink" href="#padre.subject.Subject.session_for_dset" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the name of the first session that matches <em>dset</em></p>
-</dd></dl>
-
-</div></blockquote>
+<div></div></blockquote>
 </div>
 <div class="section" id="maintenance-functions">
 <h2>Maintenance Functions<a class="headerlink" href="#maintenance-functions" title="Permalink to this headline">¶</a></h2>
@@ -277,6 +223,42 @@ the directory on disk.</p>
 
 
           </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">padre.subject - Subject Objects</a><ul>
+<li><a class="reference internal" href="#accessing-datasets">Accessing Datasets</a></li>
+<li><a class="reference internal" href="#session-format">Session Format</a></li>
+<li><a class="reference internal" href="#helper-methods">Helper Methods</a></li>
+<li><a class="reference internal" href="#maintenance-functions">Maintenance Functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="padre.html"
+                        title="previous chapter">padre - PaDRe Library Functions</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/subject.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>

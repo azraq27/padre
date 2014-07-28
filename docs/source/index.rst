@@ -11,9 +11,9 @@ This library provides an organized way to query patient data libraries.
 At a minimum, read the :doc:`organization` page to orient yourself to the 
 directory structure and :doc:`setup`.
 
-.. tip:: 
-	A couple quick examples to get you started:
+A couple quick examples to get you started:
 	
+.. tip:: 
 	Loop through all the subjects and do something to all their datasets::
 	
 		import padre as p

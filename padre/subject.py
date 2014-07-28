@@ -6,6 +6,7 @@ def _default_session():
     return dict({
         'date': '',
         'type': '',
+        'experiment': '',
         'labels': dict()
     })
 
@@ -27,6 +28,53 @@ class Session(dict):
     def __exit__(self, type, value, traceback):
         pass
 
+class DsetFinder(list):
+    '''behaves as either a list of dsets or a function to search for a dset'''
+    def __init__(self,*args,**kwargs):
+        list.__init__(self,*args,**kwargs)
+        self.session_dir = None
+        
+    def __getitem__(self,index):
+        dset = dict.__getitem__(self,index)
+        if self.session_dir:
+            dset = os.path.join(self.session_dir,dset)
+        return dset
+    
+    def __call__(self,label=None,experiment=None,session=None,type=None,incomplete=False):
+        ''' returns a list of datasets matching all of the given parameters 
+        
+        .. warning::
+    
+            This method is convenient but don't cover every possibility. For example, if the 
+            anatomy scan for a functional session was lost, but there is another anatomy scan 
+            obtained at another date, these datasets will appear normally as ``subject.dsets('functional')``
+            and ``subject.dsets('anatomy')`` with no reference to the fact that they were obtained 
+            in different sessions. If you write your script session-centric, you can explicitly 
+            address these exception cases.
+        '''
+        return_dsets = []
+        if session:
+            include_sessions = [session]
+        else:
+            include_sessions = self.sessions.keys()
+        for sess in include_sessions:
+            if sess in self.sessions:
+                if type:
+                    if self.sessions[sess]['type']!=type:
+                        continue
+                if experiment:
+                    if self.sessions[sess]['experiment']!=experiment:
+                        continue
+                if label:
+                    include_labels = [label]
+                else:
+                    include_labels = self.sessions[sess]['labels']
+                for label in include_labels:
+                    if label in self.sessions[sess]['labels']:
+                        return_dsets += [x for x in self.sessions[sess]['labels'][label] if incomplete or 'incomplete' not in self.sessions[sess] or x not in self.sessions[sess]['incomplete']]
+        return return_dsets
+    
+
 class SessionFinder(dict):
     '''behaves as either a dictionary of sessions or a function to search for a session'''
     def __init__(self,*args,**kwargs):
@@ -43,10 +91,11 @@ class SessionFinder(dict):
                 sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if self.incomplete or ('incomplete' in sess and dset not in sess['incomplete'])]
         return sess
     
-    def __call__(self,label=None,type=None,dset=None):
+    def __call__(self,label=None,experiment=None,type=None,dset=None):
         '''returns a dictionary containing all of the sessions matching all the given parameters
             :label:         session contains datasets with given label
             :type:          session is of given type
+            :experiment:    only sessions from given experiment
             :dset:          session contains dset with given filename
             :incomplete:    if ``False`` will filter out incomplete datasets in returned session
         '''
@@ -55,11 +104,17 @@ class SessionFinder(dict):
             if os.sep in dset:
                 dset = os.path.basename(dset.rstrip(os.sep))
             for sess in self:
+                if experiment:
+                    if self[sess]['experiment']!=experiment:
+                        continue
                 for label in self[sess]['labels']:
                     if dset in self[sess]['labels'][label]:
                         return_dict[sess] = self[sess]
         else:
             for sess in self:
+                if experiment:
+                    if self[sess]['experiment']!=experiment:
+                        continue
                 if type:
                     if self[sess]['type']!=type:
                         continue
@@ -77,7 +132,6 @@ class Subject(object):
     as part of a subject list (e.g., :meth:`p.subjects` ), or created individually using one of the class
     creation functions
     '''
-    
     def __init__(self,subject_id,*initial_data):
         for key in root_level_attrs:
             if key != 'sessions':
@@ -209,42 +263,6 @@ class Subject(object):
                 shutil.rmtree(session_dir)
             self.save()     
     
-    @classmethod
-    def _make_dset_absolute(self,dset,session):
-        '''adds the appropriate directory prefix to a file'''
-        return os.path.join(p.sessions_dir(self),session,dset)
-    
-    def dsets(self,label=None,session=None,type=None,incomplete=False):
-        ''' returns a list of datasets matching all of the given parameters 
-        
-        .. warning::
-    
-            This method is convenient but don't cover every possibility. For example, if the 
-            anatomy scan for a functional session was lost, but there is another anatomy scan 
-            obtained at another date, these datasets will appear normally as ``subject.dsets('functional')``
-            and ``subject.dsets('anatomy')`` with no reference to the fact that they were obtained 
-            in different sessions. If you write your script session-centric, you can explicitly 
-            address these exception cases.
-        '''
-        return_dsets = []
-        if session:
-            include_sessions = [session]
-        else:
-            include_sessions = self.sessions.keys()
-        for sess in include_sessions:
-            if sess in self.sessions:
-                if type:
-                    if self.sessions[sess]['type']!=type:
-                        continue
-                if label:
-                    include_labels = [label]
-                else:
-                    include_labels = self.sessions[sess]['labels']
-                for label in include_labels:
-                    if label in self.sessions[sess]['labels']:
-                        return_dsets += [self._make_dset_absolute(x,sess) for x in self.sessions[sess]['labels'][label] if incomplete or 'incomplete' not in self.sessions[sess] or x not in self.sessions[sess]['incomplete']]
-        return return_dsets
-    
     def __repr__(self):
         return "subject(%s)" % (self.subject_id)
     
@@ -264,6 +282,7 @@ class Subject(object):
             print '|-- %s:' % sess
             print '\tdate: %s' % self.sessions[sess]['date']
             print '\ttype: %s' % self.sessions[sess]['type']
+            print '\texperiment: %s' % self.sessions[sess]['experiment']
             print '\tother attributes:'
             print '\t\t%s' % ' '.join(set(self.sessions[sess].keys()) - set(['date', 'type', 'labels']))
             print '\tdatasets:'
@@ -274,6 +293,7 @@ class Subject(object):
 
 subject_ids = set()
 tasks = set()
+experiments = set()
 root_level_attrs = set()
 def index_subjects():
     if os.path.exists(p.data_dir):
@@ -285,6 +305,8 @@ def index_subjects():
                     [root_level_attrs.add(x) for x in subject_data.keys()]
                     subject_ids.add(subject_id)
                     for session in subject_data['sessions']:
+                        if 'experiment' in subject_data['sessions'][session] and subject_data['sessions'][session][experiment]!='':
+                            experiments.add(subject_data['sessions'][session][experiment])
                         if 'labels' in subject_data['sessions'][session]:
                             [tasks.add(x) for x in subject_data['sessions'][session]['labels']]
                 except ValueError:
@@ -300,7 +322,7 @@ index_subjects()
 load_subjects()
 
 
-def subjects(label=None,only_included=True):
+def subjects(label=None,experiment=None,only_included=True):
     '''returns a list of subject objects for all subjects with valid JSON files
     
     if *label* is set, it will only return subjects who have datasets with that label
@@ -311,6 +333,8 @@ def subjects(label=None,only_included=True):
     all_subjs = list(_all_subjects)
     if label:
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]
+    if experiment:
+        all_subjs = [x for x in all_subjs if experiment in [y['experiment'] for y in x.sessions if 'experiment' in y]]
     if only_included:
         all_subjs = [x for x in all_subjs if x.include]
     

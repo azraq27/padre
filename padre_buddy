@@ -15,7 +15,9 @@ fuzzyness = 80
 
 listable_objects = {
     'atlases': ['atlases','templates'],
-    'subjects': ['subjects','patients']
+    'subjects': ['subjects','patients'],
+    'experiments': ['experiments', 'studies', 'study'],
+    'labels': ['labels','types']
 }
 
 all_subjects = p.subject._all_subjects
@@ -57,8 +59,15 @@ def padre_list(args):
                     print ': ' + p.atlases[atlas]['notes'],
                 print ''
     if best_match[0]=='subjects':
-        print p.subjects()
-
+        print p.subjects(label=args.label,experiment=args.experiment)
+        return
+    if best_match[0]=='labels':
+        print all_labels
+        return
+    if best_match[0]=='experiments':
+        print all_experiments
+        return
+            
 
 def read_neuropsych_from_excel(excel_file):
     '''read the neuropsych variables from an excel file
@@ -159,6 +168,7 @@ if __name__ == '__main__':
     specify_group.add_argument('-s','--subject',help='subject id')
     specify_group.add_argument('-n','--session',help='session identifier, by convention date of the scanning session in the format YYYYMMDD, but could really be any unique string')
     specify_group.add_argument('-l','--label',help='label for dataset (the type of dataset; anatomy, sdtones)')
+    specify_group.add_argument('-e','--experiment',help='experiment of a dataset')
     subparsers = parser.add_subparsers(title='commands')
     
     parser_get = subparsers.add_parser('get',help='retrieve one thing')

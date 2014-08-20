@@ -299,7 +299,7 @@ root_level_attrs = set()
 def index_subjects(save_subjects=False):
     global _all_subjects
     if save_subjects:
-        _all_subjects = None
+        _all_subjects = []
     if os.path.exists(p.data_dir):
         for subject_id in os.listdir(p.data_dir):
             if os.path.exists(p.subject_json(subject_id)):

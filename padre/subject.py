@@ -169,16 +169,17 @@ class Subject(object):
             self.sessions[session]['name'] = session
     
     @classmethod
-    def load(cls,subject_id):
-        ''' returns a subject object initialized using JSON file '''
-        json_file = p.subject_json(subject_id)
-        try:
-            with open(json_file) as f:
-                subj = cls(subject_id,json.loads(f.read()))
-        except (ValueError,IOError):
-            p.error('Could not load valid JSON file for subject %s' % subject_id)
-            subj = None
-        return subj
+    def load(cls,subject_id,data=None):
+        ''' returns a subject object initialized using JSON file (or supplied ``data`` argument) '''
+        if data==None:
+            json_file = p.subject_json(subject_id)
+            try:
+                with open(json_file) as f:
+                    data = json.loads(f.read())
+            except (ValueError,IOError):
+                p.error('Could not load valid JSON file for subject %s' % subject_id)
+                return None
+        return cls(subject_id,data)
 
     @classmethod
     def create(cls,subject_id):
@@ -295,7 +296,10 @@ subject_ids = set()
 tasks = set()
 experiments = set()
 root_level_attrs = set()
-def index_subjects():
+def index_subjects(save_subjects=False):
+    global _all_subjects
+    if save_subjects:
+        _all_subjects = None
     if os.path.exists(p.data_dir):
         for subject_id in os.listdir(p.data_dir):
             if os.path.exists(p.subject_json(subject_id)):
@@ -309,6 +313,7 @@ def index_subjects():
                             experiments.add(subject_data['sessions'][session][experiment])
                         if 'labels' in subject_data['sessions'][session]:
                             [tasks.add(x) for x in subject_data['sessions'][session]['labels']]
+                    _all_subjects.append(Subject.load(subject_id,subject_data))
                 except ValueError:
                     print p.subject_json(subject_id)
                     p.error('Could not load valid JSON file for subject %s' % subject_id)
@@ -318,8 +323,8 @@ def load_subjects():
     global _all_subjects
     _all_subjects = [Subject.load(x) for x in sorted(subject_ids)]
 
-index_subjects()
-load_subjects()
+index_subjects(True)
+#load_subjects()
 
 
 def subjects(label=None,experiment=None,only_included=True):

@@ -300,10 +300,12 @@ index_subjects()
 load_subjects()
 
 
-def subjects(label=None,only_included=True):
+def subjects(label=None,experiment=None,only_included=True):
     '''returns a list of subject objects for all subjects with valid JSON files
     
     if *label* is set, it will only return subjects who have datasets with that label
+    
+    if *experiment* is set, will only return subjects that have a scan for the given experiment
     
     if *only_included* is True, will exclude any subjects with ``subject.include``
     set to False
@@ -311,6 +313,8 @@ def subjects(label=None,only_included=True):
     all_subjs = list(_all_subjects)
     if label:
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]
+    if experiment:
+        all_subjs = [x for x in all_subjs if len(x.dsets(
     if only_included:
         all_subjs = [x for x in all_subjs if x.include]
     

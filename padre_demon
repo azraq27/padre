@@ -10,12 +10,8 @@ import_location = os.path.join(p.padre_root,'Import')
 processed_location = os.path.join(p.padre_root,'Processed')
 import_log_file = os.path.join(import_location,'import_log.json')
 
-# Settings for rsync:
-rsync = 'rsync'
-rsync_options = '-rtl'
-server_id = os.path.join(import_location,'lasiked-binder')
-server_name = 'scan@lasiked:public_html/DATA'
-
+# load settings from "padre_demon_config.py"
+import padre_demon_config as c
 
 import_log = {}
 if not os.path.exists(import_location):
@@ -93,12 +89,10 @@ def unpack_new_archives(pi):
 
 def rsync_remote(pi):
     with nl.notify('rsync\'ing data for PI %s' % pi):
-        nl.run([rsync,rsync_options,'-e','ssh -i %s' % server_id,'%s/%s' % (server_name,pi),import_location])
+        nl.run([c.rsync,c.rsync_options,'-e','ssh -i %s' % c.server_id,'%s/%s' % (c.server_name,pi),import_location])
 
 if __name__ == '__main__':
-#    pis = ['Binder','Hudetz']
-    pis = ['Binder']
-    for pi in pis:
+    for pi in c.pis:
         rsync_remote(pi)
         unpack_new_archives(pi)
                 

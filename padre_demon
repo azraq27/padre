@@ -97,7 +97,7 @@ def rsync_remote(pi):
 
 if __name__ == '__main__':
 #    pis = ['Binder','Hudetz']
-    pis = ['Binder','Hudetz']
+    pis = ['Binder']
     for pi in pis:
         rsync_remote(pi)
         unpack_new_archives(pi)

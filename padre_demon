@@ -1,0 +1,170 @@
+#!/usr/bin/env python
+''' daemon to automatically collect and organize data into padre'''
+
+import urllib2, re, json, os, shutil, socket
+from dateutil.parser import parse
+import neural as nl
+import padre as p
+
+import_location = os.path.join(p.padre_root,'Import')
+processed_location = os.path.join(p.padre_root,'Processed')
+import_log_file = os.path.join(import_location,'import_log.json')
+
+# Settings for rsync:
+rsync = 'rsync'
+rsync_options = '-rtl'
+server_id = os.path.join(import_location,'lasiked-binder')
+server_name = 'scan@lasiked:public_html/DATA'
+
+# Settings for (the previous method of) pulling data from the HTTP server:
+scanner_url = 'http://lasiked/~scan/DATA/'
+
+
+
+import_log = {}
+if not os.path.exists(import_location):
+    os.makedirs(import_location)
+if os.path.exists(import_log_file):
+    with open(import_log_file) as f:
+        import_log = json.loads(f.read())
+
+def save_log():
+    with open(import_log_file,'w') as f:
+        f.write(json.dumps(import_log))    
+
+def links_for_url(url):
+    ''' automatically parse links from a standard Apache directory listing '''
+    try:
+        resp = urllib2.urlopen(url,timeout=5)
+    except urllib2.URLError:
+        return None
+    else:
+        html = resp.read()
+        return_list = []
+        for link in re.findall(r'href="([^"]*)".*(..-...-.... ..:..).*?(\d+[^\s<]*|-)',html):
+            link_date = parse(link[1])
+            return_list.append((link[0].rstrip('/'),link_date,link[2]))
+        return return_list
+
+def link_tree(url):
+    ''' crawl an Apache directory listing tree and return a list of links to all files '''
+    links = links_for_url(url)
+    if url[-1]!='/':
+        url = url + '/'
+    collected_links = []
+    for link in links:
+        link_url = link[0]
+        if link_url[:2]=='./':
+            link_url = link_url[2:]
+        if link[2]=='-':
+            collected_links += link_tree(url + link_url)
+        else:
+            collected_links.append(url + link_url)
+    return collected_links
+
+def verify_log_files(pi):
+    with nl.notify('Verifying files for PI %s' % pi):
+        links = links_for_url(scanner_url + pi)
+        for link in links:
+            pi_link = pi + '/' + link[0]
+            if pi_link in import_log and import_log[pi_link]['complete']==True:
+                for file_link in link_tree(scanner_url + pi_link):
+                    file_link_path = file_link.replace(scanner_url,'')
+                    import_link_path = os.path.join(import_location,file_link_path)
+                    if not os.path.exists(os.path.dirname(import_link_path)):
+                        nl.notify('Could not find file %s, marking %s as incomplete' % (file_link_path,pi_link),level=nl.level.warning)
+                        import_log[pi_link]['complete'] = False
+                        save_log()
+                        break    
+
+def scan_for_new_files(pi):
+    with nl.notify('Starting scan for new files for PI %s' % pi):
+        links = links_for_url(scanner_url + pi)
+        for link in links:
+            pi_link = pi + '/' + link[0]
+            if pi_link not in import_log or link[1] > parse(import_log[pi_link]['date']) or import_log[pi_link]['complete']==False:
+                with nl.notify('Found a new/updated link: %s' % pi_link):
+                    if pi_link not in import_log:
+                        import_log[pi_link] = {}
+                    import_log[pi_link]['date'] = str(link[1])
+                    import_log[pi_link]['complete'] = True
+                    for file_link in link_tree(scanner_url + pi_link):
+                        file_link_path = file_link.replace(scanner_url,'')
+                        import_link_path = os.path.join(import_location,file_link_path)
+                        if not os.path.exists(os.path.dirname(import_link_path)):
+                            os.makedirs(os.path.dirname(import_link_path))
+                        try:
+                            with open(import_link_path,'w') as f:
+                                nl.notify('downloading %s' % file_link)
+                                resp = urllib2.urlopen(file_link,timeout=60)
+                                f.write(resp.read())
+                        except (urllib2.URLError,socket.timeout):
+                            nl.notify('Failed to download %s' % file_link_path,level=nl.level.error)
+                            import_log[pi_link]['complete'] = False
+                            if os.path.exists(import_link_path):
+                                os.remove(import_link_path)
+                save_log()
+
+def unpack_new_archives(pi):
+    with nl.notify('Scanning PI %s for new archives' % pi):
+        tmp_location = '_tmp_unarchive'
+        for root,dirs,files in os.walk(os.path.join(import_location,pi)):
+            for fname in files:
+                full_file = os.path.join(root,fname)
+                if full_file not in import_log:
+                    # Add in a check for the modification date
+                    if nl.is_archive(full_file):
+                        with nl.notify('Found new archive "%s"' % full_file):
+                            subject_guess = os.path.basename(os.path.dirname(full_file))
+                            nl.notify('guessing the subject number is %s' % subject_guess)
+                            if os.path.exists(tmp_location):
+                                shutil.rmtree(tmp_location)
+                            os.makedirs(tmp_location)
+                            import_log[full_file] = {}
+                            with nl.notify('uncompressing...'):
+                                nl.unarchive(full_file,tmp_location)
+                            with nl.notify('sorting files...'):
+                                nl.dicom.organize_dir(tmp_location)
+                            if os.path.exists(tmp_location + '-sorted'):
+                                out_dir = os.path.join(processed_location,pi,subject_guess)
+                                if not os.path.exists(os.path.join(out_dir,'raw')):
+                                    os.makedirs(os.path.join(out_dir,'raw'))
+                                with nl.run_in(tmp_location + '-sorted'):
+                                    # Eventually add them to padre; for now, just dump in a folder
+                                    for subdir in os.listdir('.'):
+                                        nl.notify('creating dataset from %s' % subdir)
+                                        import_log[full_file][subdir] = {}
+                                        if not nl.dicom.create_dset(subdir):
+                                            import_log[full_file][subdir]['error'] = True
+                                        if os.path.exists(subdir + '.nii.gz'):
+                                            import_log[full_file][subdir]['complete'] = True
+                                            os.rename(subdir + '.nii.gz',os.path.join(out_dir,subdir+'.nii.gz'))
+                                        if 'complete' in import_log[full_file][subdir] and import_log[full_file][subdir]['complete']:
+                                            if 'error' in import_log[full_file][subdir] and import_log[full_file][subdir]['error']:
+                                                nl.notify('created dataset %s, but Dimon returned an error' % (subdir+'.nii.gz'),nl.level.error)
+                                            else:
+                                                nl.notify('successfully created dataset %s' % (subdir+'.nii.gz'))
+                                        else:
+                                            nl.notify('failed to create dataset from directory %s' % subdir,level=nl.level.error)
+                                nl.notify('moving raw data...')
+                                for subdir in os.listdir(tmp_location + '-sorted'):
+                                    # Also need to move the "unsorted" directory if it exists
+                                    # - remove empty directories
+                                    # - any leftover files move to unsorted
+                                    # - compress raw sub-directories
+                                    if not os.path.exists(os.path.join(out_dir,'raw',subdir)):
+                                        os.rename(os.path.join(tmp_location + '-sorted',subdir),os.path.join(out_dir,'raw',subdir))
+                            else:
+                                nl.notify('didn\'t find any files...')
+
+def rsync_remote(pi):
+    with nl.notify('rsync\'ing data for PI %s' % pi):
+        nl.run([rsync,rsync_options,'-e','ssh -i %s' % server_id,'%s/%s' % (server_name,pi),import_location])
+
+if __name__ == '__main__':
+    rsync_remote('Binder')
+#    verify_log_files('Binder')
+#    scan_for_new_files('Binder')
+    unpack_new_archives('Binder')
+                
+            

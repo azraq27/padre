@@ -159,6 +159,7 @@ if __name__ == '__main__':
     specify_group.add_argument('-s','--subject',help='subject id')
     specify_group.add_argument('-n','--session',help='session identifier, by convention date of the scanning session in the format YYYYMMDD, but could really be any unique string')
     specify_group.add_argument('-l','--label',help='label for dataset (the type of dataset; anatomy, sdtones)')
+    specify_group.add_argument('-e','--experiment',help='experiment identifier')
     subparsers = parser.add_subparsers(title='commands')
     
     parser_get = subparsers.add_parser('get',help='retrieve one thing')

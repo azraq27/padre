@@ -69,6 +69,7 @@ def import_archive(full_file,pi,subject_guess):
             for f in fs:
                 out_file = os.path.join(out_dir,'raw','unsorted',r.lstrip(tmp_location).lstrip('/'),f)
                 if not os.path.exists(out_file):
+                    os.makedirs(os.path.dirname(out_file))
                     os.rename(os.path.join(r,f),out_file)
     else:
         nl.notify('didn\'t find any files...')

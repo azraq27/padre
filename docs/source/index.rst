@@ -9,7 +9,8 @@ Welcome to PaDRe (Patient Data Repository) documentation!
 This library provides an organized way to query patient data libraries.
 
 At a minimum, read the :doc:`organization` page to orient yourself to the 
-directory structure and :doc:`setup`.
+directory structure and :doc:`setup`. For instructions on how to install
+the system and setup client machines, see :doc:`installation`
 
 A couple quick examples to get you started:
 	

@@ -7,7 +7,21 @@ import json
 
 verbose = True
 
-padre_root = os.path.dirname(os.path.abspath(__file__ + '/..')) #: Root directory of repository
+if 'PADRE_ROOT' not in os.environ:
+    raise RuntimeError('''
+ERROR!! PADRE_ROOT not set!!
+
+Please set the environment variable PADRE_ROOT to the location of the
+data repository before using the library.
+
+For example, in bash you could type:
+    export PADRE_ROOT=/mnt/server/share/data_store
+
+Or in tcsh you could use:
+    setenv PADRE_ROOT /mnt/server/share/data_store
+''')
+
+padre_root = os.environ['PADRE_ROOT']
 data_dir = os.path.join(padre_root,'Data') #: [padre_root]/Data
 analyses_dir = os.path.join(padre_root,'Analyses') #: [padre_root]/Analyses
 atlas_dir = os.path.join(padre_root,'Atlases')

@@ -8,7 +8,7 @@
     
     <title>Welcome to PaDRe (Patient Data Repository) documentation! &mdash; PaDRe 0.5 documentation</title>
     
-    <link rel="stylesheet" href="_static/rtd.css" type="text/css" />
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -34,9 +34,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="setup.html" title="How to use this library"
              accesskey="N">next</a> |</li>
         <li><a href="#">PaDRe 0.5 documentation</a> &raquo;</li> 
@@ -52,16 +49,36 @@
 <h1>Welcome to PaDRe (Patient Data Repository) documentation!<a class="headerlink" href="#welcome-to-padre-patient-data-repository-documentation" title="Permalink to this headline">¶</a></h1>
 <p>This library provides an organized way to query patient data libraries.</p>
 <p>At a minimum, read the <a class="reference internal" href="organization.html"><em>Organization of the Data</em></a> page to orient yourself to the
-directory structure and <a class="reference internal" href="setup.html"><em>How to use this library</em></a>.</p>
+directory structure and <a class="reference internal" href="setup.html"><em>How to use this library</em></a>. For instructions on how to install
+the system and setup client machines, see <a class="reference internal" href="installation.html"><em>Installation instructions</em></a></p>
+<p>A couple quick examples to get you started:</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p>A quick usage example to get you started:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">padre</span>
+<p>Loop through all the subjects and do something to all their datasets:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">padre</span> <span class="kn">as</span> <span class="nn">p</span>
 
-<span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">padre</span><span class="o">.</span><span class="n">subjects</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">subjects</span><span class="p">():</span>
         <span class="k">print</span> <span class="s">&#39;Processing subject </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">subject</span>
         <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="n">subject</span><span class="o">.</span><span class="n">dsets</span><span class="p">:</span>
                 <span class="n">do_something_to_a_dset</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Find all the subjects for a particular experiment and do something
+to the functional task datasets:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="s">&#39;experiment-name&#39;</span><span class="p">):</span>
+        <span class="c"># This usage will give us the first session with complete</span>
+        <span class="c"># data that contains a dataset that is labeled &#39;functional-task&#39;</span>
+        <span class="k">with</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">subject</span><span class="o">.</span><span class="n">sessions</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&#39;functional-task&#39;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;labels&#39;</span><span class="p">][</span><span class="s">&#39;functional-task&#39;</span><span class="p">]:</span>
+                        <span class="n">do_something_to_a_dset</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Find all subjects in an experiment and do something to the anatomy that
+was collected in the same session as a functional task:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="s">&#39;experiment-name&#39;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">subject</span><span class="o">.</span><span class="n">sessions</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&#39;functional-task&#39;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">dset</span> <span class="ow">in</span> <span class="n">session</span><span class="p">[</span><span class="s">&#39;labels&#39;</span><span class="p">][</span><span class="s">&#39;anatomy&#39;</span><span class="p">]:</span>
+                        <span class="n">do_something_to_an_anatomy</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -84,7 +101,7 @@ directory structure and <a class="reference internal" href="setup.html"><em>How 
 <li class="toctree-l1"><a class="reference internal" href="padre.html">padre - PaDRe Library Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="padre.html#global-functions">Global Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="padre.html#helper-functions">Helper Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="padre.html#module-padre.config">Directory and File Locations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="padre.html#directory-and-file-locations">Directory and File Locations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="subject.html">padre.subject - Subject Objects</a><ul>
@@ -152,9 +169,6 @@ directory structure and <a class="reference internal" href="setup.html"><em>How 
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="setup.html" title="How to use this library"
              >next</a> |</li>

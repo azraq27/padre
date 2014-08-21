@@ -42,6 +42,13 @@ def import_archive(full_file,pi,subject_guess):
         with nl.run_in(tmp_location + '-sorted'):
             # Eventually add them to padre; for now, just dump in a folder
             for subdir in os.listdir('.'):
+                if 'dset_ignore_masks' in dir(c):
+                    ignore = False
+                    for m in c.dset_ignore_masks:
+                        if m in subdir:
+                            ignore = True
+                    if ignore:
+                        continue
                 nl.notify('creating dataset from %s' % subdir)
                 import_log[full_file][subdir] = {}
                 if not nl.dicom.create_dset(subdir):
@@ -69,11 +76,13 @@ def import_archive(full_file,pi,subject_guess):
             for f in fs:
                 out_file = os.path.join(out_dir,'raw','unsorted',r.lstrip(tmp_location).lstrip('/'),f)
                 if not os.path.exists(out_file):
-                    os.makedirs(os.path.dirname(out_file))
+                    if not os.path.exists(os.path.dirname(out_file)):
+                        os.makedirs(os.path.dirname(out_file))
                     os.rename(os.path.join(r,f),out_file)
     else:
         nl.notify('didn\'t find any files...')
-    
+
+
 
 def unpack_new_archives(pi):
     with nl.notify('Scanning PI %s for new archives' % pi):

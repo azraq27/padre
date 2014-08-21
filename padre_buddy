@@ -181,7 +181,16 @@ def padre_rename(args):
             else:
                 subj.subject_id = args.new_name
                 subj.save()
-                nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
+                if args.deep:
+                    for dset in subj.dsets():
+                        if str(subj) in os.path.basename(dset):
+                            new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
+                            try:
+                                os.rename(dset,new_name)
+                            except OSError:
+                                nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)                            
+                else:
+                    nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
     else:
         nl.notify('Error: you need to specify a subject id to rename',level=nl.level.error)
 
@@ -221,6 +230,7 @@ if __name__ == '__main__':
     
     parser_rename = subparsers.add_parser('rename',help='rename the specified subject to a new id')
     parser_rename.add_argument('new_name',help='new subject id')
+    parser_rename.add_argument('--deep',action='store_true',help='also rename all of the datasets')
     parser_rename.set_defaults(func=padre_rename)
     
     parser_add = subparsers.add_parser('add',help='add new data to an existing subject')

@@ -17,7 +17,9 @@ listable_objects = {
     'atlases': ['atlases','templates'],
     'subjects': ['subjects','patients'],
     'experiments': ['experiments', 'studies', 'study'],
-    'labels': ['labels','types']
+    'labels': ['labels','types'],
+    'sessions': ['sessions','scans','dates'],
+    'dsets': ['dsets','datasets','runs','files']
 }
 
 all_subjects = p.subject._all_subjects
@@ -67,6 +69,18 @@ def padre_list(args):
     if best_match[0]=='experiments':
         print all_experiments
         return
+    if best_match[0]=='sessions' or best_match[0]=='dsets':
+        if args.subject:
+            subj = p.load(args.subjects)
+            if subj:
+                if best_match[0]=='sessions':
+                    print subj.sessions(label=args.label,experiment=args.experiment).keys()                    
+                if best_match[0]=='dsets':
+                    print subj.dsets(label=args.label,experiment=args.experiment)
+        else:
+            nl.notify('Error: you need to specify a subject to list sessions or dsets',level=nl.level.error)
+        return
+        
             
 
 def read_neuropsych_from_excel(excel_file):
@@ -148,6 +162,29 @@ def read_neuropsych_from_excel(excel_file):
                 else:
                     nl.notify('Couldn\'t find subject %s' % subject_id,level=nl.level.error)
 
+def padre_create(args):
+    if args.subject:
+        subj = p.Subject.create(args.subject)
+        subj.save()
+        nl.notify('Creating new subject %s' % args.subject)
+    else:
+        nl.notify('Error: you need to specify a subject id',level=nl.level.error)
+
+def padre_rename(args):
+    if args.subject:
+        subj = p.load(args.subject)
+        if subj:
+            try:
+                os.rename(p.subject_dir(subj),p.subject_dir(args.new_name))
+            except OSError:
+                nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)
+            else:
+                subj.subject_id = args.new_name
+                subj.save()
+                nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
+    else:
+        nl.notify('Error: you need to specify a subject id to rename',level=nl.level.error)
+
 def padre_add(args):
     if args.neuropsych:
         read_neuropsych_from_excel(args.neuropsych)
@@ -179,7 +216,14 @@ if __name__ == '__main__':
     parser_list.add_argument('something',nargs='*',help='keyword identifying all the things you want')
     parser_list.set_defaults(func=padre_list)
     
-    parser_add = subparsers.add_parser('add',help='add a new subject, or append data to an existing one')
+    parser_create = subparsers.add_parser('create',help='create a brand-new empty subject')
+    parser_create.set_defaults(func=padre_create)
+    
+    parser_rename = subparsers.add_parser('rename',help='rename the specified subject to a new id')
+    parser_rename.add_argument('new_name',help='new subject id')
+    parser_rename.set_defaults(func=padre_rename)
+    
+    parser_add = subparsers.add_parser('add',help='add new data to an existing subject')
     parser_add.add_argument('-d','--dset',help='filename to dataset to add')
     parser_add.add_argument('-p','--neuropsych',help='filename to neuropsych file to add')
     parser_add.add_argument('-t','--scansheet',help='filename to PDF of scan sheet to add')

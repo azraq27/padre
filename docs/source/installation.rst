@@ -7,7 +7,7 @@ is as described in :doc:`organization`.
 
 To setup client machines, you need to:
 
-* Install this library (in some standard Python-library way)
+* Install this library (in some standard Python-library way, e.g., "pip install padre")
 
 * Set the ``PADRE_ROOT`` environment variable to the data directory
 

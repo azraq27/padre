@@ -2,7 +2,7 @@
 
 Library to organize patient imaging data'''
 
-version = 0.2
+version = 0.3
 
 from config import *
 

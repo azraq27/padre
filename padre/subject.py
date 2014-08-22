@@ -88,6 +88,8 @@ class SessionFinder(dict):
         sess = dict.__getitem__(self,key)
         if self.session_dir:
             for label in sess['labels']:
+                for dset in sess['labels'][label]:
+                    print repr(dset)
                 sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if self.incomplete or ('incomplete' not in sess) or (dset not in sess['incomplete'])]
         return sess
     

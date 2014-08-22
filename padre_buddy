@@ -22,7 +22,7 @@ listable_objects = {
     'dsets': ['dsets','datasets','runs','files']
 }
 
-all_subjects = [x.strip() for x in p.subject._all_subjects if len(x.strip())>0]
+all_subjects = [str(x).strip() for x in p.subject._all_subjects if len(str(x).strip())>0]
 all_labels = p.subject.tasks
 all_attrs = p.subject.root_level_attrs
 

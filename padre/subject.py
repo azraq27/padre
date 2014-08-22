@@ -309,8 +309,8 @@ def index_subjects(save_subjects=False):
                     [root_level_attrs.add(x) for x in subject_data.keys()]
                     subject_ids.add(subject_id)
                     for session in subject_data['sessions']:
-                        if 'experiment' in subject_data['sessions'][session] and subject_data['sessions'][session][experiment]!='':
-                            experiments.add(subject_data['sessions'][session][experiment])
+                        if 'experiment' in subject_data['sessions'][session] and subject_data['sessions'][session]['experiment']!='':
+                            experiments.add(subject_data['sessions'][session]['experiment'])
                         if 'labels' in subject_data['sessions'][session]:
                             [tasks.add(x) for x in subject_data['sessions'][session]['labels']]
                     _all_subjects.append(Subject.load(subject_id,subject_data))

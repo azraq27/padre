@@ -87,6 +87,8 @@ class SessionFinder(dict):
     def __getitem__(self,key):
         sess = dict.__getitem__(self,key)
         if self.session_dir:
+            print repr(sess['labels'])
+            print sess['labels'].__class__
             for label in sess['labels']:
                 for dset in sess['labels'][label]:
                     print repr(dset)

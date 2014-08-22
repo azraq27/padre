@@ -40,7 +40,7 @@ def report(miss):
 def padre_get(args):
     subject_match = process.extractOne(args.something,all_subjects)
     if subject_match[1]>=fuzzyness:
-        subject_match[0].pretty_print()
+        p.load(subject_match[0]).pretty_print()
 
 def padre_list(args):
     possible_names = [x for s in listable_objects.values() for x in s]

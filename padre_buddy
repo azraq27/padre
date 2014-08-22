@@ -61,7 +61,7 @@ def padre_list(args):
                     print ': ' + p.atlases[atlas]['notes'],
                 print ''
     if best_match[0]=='subjects':
-        print '\n'.join(p.subjects(label=args.label,experiment=args.experiment))
+        print '\n'.join([str(x) for x in p.subjects(label=args.label,experiment=args.experiment)])
         return
     if best_match[0]=='labels':
         print all_labels

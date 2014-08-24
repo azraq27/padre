@@ -1,5 +1,5 @@
 import padre as p
-import json,os,shutil
+import json,os,shutil,copy
 
  
 def _default_session(): 
@@ -85,13 +85,10 @@ class SessionFinder(dict):
         self.incomplete = False
     
     def __getitem__(self,key):
-        sess = dict(dict.__getitem__(self,key))
+        sess = copy.deepcopy(dict.__getitem__(self,key))
         if self.session_dir:
             print repr(sess['labels'])
-            print sess['labels'].__class__
             for label in sess['labels']:
-                for dset in sess['labels'][label]:
-                    print repr(dset)
                 sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if self.incomplete or ('incomplete' not in sess) or (dset not in sess['incomplete'])]
         return sess
     

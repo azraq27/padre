@@ -221,7 +221,7 @@ class Subject(object):
         if json_file==None:
             json_file = p.subject_json(self.subject_id)
         save_dict = dict(self.__dict__)
-#        save_dict['sessions'] = save_dict.pop('_sessions')
+        save_dict['sessions'] = dict(self.sessions)
         for session in save_dict['sessions']:
             for k in ['subject','name']:
                 if k in save_dict['sessions'][session]:

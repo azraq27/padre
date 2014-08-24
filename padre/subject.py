@@ -285,7 +285,7 @@ class Subject(object):
             print '\ttype: %s' % self.sessions[sess]['type']
             print '\texperiment: %s' % self.sessions[sess]['experiment']
             print '\tother attributes:'
-            print '\t\t%s' % ' '.join(set(self.sessions[sess].keys()) - set(['date', 'type', 'labels']))
+            print '\t\t%s' % ' '.join(set(self.sessions[sess].keys()) - set(['date', 'type', 'labels', 'experiment']))
             print '\tdatasets:'
             for label in self.sessions[sess]['labels']:
                 print '\t\t%s:'  % label

@@ -64,10 +64,10 @@ def padre_list(args):
         print '\n'.join([str(x) for x in p.subjects(label=args.label,experiment=args.experiment)])
         return
     if best_match[0]=='labels':
-        print all_labels
+        print '\n'.join(all_labels)
         return
     if best_match[0]=='experiments':
-        print all_experiments
+        print '\n'.join(p.subject.experiments)
         return
     if best_match[0]=='sessions' or best_match[0]=='dsets':
         if args.subject:

@@ -198,6 +198,18 @@ def padre_add(args):
     if args.neuropsych:
         read_neuropsych_from_excel(args.neuropsych)
 
+def padre_dir(args):
+    if args.subject:
+        print p.subject_dir(args.subject)
+    else:
+        nl.notify('Error: you need to specify a subject id to print their directory',level=nl.level.error)
+    
+def padre_json(args):
+    if args.subject:
+        print p.subject_json(args.subject)
+    else:
+        nl.notify('Error: you need to specify a subject id to print their JSON file',level=nl.level.error)
+
 def padre_remove(args):
     pass
 
@@ -232,6 +244,12 @@ if __name__ == '__main__':
     parser_rename.add_argument('new_name',help='new subject id')
     parser_rename.add_argument('--deep',action='store_true',help='also rename all of the datasets')
     parser_rename.set_defaults(func=padre_rename)
+    
+    parser_dir = subparsers.add_parser('dir',help='print the directory for a subject')
+    parser_dir.set_defaults(func=padre_dir)
+    
+    parser_json = subparsers.add_parser('json',help='print the location of the JSON file for a subject')
+    parser_json.set_defaults(func=padre_json)
     
     parser_add = subparsers.add_parser('add',help='add new data to an existing subject')
     parser_add.add_argument('-d','--dset',help='filename to dataset to add')

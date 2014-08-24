@@ -85,7 +85,7 @@ class SessionFinder(dict):
         self.incomplete = False
     
     def __getitem__(self,key):
-        sess = dict.__getitem__(self,key)
+        sess = dict(dict.__getitem__(self,key))
         if self.session_dir:
             print repr(sess['labels'])
             print sess['labels'].__class__

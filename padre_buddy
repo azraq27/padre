@@ -211,7 +211,7 @@ def padre_json(args):
         nl.notify('Error: you need to specify a subject id to print their JSON file',level=nl.level.error)
 
 def padre_edit_session(args):
-    
+    pass
 
 def padre_remove(args):
     pass

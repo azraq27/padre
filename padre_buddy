@@ -71,7 +71,7 @@ def padre_list(args):
         return
     if best_match[0]=='sessions' or best_match[0]=='dsets':
         if args.subject:
-            subj = p.load(args.subjects)
+            subj = p.load(args.subject)
             if subj:
                 if best_match[0]=='sessions':
                     print subj.sessions(label=args.label,experiment=args.experiment).keys()                    
@@ -209,6 +209,9 @@ def padre_json(args):
         print p.subject_json(args.subject)
     else:
         nl.notify('Error: you need to specify a subject id to print their JSON file',level=nl.level.error)
+
+def padre_edit_session(args):
+    
 
 def padre_remove(args):
     pass

@@ -38,7 +38,7 @@ def import_to_padre(subject_id,session,dsets):
     for label in c.dset_labels:
         for dset in c.dset_labels[label]:
             inverted_labels[dset] = label
-    for full_dset in sorted(dsets):
+    for full_dset in sorted(dsets,key=lambda x:(int(os.path.basename(x).split('-')[1]),int(os.path.basename(x).split('-')[2]))):
         dset = os.path.basename(full_dset)
         if dset not in subj.dsets:
             label_match = fuzzywuzzy.process.extractOne(dset.split('-')[3],inverted_labels.keys())

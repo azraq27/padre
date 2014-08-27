@@ -230,13 +230,13 @@ class Subject(object):
     
     def init_directories(self):
         ''' create directories that these scripts expect on the disk '''
-        for p in [
+        for d in [
                 p.subject_dir(self),
                 p.raw_subject_dir(self),
                 p.sessions_dir(self)
             ]:
-            if not os.path.exists(p):
-                os.makedirs(p)
+            if not os.path.exists(d):
+                os.makedirs(d)
     
     def new_session(self,session_name):
         ''' create a new session

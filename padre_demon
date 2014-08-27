@@ -38,7 +38,8 @@ def import_to_padre(subject_id,session,dsets):
     for label in c.dset_labels:
         for dset in c.dset_labels[label]:
             inverted_labels[dset] = label
-    for dset in sorted(dsets):
+    for full_dset in sorted(dsets):
+        dset = os.path.basename(full_dset)
         if dset not in subj.dsets:
             label_match = fuzzywuzzy.process.extractOne(dset.split('-')[3],inverted_labels.keys())
             if label_match[1] >= fuzzyness:
@@ -50,7 +51,7 @@ def import_to_padre(subject_id,session,dsets):
             session_dict['labels'][label].append(dset)
             dset_fname = os.path.join(p.sessions_dir(subj),session,dset)
             if not os.path.exists(dset_fname):
-                os.rename(dset,dset_fname)
+                os.rename(full_dset,dset_fname)
     subj.sessions = session_dict
     subj.save()
 
@@ -66,6 +67,7 @@ def import_archive(full_file,pi,subject_guess):
         nl.unarchive(full_file,tmp_location)
     with nl.notify('sorting files...'):
         nl.dicom.organize_dir(tmp_location)
+    dsets_made = {}
     if os.path.exists(tmp_location + '-sorted'):
         if not os.path.exists(os.path.join(out_dir,'raw')):
             os.makedirs(os.path.join(out_dir,'raw'))
@@ -85,6 +87,10 @@ def import_archive(full_file,pi,subject_guess):
                 if os.path.exists(subdir + '.nii.gz'):
                     import_log[full_file][subdir]['complete'] = True
                     os.rename(subdir + '.nii.gz',os.path.join(out_dir,subdir+'.nii.gz'))
+                    session_name = subdir.split('-')[1]
+                    if session_name not in dsets_made:
+                        dsets_made[session_name] = []
+                    dsets_made[session_name].append(os.path.join(out_dir,subdir+'.nii.gz'))
                 if 'complete' in import_log[full_file][subdir] and import_log[full_file][subdir]['complete']:
                     if 'error' in import_log[full_file][subdir] and import_log[full_file][subdir]['error']:
                         nl.notify('created dataset %s, but Dimon returned an error' % (subdir+'.nii.gz'),nl.level.error)
@@ -92,6 +98,9 @@ def import_archive(full_file,pi,subject_guess):
                         nl.notify('successfully created dataset %s' % (subdir+'.nii.gz'))
                 else:
                     nl.notify('failed to create dataset from directory %s' % subdir,level=nl.level.error)
+        nl.notify('importing into padre...')
+        for session in dsets_made:
+            import_to_padre(subject_guess,session,dsets_made[session])
         nl.notify('moving raw data...')
         for subdir in os.listdir(tmp_location + '-sorted'):
             out_file = os.path.join(out_dir,'raw',subdir + '.tgz')

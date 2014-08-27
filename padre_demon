@@ -5,6 +5,7 @@ import urllib2, re, json, os, shutil, socket, tarfile
 from dateutil.parser import parse
 import neural as nl
 import padre as p
+import fuzzywuzzy
 
 import_location = os.path.join(p.padre_root,'Import')
 processed_location = os.path.join(p.padre_root,'Processed')
@@ -24,6 +25,35 @@ def save_log():
     with open(import_log_file,'w') as f:
         f.write(json.dumps(import_log))    
 
+def import_to_padre(subject_id,session,dsets):
+    fuzzyness = 80
+    subj = p.subject.Subject.create(subject_id)
+    try:
+        subj.new_session(session)
+    except p.subject.SessionExists:
+        pass
+    session_dict = dict(subj.sessions[session])
+    session_dict['unverified'] = True
+    inverted_labels = {}
+    for label in c.dset_labels:
+        for dset in c.dset_labels[label]:
+            inverted_labels[dset] = label
+    for dset in sorted(dsets):
+        if dset not in subj.dsets:
+            label_match = fuzzywuzzy.process.extractOne(dset.split('-')[3],inverted_labels.keys())
+            if label_match[1] >= fuzzyness:
+                label = inverted_labels[label_match[0]]
+            else:
+                label = 'unsorted'
+            if label not in session_dict['labels']:
+                session_dict['labels'][label] = []
+            session_dict['labels'][label].append(dset)
+            dset_fname = os.path.join(p.sessions_dir(subj),session,dset)
+            if not os.path.exists(dset_fname):
+                os.rename(dset,dset_fname)
+    subj.sessions = session_dict
+    subj.save()
+
 def import_archive(full_file,pi,subject_guess):
     tmp_location = '_tmp_unarchive'
     out_dir = os.path.join(processed_location,pi,subject_guess)
@@ -40,7 +70,6 @@ def import_archive(full_file,pi,subject_guess):
         if not os.path.exists(os.path.join(out_dir,'raw')):
             os.makedirs(os.path.join(out_dir,'raw'))
         with nl.run_in(tmp_location + '-sorted'):
-            # Eventually add them to padre; for now, just dump in a folder
             for subdir in os.listdir('.'):
                 if 'dset_ignore_masks' in dir(c):
                     ignore = False

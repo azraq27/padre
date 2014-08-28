@@ -5,7 +5,7 @@ import urllib2, re, json, os, shutil, socket, tarfile, tempfile
 from dateutil.parser import parse
 import neural as nl
 import padre as p
-import fuzzywuzzy
+from fuzzywuzzy import process
 
 import_location = os.path.join(p.padre_root,'Import')
 processed_location = os.path.join(p.padre_root,'Processed')
@@ -41,7 +41,7 @@ def import_to_padre(subject_id,session,dsets):
     for full_dset in sorted(dsets,key=lambda x:(int(os.path.basename(x).split('-')[1]),int(os.path.basename(x).split('-')[2]))):
         dset = os.path.basename(full_dset)
         if dset not in subj.dsets:
-            label_match = fuzzywuzzy.process.extractOne(dset.split('-')[3],inverted_labels.keys())
+            label_match = process.extractOne(dset.split('-')[3],inverted_labels.keys())
             if label_match[1] >= fuzzyness:
                 label = inverted_labels[label_match[0]]
             else:

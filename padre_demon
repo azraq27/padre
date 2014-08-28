@@ -51,7 +51,7 @@ def import_to_padre(subject_id,session,dsets):
             session_dict['labels'][label].append(dset)
             dset_fname = os.path.join(p.sessions_dir(subj),session,dset)
             if not os.path.exists(dset_fname):
-                os.rename(full_dset,dset_fname)
+                shutils.move(full_dset,dset_fname)
     subj.sessions[session] = session_dict
     subj.save()
 
@@ -118,7 +118,7 @@ def import_archive(full_file,pi,subject_guess):
                 if not os.path.exists(out_file):
                     if not os.path.exists(os.path.dirname(out_file)):
                         os.makedirs(os.path.dirname(out_file))
-                    os.rename(os.path.join(r,f),out_file)
+                    shutils.move(os.path.join(r,f),out_file)
     else:
         nl.notify('didn\'t find any files...')
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ''' daemon to automatically collect and organize data into padre'''
 
-import urllib2, re, json, os, shutil, socket, tarfile
+import urllib2, re, json, os, shutil, socket, tarfile, tempfile
 from dateutil.parser import parse
 import neural as nl
 import padre as p
@@ -56,7 +56,9 @@ def import_to_padre(subject_id,session,dsets):
     subj.save()
 
 def import_archive(full_file,pi,subject_guess):
-    tmp_location = '_tmp_unarchive'
+#    tmp_location = '_tmp_unarchive'
+    tmp_dir = tempfile.mkdtemp()
+    tmp_location = os.path.join(tmp_dir,'_tmp_unarchive')
     out_dir = os.path.join(processed_location,pi,subject_guess)
     for d in [tmp_location,tmp_location + '-sorted']:
         if os.path.exists(d):

@@ -232,7 +232,7 @@ class Subject(object):
         ''' create directories that these scripts expect on the disk '''
         for d in [
                 p.subject_dir(self),
-                p.raw_subject_dir(self),
+                p.raw_dir(self),
                 p.sessions_dir(self)
             ]:
             if not os.path.exists(d):

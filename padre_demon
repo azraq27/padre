@@ -52,7 +52,7 @@ def import_to_padre(subject_id,session,dsets):
             dset_fname = os.path.join(p.sessions_dir(subj),session,dset)
             if not os.path.exists(dset_fname):
                 os.rename(full_dset,dset_fname)
-    subj.sessions = session_dict
+    subj.sessions[session] = session_dict
     subj.save()
 
 def import_archive(full_file,pi,subject_guess):

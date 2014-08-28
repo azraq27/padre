@@ -249,7 +249,7 @@ class Subject(object):
         session_dir = os.path.join(p.sessions_dir(self),session_name)
         if not os.path.exists(session_dir):
             os.makedirs(session_dir)
-        self.sessions[session_name] = default_session()
+        self.sessions[session_name] = _default_session()
     
     def delete_session(self,session_name,purge=False):
         ''' delete a session

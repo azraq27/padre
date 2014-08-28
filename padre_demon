@@ -88,7 +88,7 @@ def import_archive(full_file,pi,subject_guess):
                     import_log[full_file][subdir]['error'] = True
                 if os.path.exists(subdir + '.nii.gz'):
                     import_log[full_file][subdir]['complete'] = True
-                    os.rename(subdir + '.nii.gz',os.path.join(out_dir,subdir+'.nii.gz'))
+                    shutil.move(subdir + '.nii.gz',os.path.join(out_dir,subdir+'.nii.gz'))
                     session_name = subdir.split('-')[1]
                     if session_name not in dsets_made:
                         dsets_made[session_name] = []

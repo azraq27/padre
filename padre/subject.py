@@ -154,10 +154,14 @@ class Subject(object):
         and the values are lists of the dataset filenames.
         '''
         
+        self.dsets = DsetFinder()
+        
         for dictionary in initial_data:
             for key in dictionary:
                 if key=='sessions':
                     self.sessions = SessionFinder(dictionary[key])
+                elif key=='dsets':
+                    self.dsets = DsetFinder(dictionary[key])
                 else:
                     setattr(self, key, dictionary[key])
         

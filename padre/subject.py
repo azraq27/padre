@@ -30,12 +30,12 @@ class Session(dict):
 
 class DsetFinder(list):
     '''behaves as either a list of dsets or a function to search for a dset'''
-    def __init__(self,*args,**kwargs):
-        list.__init__(self,*args,**kwargs)
+    def __init__(self,session_dict):
+        self.session_dict = session_dict
         self.session_dir = None
-        
+    
     def __getitem__(self,index):
-        dset = dict.__getitem__(self,index)
+        dset = self.session_dict.values()[index]
         if self.session_dir:
             dset = os.path.join(self.session_dir,dset)
         return dset
@@ -56,22 +56,22 @@ class DsetFinder(list):
         if session:
             include_sessions = [session]
         else:
-            include_sessions = self.sessions.keys()
+            include_sessions = self.session_dict.keys()
         for sess in include_sessions:
-            if sess in self.sessions:
+            if sess in self.session_dict:
                 if type:
-                    if self.sessions[sess]['type']!=type:
+                    if self.session_dict[sess]['type']!=type:
                         continue
                 if experiment:
-                    if self.sessions[sess]['experiment']!=experiment:
+                    if self.session_dict[sess]['experiment']!=experiment:
                         continue
                 if label:
                     include_labels = [label]
                 else:
-                    include_labels = self.sessions[sess]['labels']
+                    include_labels = self.session_dict[sess]['labels']
                 for label in include_labels:
-                    if label in self.sessions[sess]['labels']:
-                        return_dsets += [x for x in self.sessions[sess]['labels'][label] if incomplete or 'incomplete' not in self.sessions[sess] or x not in self.sessions[sess]['incomplete']]
+                    if label in self.session_dict[sess]['labels']:
+                        return_dsets += [os.path.join(self.session_dir,key,dset) for dset in self.session_dict[sess]['labels'][label] if self.incomplete or ('incomplete' not in self.session_dict[sess]) or (dset not in self.session_dict[sess]['incomplete'])]                        
         return return_dsets
     
 
@@ -154,14 +154,14 @@ class Subject(object):
         and the values are lists of the dataset filenames.
         '''
         
-        self.dsets = DsetFinder()
+        self.dsets = DsetFinder(self.sessions)
         
         for dictionary in initial_data:
             for key in dictionary:
                 if key=='sessions':
                     self.sessions = SessionFinder(dictionary[key])
                 elif key=='dsets':
-                    self.dsets = DsetFinder(dictionary[key])
+                    pass
                 else:
                     setattr(self, key, dictionary[key])
         
@@ -226,7 +226,7 @@ class Subject(object):
         save_dict = dict(self.__dict__)
         save_dict['sessions'] = dict(self.sessions)
         for session in save_dict['sessions']:
-            for k in ['subject','name']:
+            for k in ['subject','name','dsets']:
                 if k in save_dict['sessions'][session]:
                     del(save_dict['sessions'][session][k])
         with open(json_file,'w') as f:
@@ -295,6 +295,27 @@ class Subject(object):
                 print '\t\t%s:'  % label
                 for dset in self.sessions[sess]['labels'][label]:
                     print '\t\t\t%s' % dset
+
+def rename(subject_id,new_subject_id,deep=False):
+    subj = Subject.load(subject_id)
+    if subj:
+        try:
+            os.rename(p.subject_dir(subject_id),p.subject_dir(new_subject_id))
+        except OSError:
+            nl.notify('Error: filesystem reported error moving %s to %s' % (subject_id,new_subject_id),level=nl.level.error)
+        else:
+            subj.subject_id = new_subject_id
+            subj.save()
+            if deep:
+                for dset in subj.dsets():
+                    if str(subj) in os.path.basename(dset):
+                        new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
+                        try:
+                            os.rename(dset,new_name)
+                        except OSError:
+                            nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)                            
+            else:
+                nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
 
 subject_ids = set()
 tasks = set()

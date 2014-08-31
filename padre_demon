@@ -121,6 +121,7 @@ def import_archive(full_file,pi,subject_guess):
                     shutil.move(os.path.join(r,f),out_file)
     else:
         nl.notify('didn\'t find any files...')
+    shutil.rmtree(tmp_dir)
 
 
 

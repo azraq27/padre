@@ -52,6 +52,8 @@ class DsetFinder(list):
             in different sessions. If you write your script session-centric, you can explicitly 
             address these exception cases.
         '''
+        if experiment==None and p.global_experiment:
+            experiment = p.global_experiment
         return_dsets = []
         if session:
             include_sessions = [session]
@@ -99,6 +101,8 @@ class SessionFinder(dict):
             :dset:          session contains dset with given filename
             :incomplete:    if ``False`` will filter out incomplete datasets in returned session
         '''
+        if experiment==None and p.global_experiment:
+            experiment = p.global_experiment
         return_dict = Session()
         if dset:
             if os.sep in dset:
@@ -362,6 +366,8 @@ def subjects(label=None,experiment=None,only_included=True):
     if *only_included* is True, will exclude any subjects with ``subject.include``
     set to False
     '''
+    if experiment==None and p.global_experiment:
+        experiment = p.global_experiment
     all_subjs = list(_all_subjects)
     if label:
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]

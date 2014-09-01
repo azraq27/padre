@@ -4,6 +4,8 @@ Library to organize patient imaging data'''
 
 version = 0.3
 
+global_experiment = None
+
 from config import *
 
 import sys
@@ -16,3 +18,7 @@ from subject import Subject,subjects
 
 def load(s):
     return Subject.load(s)
+
+def set_experiment(exp):
+    global global_experiment
+    global_experiment = exp

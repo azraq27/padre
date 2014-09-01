@@ -87,7 +87,7 @@ class DsetFinder(list):
                     include_labels = self.session_dict[sess]['labels']
                 for label in include_labels:
                     if label in self.session_dict[sess]['labels']:
-                        return_dsets += [os.path.join(self.session_dir,key,dset) for dset in self.session_dict[sess]['labels'][label] if self.incomplete or ('incomplete' not in self.session_dict[sess]) or (dset not in self.session_dict[sess]['incomplete'])]                        
+                        return_dsets += [os.path.join(self.session_dir,sess,dset) for dset in self.session_dict[sess]['labels'][label] if self.incomplete or ('incomplete' not in self.session_dict[sess]) or (dset not in self.session_dict[sess]['incomplete'])]                        
         return return_dsets
     
 

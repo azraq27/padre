@@ -32,16 +32,12 @@ class DsetFinder(list):
     '''behaves as either a list of dsets or a function to search for a dset'''
     def __init__(self,session_dict):
         self.session_dict = session_dict
-        self.session_dir = None
-        self.incomplete = False
     
     def _dset_list(self):
         dset_list = []
         for sess in self.session_dict:
             for label in self.session_dict[sess]['labels']:
                 dset_list += self.session_dict[sess]['labels'][label]
-        if self.session_dir:
-            dset_list = [os.path.join(self.session_dir,dset) for dset in dset_list]
         return dset_list
     
     def __getitem__(self,index):
@@ -90,10 +86,7 @@ class DsetFinder(list):
                     include_labels = self.session_dict[sess]['labels']
                 for label in include_labels:
                     if label in self.session_dict[sess]['labels']:
-                        if self.session_dir:
-                            return_dsets += [os.path.join(self.session_dir,sess,dset) for dset in self.session_dict[sess]['labels'][label] if self.incomplete or ('incomplete' not in self.session_dict[sess]) or (dset not in self.session_dict[sess]['incomplete'])]                        
-                        else:
-                            return_dsets += [os.path.join(sess,dset) for dset in self.session_dict[sess]['labels'][label] if self.incomplete or ('incomplete' not in self.session_dict[sess]) or (dset not in self.session_dict[sess]['incomplete'])]                                                    
+                        return_dsets += [dset for dset in self.session_dict[sess]['labels'][label] if self.session_dict.incomplete or ('incomplete' not in self.session_dict[sess]) or (dset not in self.session_dict[sess]['incomplete'])]                                                    
         return return_dsets
     
 

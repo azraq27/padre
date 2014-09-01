@@ -183,7 +183,7 @@ def padre_rename(args):
                 subj.save()
                 if os.path.exists(p.subject_json(args.new_name)):
                     try:
-                        os.remove(p.subject_json(args.subject))
+                        os.remove(os.path.join(p.subject_dir(args.new_name),'%s.json' % args.subject))
                     except OSError:
                         pass
                 if args.deep:

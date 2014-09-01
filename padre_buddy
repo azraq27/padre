@@ -179,18 +179,24 @@ def padre_rename(args):
             except OSError:
                 nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)
             else:
-                subj.subject_id = args.new_name
-                subj.save()
                 if args.deep:
                     for dset in subj.dsets():
-                        if str(subj) in os.path.basename(dset):
+                        if args.subject in os.path.basename(dset):
                             new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
                             try:
                                 os.rename(dset,new_name)
                             except OSError:
                                 nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)                            
-                else:
-                    nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
+                subj.subject_id = args.new_name
+                subj.save()
+                if os.path.exists(p.subject_json(args.new_name)):
+                    try:
+                        os.remove(p.subject_json(args.subject))
+                    except OSError:
+                        pass
+                nl.notify('Successfully renamed %s to %s' % (subj,args.new_name))
+                if not args.deep:
+                    nl.notify('(NOTE: none of the dataset names are changed in this process. Use "--deep" to change filenames)')
     else:
         nl.notify('Error: you need to specify a subject id to rename',level=nl.level.error)
 

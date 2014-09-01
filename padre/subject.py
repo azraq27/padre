@@ -36,7 +36,7 @@ class DsetFinder(list):
         self.incomplete = False
     
     def _dset_list(self):
-        dset_list = self.session_dict.values()
+        dset_list = self.session_dict['labels'].values()
         if self.session_dir:
             dset_list = [os.path.join(self.session_dir,dset) for dset in dset_list]
         return dset_list

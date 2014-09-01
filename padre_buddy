@@ -187,7 +187,7 @@ def padre_rename(args):
                     except OSError:
                         pass
                 if args.deep:
-                    subj.dsets.session_dir = p.sessions_dir(subj)
+                    subj.dsets.session_dir = p.sessions_dir(args.new_name)
                     for dset in subj.dsets():
                         if args.subject in os.path.basename(dset):
                             new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))

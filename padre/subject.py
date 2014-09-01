@@ -33,6 +33,7 @@ class DsetFinder(list):
     def __init__(self,session_dict):
         self.session_dict = session_dict
         self.session_dir = None
+        self.incomplete = False
     
     def _dset_list(self):
         dset_list = self.session_dict.values()

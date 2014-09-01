@@ -385,7 +385,7 @@ def subjects(label=None,experiment=None,only_included=True):
     if label:
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]
     if experiment:
-        all_subjs = [x for x in all_subjs if experiment in [y['experiment'] for y in x.sessions if 'experiment' in y]]
+        all_subjs = [x for x in all_subjs if experiment in [x.sessions[y]['experiment'] for y in x.sessions if 'experiment' in x.sessions[y]]]
     if only_included:
         all_subjs = [x for x in all_subjs if x.include]
     

@@ -34,11 +34,24 @@ class DsetFinder(list):
         self.session_dict = session_dict
         self.session_dir = None
     
-    def __getitem__(self,index):
-        dset = self.session_dict.values()[index]
+    def _dset_list(self):
+        dset_list = self.session_dict.values()
         if self.session_dir:
-            dset = os.path.join(self.session_dir,dset)
-        return dset
+            dset_list = [os.path.join(self.session_dir,dset) for dset in dset_list]
+        return dset_list
+    
+    def __getitem__(self,index):
+        return self.dset_list()[index]
+    
+    def __repr__(self):
+        return dict.__repr__(self._dset_list())
+    
+    def __str__(self):
+        return dict.__str__(self._dset_list())
+    
+    def __iter__(self):
+        for dset in self._dset_list():
+            yield dset
     
     def __call__(self,label=None,experiment=None,session=None,type=None,incomplete=False):
         ''' returns a list of datasets matching all of the given parameters 

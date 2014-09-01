@@ -181,7 +181,6 @@ class Subject(object):
                     setattr(self, key, dictionary[key])
         
         self.dsets = DsetFinder(self.sessions)
-        self.session_dir = p.sessions_dir(self)
         
         self.sessions.session_dir = p.sessions_dir(self)
         

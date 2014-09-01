@@ -187,7 +187,7 @@ def padre_rename(args):
                     except OSError:
                         pass
                 if args.deep:
-                    subj.dsets.session_dir = p.sessions_dir(args.new_name)
+                    subj.dsets.session_dict.session_dir = p.sessions_dir(args.new_name)
                     for dset in subj.dsets():
                         if args.subject in os.path.basename(dset):
                             new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
@@ -195,7 +195,7 @@ def padre_rename(args):
                                 os.rename(dset,new_name)
                             except OSError:
                                 nl.notify('Error: filesystem reported error moving %s to %s' % (dset,new_name),level=nl.level.error)                            
-                nl.notify('Successfully renamed %s to %s' % (subj,args.new_name))
+                nl.notify('Successfully renamed %s to %s' % (args.subject,args.new_name))
                 if not args.deep:
                     nl.notify('(NOTE: none of the dataset names are changed in this process. Use "--deep" to change filenames)')
     else:

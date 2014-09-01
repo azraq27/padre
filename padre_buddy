@@ -186,7 +186,7 @@ def padre_rename(args):
                             try:
                                 os.rename(dset,new_name)
                             except OSError:
-                                nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)                            
+                                nl.notify('Error: filesystem reported error moving %s to %s' % (dset,new_name),level=nl.level.error)                            
                 subj.subject_id = args.new_name
                 subj.save()
                 if os.path.exists(p.subject_json(args.new_name)):

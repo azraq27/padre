@@ -122,6 +122,7 @@ def import_archive(full_file,pi,subject_guess):
     else:
         nl.notify('didn\'t find any files...')
     shutil.rmtree(tmp_dir)
+    save_log()
 
 
 

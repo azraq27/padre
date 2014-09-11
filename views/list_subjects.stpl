@@ -1,0 +1,15 @@
+<title>Subjects</title>
+<link href='/styles.css' rel='stylesheet' type='text/css' />
+<body>
+<div class="header"><div class="padded">Subjects</div></div>
+<div class="column_wrapper">
+	<div class=left_column>
+		<div class="padded">
+		</div>
+	</div>
+	<div class="right_column">
+			% for subj in subjects:
+			<a href='/{{subj}}'>{{subj}}</a><br>
+			% end
+	</div>
+</div>

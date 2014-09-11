@@ -1,0 +1,31 @@
+<title>Subject: {{subject_id}}</title>
+<link href='/styles.css' rel='stylesheet' type='text/css' />
+<body>
+<div class="header"><div class="padded"><a class='back_link' href='/subjects'>Back to subject list</a><br>{{subject_id}}</div></div>
+<div class="column_wrapper">
+	<div class=left_column>
+		<div class="padded">
+			<h1>Help:</h1>
+		</div>
+	</div>
+	<div class="right_column">
+		<form action='/done' method=POST>
+			<h1>Sessions:</h1>
+			<table>
+				<tr>
+					<td>Date</td>
+					<td>Name</td>
+					<td>Experiment</td>
+				</tr>
+				% for sess in subj.sessions:
+				<tr>
+					<td><input name='{{sess}}_date' value='{{subj.sessions[sess]['date']}}'></td>
+					<td><a href='/{{subject_id}}/{{sess}}'>{{sess}}</a></td>
+					<td><input name='{{sess}}_experiment' value='{{subj.sessions[sess]["experiment"]}}'></td>
+				</tr>
+				% end
+			</table>
+			<input type='submit' value='Save'>
+		</form>
+	</div>
+</div>

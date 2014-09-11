@@ -1,0 +1,74 @@
+<title>Edit session: {{subject_id}}</title>
+<link href='/styles.css' rel='stylesheet' type='text/css' />
+<body>
+<div class="header"><div class="padded">Edit {{subject_id}}: {{session}}</div></div>
+<div class=left_column>
+	<div class="padded">
+		<h1>Help:</h1>
+		
+		<h2>Label</h2>
+		<p>Generic label for type of dataset (e.g., "anatomy" or "dti" or "sdtones". 
+		Do not include any other qualifiers like "run1", that's already implied 
+		by the order of the runs</p>
+		
+		<p>Currently used labels (please try to keep consistent language):
+		<div class="indent">
+		% for label in labels:
+		{{ label }}<br>
+		% end
+		</div>
+		</p>
+		
+		<h2>Incomplete:</h2>
+		<p>Mark this checkbox if the dataset was not finished, and should not be 
+		included in standard analyses</p>
+	</div>
+</div>
+<div class="right_column">
+<form action='/done' method=POST>
+	<input type='hidden' name='subject_id' value='{{subject_id}}'/>
+	Subject ID: <input type='text' name='new_subject_id' value='{{subject_id}}'/><br>
+	Experiment: <input type='text' name='experiment' value='{{subj.sessions[session]["experiment"]}}'><br>
+	Include? <input type='checkbox' name='include'{{"checked='checked'" if subj.include else ""}}>
+<p>
+	<table width=300>
+		<tr>
+			<td>Label</td>
+			<td>Filename</td>
+			<td>Incomplete?</td>
+			<td></td>
+		</tr>
+		% for label in subj.sessions[session]['labels']:
+		% 	for dset in dict(subj.sessions)[session]['labels'][label]:
+		<tr>
+			<td>
+				<select name='label_{{dset}}'>
+					% for l in labels:
+					<option value='{{l}}'
+					% if l==label:
+						selected="selected"
+					% end
+					>{{l}}</option>
+					% end
+					<option value="new_label">New (type in text field)</option>
+				</select>
+			</td>
+			<td style="white-space:nowrap;">{{dset}}</td>
+			<td><input type='checkbox' name='incomplete' value='{{dset}}'
+				% if 'incomplete' in subj.sessions[session] and dset in subj.sessions[session]['incomplete']:
+					checked='checked'	
+				%end
+			></td>
+			<td>
+				<div class="new_label">
+					<input type="text" name="newlabel_{{dset}}" value="">
+				</div>
+			</td>
+		</tr>
+		%	end
+		% end
+	</table>
+<input type='submit' value='Save Changes'>
+</form>
+</body>
+</div>

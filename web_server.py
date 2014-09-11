@@ -14,7 +14,7 @@ def favicon():
 @view('list_subjects')
 def subjects():
     sort_key = lambda x: sorted([parse(y[1]) for y in x[1]])[0]
-    subjects = sorted([str(s),[(sess,sess['date']) for sess in s.sessions] for s in p.subjects()],key=sort_key)
+    subjects = sorted([(str(s),[(sess,sess['date']) for sess in s.sessions]) for s in p.subjects()],key=sort_key)
     return {
             'subjects':subjects
     }

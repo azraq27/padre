@@ -9,7 +9,7 @@
 	</div>
 	<div class="right_column">
 			% for subj in subjects:
-			<a href='/{{subj}}'>{{subj}}</a><br>
+			<a href='/{{subj[0]}}'>{{subj[0]}}</a><br>
 			% end
 	</div>
 </div>

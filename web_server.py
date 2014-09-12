@@ -16,8 +16,16 @@ def favicon():
 def subjects():
     sort_key = lambda x: sorted([parse(y[1]) for y in x[1]])[0] if len(x[1]) else datetime.datetime(1,1,1)
     subjects = reversed(sorted([(str(s),[(sess,s.sessions[sess]['date']) for sess in s.sessions]) for s in p.subjects()],key=sort_key))
+    unverified_dict = {}
+    for subj in p.subjects():
+        unverified = False
+        for sess in subj.sessions:
+            if 'unverified' in subj.sessions[sess] and subj.sessions[sess]['unverified']==True:
+                unverified = True
+        unverified_dict[str(subj)] = unverified
     return {
-            'subjects':subjects
+            'subjects':subjects,
+            'unverified':unverified
     }
 
 @route('/<subject_id>')

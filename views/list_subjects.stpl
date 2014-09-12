@@ -9,6 +9,9 @@
 	</div>
 	<div class="right_column">
 			% for subj in subjects:
+			% if unverified[subj]:
+			<b>(new)</b>
+			% end
 			<a href='/{{subj[0]}}'>{{subj[0]}}</a><br>
 			% end
 	</div>

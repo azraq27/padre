@@ -205,6 +205,7 @@ class Subject(object):
     @classmethod
     def create(cls,subject_id):
         ''' creates a new subject (loads old JSON if present and valid) '''
+        subj = None
         if os.path.exists(p.subject_json(subject_id)):
             try:
                 subj = cls.load(subject_id)

@@ -1,5 +1,4 @@
-<title>Edit session: {{subject_id}}</title>
-<link href='/styles.css' rel='stylesheet' type='text/css' />
+% include('header.stpl',title='Edit Session: %s' % subject_id)
 <body>
 <div class="header"><div class="padded">Edit {{subject_id}}: {{session}}</div></div>
 <div class=left_column>

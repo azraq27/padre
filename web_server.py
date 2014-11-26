@@ -2,32 +2,84 @@ import padre as p
 from bottle import route,view,run,post,static_file,request
 import datetime
 from dateutil.parser import parse
+from fuzzywuzzy import process
 
-@route('/styles.css')
-def css_file():
-    return static_file('views/styles.css','.')
+@route('/style/<filename>')
+def style_file(filename):
+    return static_file('views/style/%s'%filename,'.')
 
 @route('/favicon.ico')
 def favicon():
     return static_file('views/favicon.ico','.')
 
-@route('/subjects')
+@route('/')
+@route('/index')
+@view('index')
+def index():
+    return {'experiments':p.subject.experiments}
+
+@route('/list_subjects')
 @view('list_subjects')
 def subjects():
-    sort_key = lambda x: sorted([parse(y[1]) for y in x[1]])[0] if len(x[1]) else datetime.datetime(1,1,1)
-    subjects = reversed(sorted([(str(s),[(sess,s.sessions[sess]['date']) for sess in s.sessions]) for s in p.subjects()],key=sort_key))
-    unverified_dict = {}
-    for subj in p.subjects():
-        unverified = False
+    exp = request.params.get('exp')
+    print repr(exp)
+    if exp!='':
+        subjects = p.subjects(experiment=exp)
+    else:
+        subjects = p.subjects()
+    
+    unverified = []
+    for subj in subjects:
         for sess in subj.sessions:
             if 'unverified' in subj.sessions[sess] and subj.sessions[sess]['unverified']==True:
-                unverified = True
-        unverified_dict[str(subj)] = unverified
+                unverified.append(subj)
+    subjects = list(set(subjects) - set(unverified))
+    
+#    sort_key = lambda x: sorted([parse(y[1]) for y in x[1]])[0] if len(x[1]) else datetime.datetime(1,1,1)
+#    subjects = reversed(sorted([(str(s),[(sess,s.sessions[sess]['date']) for sess in s.sessions]) for s in p.subjects()],key=sort_key))
     return {
             'subjects':subjects,
-            'unverified':unverified
+            'unverified':unverified,
+            'experiments':p.subject.experiments
     }
 
+@route('/edit_subject/<subject_id>')
+@view('edit_subject')
+def edit_subject(subject_id):
+    subject = p.load(subject_id)
+    sessions = subject.sessions.keys()
+    unverified = []
+    for sess in sessions:
+        if 'unverified' in subject.sessions[sess] and subject.sessions[sess]['unverified']==True:
+            unverified.append(sess)
+    sessions = list(set(sessions) - set(unverified))
+    return {
+        'subject':subject,
+        'sessions':sessions,
+        'unverified':unverified,
+        'experiments':p.subject.experiments        
+    }
+
+@post('/search_form')
+@view('list_subjects')
+def search_form():
+    search_string = request.forms.get('search_field')
+    matches = [x[0] for x in process.extract(search_string,[str(x) for x in p.subjects()]) if x[1]>80]
+    subjects = [p.load(x) for x in matches]
+    unverified = []
+    for subj in subjects:
+        for sess in subj.sessions:
+            if 'unverified' in subj.sessions[sess] and subj.sessions[sess]['unverified']==True:
+                unverified.append(subj)
+    subjects = list(set(subjects) - set(unverified))
+    
+    return {
+            'subjects':subjects,
+            'unverified':unverified,
+            'experiments':p.subject.experiments
+    }
+
+'''
 @route('/<subject_id>')
 @view('edit_subject')
 def subject_list(subject_id):
@@ -51,7 +103,8 @@ def save_session(subject_id,session):
     new_subject_id = request.forms.get('new_subject_id')
     if new_subject_id!=subject_id:
         pass
-
+'''
 if __name__ == '__main__':
     import socket
-    run(host=socket.gethostname(),port=8003)
+#    run(host=socket.gethostname(),port=8003)
+    run(host='localhost',port=8003)

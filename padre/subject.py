@@ -103,14 +103,13 @@ class Subject(str):
     @classmethod
     def load(cls,subject_id):
         ''' returns a subject object initialized using JSON file '''
-        if data==None:
-            json_file = p.subject_json(subject_id)
-            try:
-                with open(json_file) as f:
-                    return cls(subject_id,json.loads(f.read()))
-            except (ValueError,IOError):
-                p.error('Could not load valid JSON file for subject %s' % subject_id)
-                return None
+        json_file = p.subject_json(subject_id)
+        try:
+            with open(json_file) as f:
+                return cls(subject_id,json.loads(f.read()))
+        except (ValueError,IOError):
+            p.error('Could not load valid JSON file for subject %s' % subject_id)
+            return None
     
     def __dict__(self):
         {

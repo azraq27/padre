@@ -221,7 +221,7 @@ def subjects(experiment=None,label=None,type=None,only_included=True):
         _index_all_subjects(True)
     if experiment==None and p._global_experiment:
         experiment = p._global_experiment
-    all_subjs = list(_all_subjects)
+    all_subjs = _all_subjects.values()
     if label:
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]
     if experiment:

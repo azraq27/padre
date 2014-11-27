@@ -1,16 +1,7 @@
 <div id="site_content">
   <div id="sidebar_container">
     <div id="content_header"></div>
-    
-    <div class="sidebar">
-      <div class="sidebar_top"></div>
-      <div class="sidebar_item">
-        <a href='/list_subjects?unverified'><h4>Inbox</h4></a>
-      </div>
-      <div class="sidebar_base"></div>
-    </div>
-    
-    
+
     <div class="sidebar">
       <div class="sidebar_top"></div>
       <div class="sidebar_item">
@@ -18,7 +9,7 @@
         <form method="post" action="search_form" id="search_form">
           <p>
             <input class="search" type="text" name="search_field" placeholder="Enter subject id....." />
-            <input name="search" type="image" style="border: 0; margin: 0 0 -9px 5px;" src="style/search.png" alt="Search" title="Search" />
+            <input name="search" type="image" style="border: 0; margin: 0 0 -9px 5px;" src="/style/search.png" alt="Search" title="Search" />
           </p>
         </form>
       </div>
@@ -37,6 +28,18 @@
      </div>
      <div class="sidebar_base"></div>
    </div>
+   
+   % if 'extra' in locals():
+   %    for s in extra:
+   <div class="sidebar">
+     <div class="sidebar_top"></div>
+     <div class="sidebar_item">
+	     {{!s}}
+     </div>
+     <div class="sidebar_base"></div>
+   </div>
+   %    end
+   % end
    
   </div>
   <div id="content">

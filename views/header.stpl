@@ -1,11 +1,16 @@
 <!DOCTYPE HTML>
 <html>
-
+% if 'tab' not in locals():
+%     tab = None
+% end
 <head>
   <title>{{title}}</title>
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
   <link rel="stylesheet" type="text/css" href="/style/style.css" />
 </head>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 <body>
   <div id="main">
@@ -19,7 +24,6 @@
       </div>
       <div id="menubar">
         <ul id="menu">
-	  % selected_text = ' class="selected"'
           <li
 	  % if tab=='home':
 	  class="selected"
@@ -41,7 +45,7 @@
 	  % end
 	  ><a href="/about">About</a></li>
 	  % try:
-	  <li class="selected"><a>{{new_tab}}</a></li>
+	  <li class="selected"><a href='#'>{{new_tab}}</a></li>
 	  % except NameError:
 	  %   pass
 	  % end

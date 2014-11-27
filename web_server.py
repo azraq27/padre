@@ -60,6 +60,24 @@ def edit_subject(subject_id):
         'experiments':p.subject.experiments        
     }
 
+@route('/edit_subject/<subject_id>/<session>')
+@view('edit_session')
+def edit_session(subject_id,session):
+    subject = p.load(subject_id)
+    return {
+        'subject':subject,
+        'session':session,
+        'labels':p.subject.tasks,
+        'experiments':p.subject.experiments,
+        'types': ['preop','postop']       
+    }
+
+@post('/save_subject/<subject_id>/<session>')
+@view('save_session')
+def save_session(subject_id,session):
+    return {'form':repr(dict(request.forms))}
+    
+
 @post('/search_form')
 @view('list_subjects')
 def search_form():

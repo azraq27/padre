@@ -27,6 +27,26 @@ h1, h2, h3
   margin: 0 0 15px 0;
   padding: 15px 0 5px 0;
   color: #000;}
+ 
+  .h2_label {
+	  font: normal 120% 'century gothic', arial;
+	  padding: 15px 0 5px 0;
+	  margin: 0 0 15px 0;
+	    color: #000;
+  }
+
+.h1_textfield  { font: normal 100% 'century gothic', arial;
+    color: #000;
+    width: 150px;
+}
+
+select {font: normal 120% 'century gothic', arial;}
+
+.h1_button  { font: normal 150% 'century gothic', arial;
+    display: none;
+    color: #000;
+    width: 80px;
+}
 
 h2
 { font-size: 160%;

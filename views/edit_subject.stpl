@@ -1,7 +1,7 @@
-% include('header.stpl',title='PaDRe: Patient Data Repository for fMRI Data',tab='subjects')
+% include('header.stpl',title='PaDRe: Edit subject %s' % str(subject),new_tab='Edit Subject')
 % include('sidebar.stpl')
 
-<h1>Subject {{str(subject)}}</h1>
+<h1>Subject ID: <input id='subject_id' value='{{str(subject)}}' class='h1_textfield'/><input type='submit' class='h1_button' value='Update' style='width:80px;'></h1>
 
 % if len(unverified)>0:
 <h2>Unverified Sessions:</h2>
@@ -38,6 +38,12 @@
 	% end
 </table>
 %end
+
+<script>
+$('.h1_textfield').on('input',function() {
+	$('.h1_button').show()
+})
+</script>
 
 
 % include('footer.stpl')

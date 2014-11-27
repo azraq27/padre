@@ -18,6 +18,9 @@ dset
 '''
 
 class Dset(str):
+    def __new__(cls,subject,session,dset_fname,label=None,complete=True,meta={}):
+        return str.__new__(cls,dset_fname)
+        
     def __init__(self,subject,session,dset_fname,label=None,complete=True,meta={}):
         self._dset_fname = dset_fname
         self.complete = complete
@@ -78,6 +81,9 @@ class Subject(str):
     
     Subject objects can be obtained by calling the search function :meth:`padre.subjects`
     '''
+    def __new__(cls,subject_id,initial_data):
+        return str.__new__(cls,subject_id)
+    
     def __init__(self,subject_id,initial_data):
         self._subject_id = subject_id
         self.include = initial_data['include'] if 'include' in initial_data else True

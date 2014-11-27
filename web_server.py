@@ -125,4 +125,5 @@ def save_session(subject_id,session):
 if __name__ == '__main__':
     import socket
 #    run(host=socket.gethostname(),port=8003)
+    p.subjects()
     run(host='localhost',port=8003)

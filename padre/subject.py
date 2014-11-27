@@ -98,7 +98,7 @@ class Subject(str):
         self.labels = list(set(self.labels))
         self.experiments = list(set(self.labels))
         
-        self.meta = p.ForgivingDict.copy_nested_dict(initial_data['meta']) if 'meta' in initial_data
+        self.meta = p.ForgivingDict.copy_nested_dict(initial_data['meta']) if 'meta' in initial_data else p.ForgivingDict()
     
     @classmethod
     def load(cls,subject_id):

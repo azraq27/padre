@@ -19,7 +19,6 @@ dset
 
 class Dset(str):
     def __init__(self,subject,session,dset_fname,label=None,complete=True,meta={}):
-        [super init]
         self._dset_fname = dset_fname
         self.complete = complete
         self.meta = meta

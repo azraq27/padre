@@ -54,7 +54,7 @@ class Dset(str):
     
     @classmethod
     def from_dict(cls,subject,session,dict_source):
-        dset = cls(subject,session,dict_source['filename'])
+        dset = Dset(subject,session,dict_source['filename'])
         dset.complete = dict_source['complete']
         dset.meta = p.ForgivingDict.copy_nested_dict(dict_source['meta'])
         return dset
@@ -106,7 +106,7 @@ class Subject(str):
         json_file = p.subject_json(subject_id)
         try:
             with open(json_file) as f:
-                return cls(subject_id,json.loads(f.read()))
+                return Subject(subject_id,json.loads(f.read()))
         except (ValueError,IOError):
             p.error('Could not load valid JSON file for subject %s' % subject_id)
             return None

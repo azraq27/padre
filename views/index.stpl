@@ -1,0 +1,15 @@
+% include('header.stpl',title='PaDRe: Patient Data Repository for fMRI Data',tab='home')
+% include('sidebar.stpl')
+
+<h1>Web interface to PaDRe</h1>
+<p>Welcome to the web interface to the padre Python library.
+You can list subject under the "Subjects" tab, or search for a
+specific subject ID in the search field. Clicking on an experiment
+in the side bar will bring up a list of all subjects containing sessions
+with that experiment</p>
+<p>Each subject list shows a seperate list of subjects that have not been verified yet. New
+subjects auto-created by the library will show up here, and will not
+be listed by the padre Python library until they are verified</p>
+
+
+% include('footer.stpl')

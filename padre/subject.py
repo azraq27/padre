@@ -200,11 +200,11 @@ def _index_all_subjects(load_all=False):
             if os.path.exists(p.subject_json(subject_id)):
                 if subject_id not in _all_subjects:
                     _all_subjects[subject_id] = None
-                    if load_all:
-                        _index_one_subject(subject_id)
+                if load_all and _all_subjects[subject_id]==None:
+                    _index_one_subject(subject_id)
     if load_all:
         _indexed_and_loaded_all_subjects = True
-    print [x for x in _all_subjects if _all_subjects[x]==None]
+        print [x for x in _all_subjects if _all_subjects[x]==None]
 
 _index_all_subjects()
 

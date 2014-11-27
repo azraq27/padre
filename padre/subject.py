@@ -2,9 +2,6 @@ import padre as p
 import neural as nl
 import json,os,shutil,copy
 
-Somehow move include to session-level
-
-
 ''' padre v2.0 design:
 
 subject

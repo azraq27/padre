@@ -1,46 +1,74 @@
-<title>Edit session: {{subject_id}}</title>
-<link href='/styles.css' rel='stylesheet' type='text/css' />
-<body>
-<div class="header"><div class="padded">Edit {{subject_id}}: {{session}}</div></div>
-<div class=left_column>
-	<div class="padded">
-		<h1>Help:</h1>
-		
-		<h2>Label</h2>
-		<p>Generic label for type of dataset (e.g., "anatomy" or "dti" or "sdtones". 
-		Do not include any other qualifiers like "run1", that's already implied 
-		by the order of the runs</p>
-		
-		<p>Currently used labels (please try to keep consistent language):
-		<div class="indent">
-		% for label in labels:
-		{{ label }}<br>
+% include('header.stpl',title='PaDRe: Edit subject %s, session %s' % (str(subject),session),new_tab='Edit Session')
+% extra_sidebar = ['''
+<h3>Instructions</h3>
+
+<h4>Incomplete:</h4>
+<p>Mark this checkbox if the dataset was not finished, and should not be 
+included in standard analyses (the dataset will still be saved on disk)</p>
+
+<h4>Label</h4>
+<p>Generic label for type of dataset (e.g., "anatomy" or "dti" or name of task. 
+Do not include any other qualifiers like "run1"</p>
+
+''']
+% include('sidebar.stpl',extra=extra_sidebar)
+
+<style>
+.appearing_box { display: none; }
+</style>
+
+<h2><a href='/edit_subject/{{subject}}'>Back to subject {{subject}}</a></h2>
+
+<link rel="stylesheet" type="text/css" href="/style/datepicker.css" />
+
+<form action='/save_subject/{{subject}}/{{session}}' method=POST enctype="multipart/form-data">
+	<input type='hidden' name='subject_id' value='{{subject}}'/>
+	<h3>Date: <input type="text" id="datepicker"/></h3>
+	<h3>Experiment: <select class='h1_textfield' name='experiment'>
+		% for experiment in experiments:
+		<option value='{{experiment}}'
+		% if experiment==subject.sessions[session]["experiment"]:
+		selected
 		% end
-		</div>
-		</p>
-		
-		<h2>Incomplete:</h2>
-		<p>Mark this checkbox if the dataset was not finished, and should not be 
-		included in standard analyses</p>
-	</div>
-</div>
-<div class="right_column">
-<form action='/done' method=POST>
-	<input type='hidden' name='subject_id' value='{{subject_id}}'/>
-	Subject ID: <input type='text' name='new_subject_id' value='{{subject_id}}'/><br>
-	Experiment: <input type='text' name='experiment' value='{{subj.sessions[session]["experiment"]}}'><br>
-	Include? <input type='checkbox' name='include'{{"checked='checked'" if subj.include else ""}}>
-<p>
+		>{{experiment}}</option>
+		% end
+		<option value='new'>New Experiment</option>
+	</select>
+	<input class="appearing_box" type="text" name="new_experiment_text" placeholder="New experiment..."/>
+	</h3>
+	<h3>Type: <select class='h1_textfield' name='type'>
+		% for type in types:
+		<option value='{{type}}'
+		% if type==subject.sessions[session]["type"]:
+		selected
+		% end
+		>{{type}}</option>
+		% end
+		<option value='new'>New Type</option>
+	</select>
+	<input class="appearing_box" type="text" name="new_type_text" placeholder="New type..."/>
+	</h3>
+	<h3>Scan sheet: 
+	% if 'scan_sheets' in subject.sessions[session]:
+	{{subject.sessions[session]['scan_sheets']}}
+	% end
+	<input type="file" name="scan_sheet"/></h3>
+	<h3><input type='checkbox' name='include'{{"checked='checked'" if subject.include else ""}}/>&nbsp;
+		Include this session?</h3>
 	<table width=300>
 		<tr>
-			<td>Label</td>
-			<td>Filename</td>
-			<td>Incomplete?</td>
-			<td></td>
+			<th>Incomplete?</th>
+			<th>Label</th>
+			<th>Filename</th>
 		</tr>
-		% for label in subj.sessions[session]['labels']:
-		% 	for dset in dict(subj.sessions)[session]['labels'][label]:
+		% for label in subject.sessions[session]['labels']:
+		% 	for dset in dict(subject.sessions)[session]['labels'][label]:
 		<tr>
+			<td style='text-align:center'><input type='checkbox' name='incomplete' value='{{dset}}'
+				% if 'incomplete' in subject.sessions[session] and dset in subject.sessions[session]['incomplete']:
+					checked='checked'	
+				%end
+			></td>
 			<td>
 				<select name='label_{{dset}}'>
 					% for l in labels:
@@ -50,15 +78,11 @@
 					% end
 					>{{l}}</option>
 					% end
-					<option value="new_label">New (type in text field)</option>
+					<option value="new">New Label</option>
 				</select>
+				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
 			<td style="white-space:nowrap;">{{dset}}</td>
-			<td><input type='checkbox' name='incomplete' value='{{dset}}'
-				% if 'incomplete' in subj.sessions[session] and dset in subj.sessions[session]['incomplete']:
-					checked='checked'	
-				%end
-			></td>
 			<td>
 				<div class="new_label">
 					<input type="text" name="newlabel_{{dset}}" value="">
@@ -70,5 +94,22 @@
 	</table>
 <input type='submit' value='Save Changes'>
 </form>
-</body>
-</div>
+
+<script>
+$('select').change(function() {
+	$('.appearing_box').each(function(k,v) {
+		var el = $(v);
+		if(el.prev().find('option:selected').val()!='new') {
+			el.hide()
+		}
+	});
+	if($(this).find('option:selected').val()=='new')
+		$(this).next('.appearing_box').show();	
+});
+$(function() {
+	$( "#datepicker" ).datepicker();
+});
+</script>
+
+
+% include('footer.stpl')

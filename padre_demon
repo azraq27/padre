@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ''' daemon to automatically collect and organize data into padre'''
 
-import urllib2, re, json, os, shutil, socket, tarfile, tempfile
+import urllib2, re, json, os, shutil, socket, tarfile, tempfile, fnmatch
 from dateutil.parser import parse
 import neural as nl
 import padre as p
@@ -55,18 +55,21 @@ def import_to_padre(subject_id,session,dsets):
     subj.sessions[session] = session_dict
     subj.save()
 
-def import_archive(full_file,pi,subject_guess):
-#    tmp_location = '_tmp_unarchive'
+def import_archive(full_file,subject_guess):
     tmp_dir = tempfile.mkdtemp()
     tmp_location = os.path.join(tmp_dir,'_tmp_unarchive')
-    out_dir = os.path.join(processed_location,pi,subject_guess)
+    out_dir = os.path.join(processed_location,subject_guess)
     for d in [tmp_location,tmp_location + '-sorted']:
         if os.path.exists(d):
             shutil.rmtree(d)
-    os.makedirs(tmp_location)
     import_log[full_file] = {'modified':os.path.getmtime(full_file)}
-    with nl.notify('uncompressing...'):
-        nl.unarchive(full_file,tmp_location)
+    if nl.is_archive(full_file):
+        with nl.notify('uncompressing files...'):
+            os.makedirs(tmp_location)
+            nl.unarchive(full_file,tmp_location)
+    else:
+        with nl.notify('copying files...'):
+            shutil.copytree(full_file,tmp_location)
     with nl.notify('sorting files...'):
         nl.dicom.organize_dir(tmp_location)
     dsets_made = {}
@@ -129,15 +132,15 @@ def import_archive(full_file,pi,subject_guess):
 def unpack_new_archives(pi):
     with nl.notify('Scanning PI %s for new archives' % pi):
         for root,dirs,files in os.walk(os.path.join(import_location,pi)):
-            for fname in files:
+            for fname in files + dirs:
                 full_file = os.path.join(root,fname)
                 if full_file not in import_log:
                     # Add in a check for the modification date
-                    if nl.is_archive(full_file):
+                    if any([fnmatch.fnmatch(fname,m) for m in c.archive_masks]):
                         with nl.notify('Found new archive "%s"' % full_file):
                             subject_guess = os.path.basename(os.path.dirname(full_file))
                             nl.notify('guessing the subject number is %s' % subject_guess)
-                            import_archive(full_file,pi,subject_guess)
+                            import_archive(full_file,subject_guess)
 
 def rsync_remote(pi):
     with nl.notify('rsync\'ing data for PI %s' % pi):

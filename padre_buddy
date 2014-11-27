@@ -229,6 +229,13 @@ def padre_set(args):
 def padre_report(args):
     pass
 
+def padre_import(args):
+    subject_guess = args.subject
+    if subject_guess==None:
+        subject_guess = os.path.basename(args.directory)
+    import padre_demon
+    padre_demon.import_archive(args.directory,subject_guess)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--quiet','-q',action='store_true',help='just print the bare information (good for scripts)')
@@ -280,6 +287,10 @@ if __name__ == '__main__':
     parser_report = subparsers.add_parser('report',help='get database statistics')
     parser_report.add_argument('something',help='something identifying what you want')
     parser_report.set_defaults(func=padre_report)
+    
+    parser_import = subparsers.add_parser('import',help='manually import directory. If subject not explicitly set, will use directory name as subject id')
+    parser_import.add_argument('directory',help='directory containing raw data to import')
+    parser_import.set_defaults(func=padre_import)
     
     args = parser.parse_args()
     args.func(args)

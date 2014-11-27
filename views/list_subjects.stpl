@@ -1,18 +1,40 @@
-<title>Subjects</title>
-<link href='/styles.css' rel='stylesheet' type='text/css' />
-<body>
-<div class="header"><div class="padded">Subjects</div></div>
-<div class="column_wrapper">
-	<div class=left_column>
-		<div class="padded">
-		</div>
-	</div>
-	<div class="right_column">
-			% for subj in subjects:
-			% if unverified[subj]:
-			<b>(new)</b>
-			% end
-			<a href='/{{subj[0]}}'>{{subj[0]}}</a><br>
-			% end
-	</div>
-</div>
+% include('header.stpl',title='PaDRe: Patient Data Repository for fMRI Data',tab='subjects')
+% include('sidebar.stpl')
+
+% if len(unverified)>0:
+<h1>Subjects with unverified Scans:</h1>
+<table>
+	<tr>
+		<th>Subject ID</th>
+		<th>Last scan</th>
+		<th>Last experiment</th>
+	</tr>
+	% for subj in unverified:
+	<tr>
+		<td><a href='/edit_subject/{{str(subj)}}'>{{str(subj)}}</a></td>
+		<td>{{subj.sessions.values()[-1]['date'] if len(subj.sessions.values())>0 and 'date' in subj.sessions.values()[-1] else ''}}</td>
+		<td>{{subj.sessions.values()[-1]['experiment'] if len(subj.sessions.values())>0 and 'experiment' in subj.sessions.values()[-1] else ''}}</td>
+	</tr>
+	% end
+</table>
+%end
+
+% if len(subjects)>0:
+<h1>Subject List</h1>
+<table>
+	<tr>
+		<th>Subject ID</th>
+		<th>Last scan</th>
+		<th>Last experiment</th>
+	</tr>
+	% for subj in subjects:
+	<tr>
+		<td><a href='/edit_subject/{{str(subj)}}'>{{str(subj)}}</a></td>
+		<td>{{subj.sessions.values()[-1]['date'] if len(subj.sessions.values())>0 and 'date' in subj.sessions.values()[-1] else ''}}</td>
+		<td>{{subj.sessions.values()[-1]['experiment'] if len(subj.sessions.values())>0 and 'experiment' in subj.sessions.values()[-1] else ''}}</td>
+	</tr>
+	% end
+</table>
+% end
+
+% include('footer.stpl')

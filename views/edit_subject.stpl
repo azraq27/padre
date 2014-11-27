@@ -1,31 +1,49 @@
-<title>Subject: {{subject_id}}</title>
-<link href='/styles.css' rel='stylesheet' type='text/css' />
-<body>
-<div class="header"><div class="padded"><a class='back_link' href='/subjects'>Back to subject list</a><br>{{subject_id}}</div></div>
-<div class="column_wrapper">
-	<div class=left_column>
-		<div class="padded">
-			<h1>Help:</h1>
-		</div>
-	</div>
-	<div class="right_column">
-		<form action='/done' method=POST>
-			<h1>Sessions:</h1>
-			<table>
-				<tr>
-					<td>Date</td>
-					<td>Name</td>
-					<td>Experiment</td>
-				</tr>
-				% for sess in subj.sessions:
-				<tr>
-					<td><input name='{{sess}}_date' value='{{subj.sessions[sess]['date']}}'></td>
-					<td><a href='/{{subject_id}}/{{sess}}'>{{sess}}</a></td>
-					<td><input name='{{sess}}_experiment' value='{{subj.sessions[sess]["experiment"]}}'></td>
-				</tr>
-				% end
-			</table>
-			<input type='submit' value='Save'>
-		</form>
-	</div>
-</div>
+% include('header.stpl',title='PaDRe: Edit subject %s' % str(subject),new_tab='Edit Subject')
+% include('sidebar.stpl')
+
+<h1>Subject ID: <input id='subject_id' value='{{str(subject)}}' class='h1_textfield'/><input type='submit' class='h1_button' value='Update' style='width:80px;'></h1>
+
+% if len(unverified)>0:
+<h2>Unverified Sessions:</h2>
+<table>
+	<tr>
+		<th>Session</th>
+		<th>Date</th>
+		<th>Experiment</th>
+	</tr>
+	% for sess in unverified:
+	<tr>
+		<td><a href='/edit_subject/{{str(subject)}}/{{sess}}'>{{sess}}</a></td>
+		<td>{{subject.sessions[sess]['date'] if 'date' in subject.sessions else ''}}</td>
+		<td>{{subject.sessions[sess]['experiment'] if 'experiment' in subject.sessions else ''}}</td>
+	</tr>
+	% end
+</table>
+%end
+
+% if len(sessions)>0:
+<h2>Subject Sessions:</h2>
+<table>
+	<tr>
+		<th>Session</th>
+		<th>Date</th>
+		<th>Experiment</th>
+	</tr>
+	% for sess in sessions:
+	<tr>
+		<td><a href='/edit_subject/{{str(subject)}}/{{sess}}'>{{sess}}</a></td>
+		<td>{{subject.sessions[sess]['date'] if 'date' in subject.sessions else ''}}</td>
+		<td>{{subject.sessions[sess]['experiment'] if 'experiment' in subject.sessions else ''}}</td>
+	</tr>
+	% end
+</table>
+%end
+
+<script>
+$('.h1_textfield').on('input',function() {
+	$('.h1_button').show()
+})
+</script>
+
+
+% include('footer.stpl')

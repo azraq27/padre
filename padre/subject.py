@@ -67,6 +67,8 @@ class Dset(str):
             if self._info==None:
                 try:
                     self._info = nl.afni.dset_info(self.__abspath__())
+                except:
+                    pass
             return self._info
         else:
             return str.__getattribute__(self,name)

@@ -1,245 +1,131 @@
 import padre as p
+import neural as nl
 import json,os,shutil,copy
 
- 
-def _default_session(): 
-    return dict({
-        'date': '',
-        'type': '',
-        'experiment': '',
-        'labels': dict()
-    })
+Somehow move include to session-level
 
-class SessionExists(LookupError):
-    pass
 
-class Session(dict):
-    '''customized dictionary to add a couple helper methods'''
-    def __init__(self):
-        dict.__init__(self)
-        self.current_session = None
-    
-    def __enter__(self):
-        if len(self.keys()):
-            self.current_session = self.keys()[0]
-            return self.get(self.current_session)
-        return None
-    
-    def __exit__(self, type, value, traceback):
-        pass
+''' padre v2.0 design:
 
-class DsetFinder(list):
-    '''behaves as either a list of dsets or a function to search for a dset'''
-    def __init__(self,session_dict):
-        self.session_dict = session_dict
-    
-    def _dset_list(self):
-        dset_list = []
-        for sess in self.session_dict:
-            for label in self.session_dict[sess]['labels']:
-                dset_list += self.session_dict[sess]['labels'][label]
-        return dset_list
-    
-    def __getitem__(self,index):
-        return self.dset_list()[index]
-    
-    def __repr__(self):
-        return dict.__repr__(self._dset_list())
-    
-    def __str__(self):
-        return dict.__str__(self._dset_list())
-    
-    def __iter__(self):
-        for dset in self._dset_list():
-            yield dset
-    
-    def __call__(self,label=None,experiment=None,session=None,type=None,incomplete=False):
-        ''' returns a list of datasets matching all of the given parameters 
-        
-        .. warning::
-    
-            This method is convenient but don't cover every possibility. For example, if the 
-            anatomy scan for a functional session was lost, but there is another anatomy scan 
-            obtained at another date, these datasets will appear normally as ``subject.dsets('functional')``
-            and ``subject.dsets('anatomy')`` with no reference to the fact that they were obtained 
-            in different sessions. If you write your script session-centric, you can explicitly 
-            address these exception cases.
-        '''
-        if experiment==None and p.global_experiment:
-            experiment = p.global_experiment
-        return_dsets = []
-        if session:
-            include_sessions = [session]
-        else:
-            include_sessions = self.session_dict.keys()
-        for sess in include_sessions:
-            if sess in self.session_dict:
-                if type:
-                    if self.session_dict[sess]['type']!=type:
-                        continue
-                if experiment:
-                    if self.session_dict[sess]['experiment']!=experiment:
-                        continue
-                if label:
-                    include_labels = [label]
-                else:
-                    include_labels = self.session_dict[sess]['labels']
-                for label in include_labels:
-                    if label in self.session_dict[sess]['labels']:
-                        return_dsets += [dset for dset in self.session_dict[sess]['labels'][label] if self.session_dict.incomplete or ('incomplete' not in self.session_dict[sess]) or (dset not in self.session_dict[sess]['incomplete'])]                                                    
-        return return_dsets
-    
+subject
+    |- dsets(label,exp,...)
+    |- meta('demographics','clinical','behavioral','neuropsych')
+        # list available options:
+    |- sessions, experiments, labels, types
 
-class SessionFinder(dict):
-    '''behaves as either a dictionary of sessions or a function to search for a session'''
-    def __init__(self,*args,**kwargs):
-        '''will be initialized with session dictionary
-        defaults to ``incomplete`` = ``False``, which will not return dsets that are marked "incomplete"'''
-        dict.__init__(self,*args,**kwargs)
-        self.session_dir = None
-        self.incomplete = False
-    
-    def __getitem__(self,key):
-        sess = copy.deepcopy(dict.__getitem__(self,key))
-        if self.session_dir:
-            for label in sess['labels']:
-                sess['labels'][label] = [os.path.join(self.session_dir,key,dset) for dset in sess['labels'][label] if self.incomplete or ('incomplete' not in sess) or (dset not in sess['incomplete'])]
-        return sess
-    
-    def __call__(self,label=None,experiment=None,type=None,dset=None):
-        '''returns a dictionary containing all of the sessions matching all the given parameters
-            :label:         session contains datasets with given label
-            :type:          session is of given type
-            :experiment:    only sessions from given experiment
-            :dset:          session contains dset with given filename
-            :incomplete:    if ``False`` will filter out incomplete datasets in returned session
-        '''
-        if experiment==None and p.global_experiment:
-            experiment = p.global_experiment
-        return_dict = Session()
-        if dset:
-            if os.sep in dset:
-                dset = os.path.basename(dset.rstrip(os.sep))
-            for sess in self:
-                if experiment:
-                    if self[sess]['experiment']!=experiment:
-                        continue
-                for label in self[sess]['labels']:
-                    if dset in self[sess]['labels'][label]:
-                        return_dict[sess] = self[sess]
-        else:
-            for sess in self:
-                if experiment:
-                    if self[sess]['experiment']!=experiment:
-                        continue
-                if type:
-                    if self[sess]['type']!=type:
-                        continue
-                if label:
-                    if label not in self[sess]['labels']:
-                        continue
-                return_dict[sess] = self[sess]
-        
-        return return_dict
+dset
+    |- complete
+    |- meta('eprime','scan_sheet')
+    |- info #dset_info object
+    |- experiment, label, type, session
+'''
 
-class Subject(object):
-    '''abstract container for subject information
+class Dset(str):
+    def __init__(self,subject,session,dset_fname,label=None,complete=True,meta={}):
+        [super init]
+        self._dset_fname = dset_fname
+        self.complete = complete
+        self.meta = meta
+        
+        self.date = subject._sessions[session]['date']
+        self.experiment = subject._sessions[session]['experiment']
+        self.label = label
+        if self.label == None:
+            try:
+                for l in subject._sessions[session]['labels']:
+                    for d in subject._sessions[session]['labels'][l]:
+                        if d == dset_fname:
+                            self.label = l
+                            raise StopIteration
+            except StopIteration:
+                pass
+        self.type = subject._sessions[session]['type']
+        self.session = session
+        
+        self._info = None
+        self._subject = subject
     
-    Subject objects can either be returned by one of the high-level lookup functions
-    as part of a subject list (e.g., :meth:`p.subjects` ), or created individually using one of the class
-    creation functions
-    '''
-    def __init__(self,subject_id,*initial_data):
-        for key in root_level_attrs:
-            if key != 'sessions':
-                setattr(self, key, None)
-        
-        self.subject_id = subject_id
-        '''Experimental id - also available by casting as string (e.g., ``str(subject)``
-        or ``'%s' % subject``)
-        '''
-        self.include = True
-        '''Bool value of whether this subject should normally be used'''
-        
-        self.notes = ''
-        '''Free text notes on the subject'''
-        
-        self.sessions = SessionFinder()
-        '''Dictionary organized by scanning session. Each entry contains several keys relating
-        to session meta-data as well as a dictionary ``subject.sessions['labels']``. The keys
-        for this dataset are the descriptive labels for each dataset (e.g., "anatomy", "field_map"),
-        and the values are lists of the dataset filenames.
-        '''
-        
-        for dictionary in initial_data:
-            for key in dictionary:
-                if key=='sessions':
-                    self.sessions = SessionFinder(dictionary[key])
-                elif key=='dsets':
-                    pass
-                else:
-                    setattr(self, key, dictionary[key])
-        
-        self.dsets = DsetFinder(self.sessions)
-        
-        self.sessions.session_dir = p.sessions_dir(self)
-        
-        # Autopopulate ``subject`` and ``name`` fields in sessions:
-        for session in self.sessions:
-            self.sessions[session]['subject'] = self.subject_id
-            self.sessions[session]['name'] = session
+    def __abspath__(self):
+        '''return the absolute path the the dataset'''
+        return os.path.join(p.sessions_dir(_subject),session,_dset_fname)
+    
+    def __dict__(self):
+        return {
+            'filename': _dset_fname,
+            'complete': complete,
+            'meta': meta
+        }
     
     @classmethod
-    def load(cls,subject_id,data=None):
-        ''' returns a subject object initialized using JSON file (or supplied ``data`` argument) '''
+    def from_dict(cls,subject,session,dict_source):
+        dset = cls(subject,session,dict_source['filename'])
+        dset.complete = dict_source['complete']
+        dset.meta = p.ForgivingDict.copy_nested_dict(dict_source['meta'])
+        return dset
+    
+    def __str__(self):
+        return self.__abspath__()
+    
+    def __getattribute__(self,name):
+        if name=='info':
+            if self._info==None:
+                try:
+                    self._info = nl.afni.dset_info(self.__abspath__())
+            return self._info
+        else:
+            return str.__getattribute__(self,name)
+
+class Subject(str):
+    '''abstract container for subject information
+    
+    Subject objects can be obtained by calling the search function :meth:`padre.subjects`
+    '''
+    def __init__(self,subject_id,initial_data):
+        self._subject_id = subject_id
+        self.include = initial_data['include'] if 'include' in initial_data else True
+        self.notes = initial_data['notes'] if 'notes' in initial_data else ''
+        
+        self.sessions = []
+        self.labels = []
+        self.experiments = []
+        self._dsets = []
+        
+        self._sessions = initial_data['sessions'] if 'sessions' in initial_data else {}
+        for sess in self._sessions:
+            self.sessions.append(sess)
+            for label in self._sessions[sess]['labels']:
+                self.labels.append(label)
+                for dset in self._sessions[sess]['labels'][label]:
+                    self._dsets.append(Dset(self,sess,dset['filename'],label,dset['complete'],dset['meta']))
+        self.labels = list(set(self.labels))
+        self.experiments = list(set(self.labels))
+        
+        self.meta = p.ForgivingDict.copy_nested_dict(initial_data['meta']) if 'meta' in initial_data
+    
+    @classmethod
+    def load(cls,subject_id):
+        ''' returns a subject object initialized using JSON file '''
         if data==None:
             json_file = p.subject_json(subject_id)
             try:
                 with open(json_file) as f:
-                    data = json.loads(f.read())
+                    return cls(subject_id,json.loads(f.read()))
             except (ValueError,IOError):
                 p.error('Could not load valid JSON file for subject %s' % subject_id)
                 return None
-        return cls(subject_id,data)
-
-    @classmethod
-    def create(cls,subject_id):
-        ''' creates a new subject (loads old JSON if present and valid) '''
-        subj = None
-        if os.path.exists(p.subject_json(subject_id)):
-            subj = cls.load(subject_id)
-            if subj==None:
-                subj = cls(subject_id)              
-        else:
-            subj = cls(subject_id)
-        subj.init_directories()
-        subj.save()
-
-        return subj
     
-    def import_raw(self,new_dir,remove=False):
-        '''copies the directory ``dir`` into the raw directory, and deletes original if ``remove`` is ``True``'''
-        dest_dir = os.path.join(p.raw_dir(self),os.path.split(new_dir.rstrip('/'))[1])
-        if os.path.exists(dset_dir):
-            raise OSError('Cannot import "%s" into subject %s - directory already exists' % (new_dir,self))
-        if remove:
-            shutil.move(new_dir,dest_dir)
-        else:
-            shutil.copytree(new_dir,dest_dir)
-    
-    def add_attr(self,attribute):
-        '''adds a new root-level attribute
-        
-        This attribute will be available directly by calling subject.attribute,
-        and will persist across sessions (if the subject is saved)'''
-        if not attribute in dir(self):
-            setattr(self,attribute,None)
-            root_level_attrs.add(attribute)
-    
+    def __dict__(self):
+        {
+            'include': self.include,
+            'notes': self.notes,
+            'meta': self.meta,
+            
+        }
+             
     def save(self,json_file=None):
         ''' save current state to JSON file (overwrites) '''
         if json_file==None:
-            json_file = p.subject_json(self.subject_id)
+            json_file = p.subject_json(self._subject_id)
         save_dict = dict(self.__dict__)
         save_dict['sessions'] = dict(self.sessions)
         for session in save_dict['sessions']:
@@ -257,135 +143,93 @@ class Subject(object):
                 p.sessions_dir(self)
             ]:
             if not os.path.exists(d):
-                os.makedirs(d)
-    
-    def new_session(self,session_name):
-        ''' create a new session
-        
-        Inserts the proper data structure into the JSON file, as well as creating
-        the directory on disk.
-        '''
-        if session_name in self.sessions:
-            raise SessionExists
-        session_dir = os.path.join(p.sessions_dir(self),session_name)
-        if not os.path.exists(session_dir):
-            os.makedirs(session_dir)
-        self.sessions[session_name] = _default_session()
-    
-    def delete_session(self,session_name,purge=False):
-        ''' delete a session
-        
-        By default, will only delete the references to the data within the JSON file.
-        If ``purge`` is given as ``True``, then it will also delete the files from
-        the disk (be careful!). ``purge`` will also automatically call ``save``.'''
-        del(self.sessions[session_name])
-        if purge:
-            session_dir = os.path.join(p.sessions_dir(self),session_name)
-            if os.path.exists(session_dir):
-                shutil.rmtree(session_dir)
-            self.save()     
+                os.makedirs(d)   
     
     def __repr__(self):
-        return "subject(%s)" % (self.subject_id)
+        return "subject(%s)" % (self._subject_id)
     
     def __str__(self):
-        return self.subject_id
+        return self._subject_id
     
-    def pretty_print(self):
-        '''prints out a text representation of the subject data'''
-        print 'Subject %s:' % self.subject_id
-        print '='*50
-        print '\tinclude = %s' % str(self.include)
-        print '\tnotes = %s' % self.notes
-        print '\tattributes:'
-        print '\t\t%s' % ' '.join(set(self.__dict__.keys()) - set(['dsets', 'sessions', 'subject_id', 'labels', 'include', 'notes']))
-        print '----sessions---' + '-'*35
-        for sess in self.sessions:
-            print '|-- %s:' % sess
-            print '\tdate: %s' % self.sessions[sess]['date']
-            print '\ttype: %s' % self.sessions[sess]['type']
-            print '\texperiment: %s' % self.sessions[sess]['experiment']
-            print '\tother attributes:'
-            print '\t\t%s' % ' '.join(set(self.sessions[sess].keys()) - set(['date', 'type', 'labels', 'experiment']))
-            print '\tdatasets:'
-            for label in self.sessions[sess]['labels']:
-                print '\t\t%s:'  % label
-                for dset in self.sessions[sess]['labels'][label]:
-                    print '\t\t\t%s' % dset
-
-def rename(subject_id,new_subject_id,deep=False):
-    subj = Subject.load(subject_id)
-    if subj:
-        try:
-            os.rename(p.subject_dir(subject_id),p.subject_dir(new_subject_id))
-        except OSError:
-            nl.notify('Error: filesystem reported error moving %s to %s' % (subject_id,new_subject_id),level=nl.level.error)
+    def dsets(self,label=None,experiment=None,session=None,type=None,incomplete=False):
+        '''returns list of Dset objects matching the given criteria'''
+        if experiment==None and p._global_experiment:
+            experiment = p._global_experiment
+        return_dsets = []
+        if session:
+            include_sessions = [session]
         else:
-            subj.subject_id = new_subject_id
-            subj.save()
-            if deep:
-                for dset in subj.dsets():
-                    if str(subj) in os.path.basename(dset):
-                        new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
-                        try:
-                            os.rename(dset,new_name)
-                        except OSError:
-                            nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)                            
-            else:
-                nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
+            include_sessions = self._sessions.keys()
+        for sess in include_sessions:
+            if sess in self._sessions:
+                if type:
+                    if self._sessions[sess]['type']!=type:
+                        continue
+                if experiment:
+                    if self._session[sess]['experiment']!=experiment:
+                        continue
+                if label:
+                    include_labels = [label]
+                else:
+                    include_labels = self._sessions[sess]['labels']
+                for label in include_labels:
+                    if label in self._sessions[sess]['labels']:
+                        return_dsets += [Dset.from_dict(self,sess,dset) for dset in self._sessions[sess]['labels'][label] if incomplete or 'incomplete' not in self._sessions[sess]['labels'][label][dset] or self._sessions[sess]['labels'][label][dset]['incomplete']==False]
+        return return_dsets
 
-subject_ids = set()
+
 tasks = set()
 experiments = set()
-root_level_attrs = set()
-def index_subjects(save_subjects=False):
+types = set()
+_all_subjects = {}
+_indexed_and_loaded_all_subjects = False
+
+def _index_one_subject(subject_id):
+    _all_subjects[subject_id] = Subject.load(subject_id)
+    for session in _all_subjects[subject_id]._sessions:
+        session_dict = _all_subjects[subject_id]._sessions[session]
+        if 'experiment' in session_dict:
+            experiments.add(session_dict['experiment'])
+        if 'labels' in session_dict:
+            [tasks.add(x) for x in session_dict['labels']]
+        if 'type' in session_dict:
+            experiments.add(session_dict['type'])
+
+def _index_all_subjects(load_all=False):
     global _all_subjects
-    if save_subjects:
-        _all_subjects = []
     if os.path.exists(p.data_dir):
         for subject_id in os.listdir(p.data_dir):
             if os.path.exists(p.subject_json(subject_id)):
-                try:
-                    with open(p.subject_json(subject_id)) as subj_json:
-                        subject_data = json.loads(subj_json.read())
-                    [root_level_attrs.add(x) for x in subject_data.keys()]
-                    subject_ids.add(subject_id)
-                    for session in subject_data['sessions']:
-                        if 'experiment' in subject_data['sessions'][session] and subject_data['sessions'][session]['experiment']!='':
-                            experiments.add(subject_data['sessions'][session]['experiment'])
-                        if 'labels' in subject_data['sessions'][session]:
-                            [tasks.add(x) for x in subject_data['sessions'][session]['labels']]
-                    _all_subjects.append(Subject.load(subject_id,subject_data))
-                except ValueError:
-                    print p.subject_json(subject_id)
-                    p.error('Could not load valid JSON file for subject %s' % subject_id)
+                if subject_id not in _all_subjects:
+                    _all_subjects[subject_id] = None
+                    if load_all:
+                        _index_one_subject(subject_id)
+    if load_all:
+        _indexed_and_loaded_all_subjects = True
 
-_all_subjects = None
-def load_subjects():
-    global _all_subjects
-    _all_subjects = [Subject.load(x) for x in sorted(subject_ids)]
+_index_all_subjects()
 
-index_subjects(True)
-#load_subjects()
-
-
-def subjects(label=None,experiment=None,only_included=True):
+def subjects(experiment=None,label=None,type=None,only_included=True):
     '''returns a list of subject objects for all subjects with valid JSON files
     
-    if *label* is set, it will only return subjects who have datasets with that label
+    :experiment:    only return subjects that have a scan for the given experiment
+    :label:         only return subjects who have datasets with that label
+    :type:          only return subjects who have a session of given type
     
-    if *experiment* is set, will only return subjects that have a scan for the given experiment
-    
-    if *only_included* is True, will exclude any subjects with ``subject.include``
-    set to False
+    :only_included: if True, will exclude any subjects with ``subject.include``
+                    set to False
     '''
-    if experiment==None and p.global_experiment:
-        experiment = p.global_experiment
+    if not _indexed_and_loaded_all_subjects:
+        _index_all_subjects(True)
+    if experiment==None and p._global_experiment:
+        experiment = p._global_experiment
     all_subjs = list(_all_subjects)
     if label:
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]
     if experiment:
-        all_subjs = [x for x in all_subjs if experiment in [x.sessions[y]['experiment'] for y in x.sessions if 'experiment' in x.sessions[y]]]
+        all_subjs = [x for x in all_subjs if experiment in [x.sessions[y]['experiment'] for y in x.sessions]]
+    if type:
+        all_subjs = [x for x in all_subjs if type in [x.sessions[y]['type'] for y in x.sessions]]
     if only_included:
         all_subjs = [x for x in all_subjs if x.include]
     

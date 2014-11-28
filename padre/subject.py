@@ -188,11 +188,11 @@ def _index_one_subject(subject_id):
     _all_subjects[subject_id] = Subject.load(subject_id)
     for session in _all_subjects[subject_id]._sessions:
         session_dict = _all_subjects[subject_id]._sessions[session]
-        if 'experiment' in session_dict:
+        if 'experiment' in session_dict and session_dict['experiment']!='' and session_dict['experiment']!=None:
             experiments.add(session_dict['experiment'])
-        if 'labels' in session_dict:
+        if 'labels' in session_dict and session_dict['labels']!='' and session_dict['labels']!=None:
             [tasks.add(x) for x in session_dict['labels']]
-        if 'type' in session_dict:
+        if 'type' in session_dict and session_dict['type']!='' and session_dict['type']!=None:
             experiments.add(session_dict['type'])
 
 def _index_all_subjects(load_all=False):

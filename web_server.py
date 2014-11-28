@@ -30,8 +30,8 @@ def subjects():
     
     unverified = []
     for subj in subjects:
-        for sess in subj.sessions:
-            if 'unverified' in subj.sessions[sess] and subj.sessions[sess]['unverified']==True:
+        for sess in subj._sessions:
+            if 'unverified' in subj._sessions[sess]:
                 unverified.append(subj)
     subjects = list(set(subjects) - set(unverified))
     
@@ -47,12 +47,11 @@ def subjects():
 @view('edit_subject')
 def edit_subject(subject_id):
     subject = p.load(subject_id)
-    sessions = subject.sessions.keys()
     unverified = []
-    for sess in sessions:
-        if 'unverified' in subject.sessions[sess] and subject.sessions[sess]['unverified']==True:
+    for sess in subject._sessions:
+        if 'unverified' in subject._sessions[sess]:
             unverified.append(sess)
-    sessions = list(set(sessions) - set(unverified))
+    sessions = list(set(subject.sessions) - set(unverified))
     return {
         'subject':subject,
         'sessions':sessions,
@@ -69,7 +68,7 @@ def edit_session(subject_id,session):
         'session':session,
         'labels':p.subject.tasks,
         'experiments':p.subject.experiments,
-        'types': ['preop','postop']       
+        'types': p.subject.types
     }
 
 @post('/save_subject/<subject_id>/<session>')
@@ -82,12 +81,12 @@ def save_session(subject_id,session):
 @view('list_subjects')
 def search_form():
     search_string = request.forms.get('search_field')
-    matches = [x[0] for x in process.extract(search_string,[str(x) for x in p.subjects()]) if x[1]>80]
+    matches = [x[0] for x in process.extract(search_string,[str(x) for x in p.subjects()]) if x[1]>90]
     subjects = [p.load(x) for x in matches]
     unverified = []
     for subj in subjects:
-        for sess in subj.sessions:
-            if 'unverified' in subj.sessions[sess] and subj.sessions[sess]['unverified']==True:
+        for sess in subj._sessions:
+            if 'unverified' in subj._sessions[sess]:
                 unverified.append(subj)
     subjects = list(set(subjects) - set(unverified))
     

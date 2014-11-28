@@ -84,7 +84,7 @@ class Subject(str):
     def __new__(cls,subject_id,initial_data):
         return str.__new__(cls,subject_id)
     
-    def __init__(self,subject_id,initial_data):
+    def __init__(self,subject_id,initial_data={}):
         self._subject_id = subject_id
         self.include = initial_data['include'] if 'include' in initial_data else True
         self.notes = initial_data['notes'] if 'notes' in initial_data else ''
@@ -96,6 +96,8 @@ class Subject(str):
         
         self._sessions = initial_data['sessions'] if 'sessions' in initial_data else {}
         for sess in self._sessions:
+            if 'unverified' in self._sessions[sess]:
+                continue
             self.sessions.append(sess)
             for label in self._sessions[sess]['labels']:
                 self.labels.append(label)
@@ -122,19 +124,14 @@ class Subject(str):
             'include': self.include,
             'notes': self.notes,
             'meta': self.meta,
-            
+            'sessions': self._sessions
         }
              
     def save(self,json_file=None):
         ''' save current state to JSON file (overwrites) '''
         if json_file==None:
             json_file = p.subject_json(self._subject_id)
-        save_dict = dict(self.__dict__)
-        save_dict['sessions'] = dict(self.sessions)
-        for session in save_dict['sessions']:
-            for k in ['subject','name','dsets']:
-                if k in save_dict['sessions'][session]:
-                    del(save_dict['sessions'][session][k])
+        save_dict = self.__dict__()
         with open(json_file,'w') as f:
             f.write(json.dumps(save_dict, sort_keys=True, indent=2))
     
@@ -231,9 +228,9 @@ def subjects(experiment=None,label=None,type=None,only_included=True):
     if label:
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]
     if experiment:
-        all_subjs = [x for x in all_subjs if experiment in [x.sessions[y]['experiment'] for y in x.sessions]]
+        all_subjs = [x for x in all_subjs if experiment in [x._sessions[y]['experiment'] for y in x._sessions]]
     if type:
-        all_subjs = [x for x in all_subjs if type in [x.sessions[y]['type'] for y in x.sessions]]
+        all_subjs = [x for x in all_subjs if type in [x._sessions[y]['type'] for y in x._sessions]]
     if only_included:
         all_subjs = [x for x in all_subjs if x.include]
     

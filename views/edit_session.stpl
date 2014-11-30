@@ -27,7 +27,7 @@ Do not include any other qualifiers like "run1"</p>
 	<h3>Experiment: <select class='h1_textfield' name='experiment'>
 		% for experiment in experiments:
 		<option value='{{experiment}}'
-		% if experiment==subject.sessions[session]["experiment"]:
+		% if experiment==subject._sessions[session]["experiment"]:
 		selected
 		% end
 		>{{experiment}}</option>
@@ -39,7 +39,7 @@ Do not include any other qualifiers like "run1"</p>
 	<h3>Type: <select class='h1_textfield' name='type'>
 		% for type in types:
 		<option value='{{type}}'
-		% if type==subject.sessions[session]["type"]:
+		% if type==subject._sessions[session]["type"]:
 		selected
 		% end
 		>{{type}}</option>
@@ -49,8 +49,8 @@ Do not include any other qualifiers like "run1"</p>
 	<input class="appearing_box" type="text" name="new_type_text" placeholder="New type..."/>
 	</h3>
 	<h3>Scan sheet: 
-	% if 'scan_sheets' in subject.sessions[session]:
-	{{subject.sessions[session]['scan_sheets']}}
+	% if 'scan_sheets' in subject._sessions[session]:
+	{{subject._sessions[session]['scan_sheets']}}
 	% end
 	<input type="file" name="scan_sheet"/></h3>
 	<h3><input type='checkbox' name='include'{{"checked='checked'" if subject.include else ""}}/>&nbsp;
@@ -61,11 +61,11 @@ Do not include any other qualifiers like "run1"</p>
 			<th>Label</th>
 			<th>Filename</th>
 		</tr>
-		% for label in subject.sessions[session]['labels']:
-		% 	for dset in dict(subject.sessions)[session]['labels'][label]:
+		% for label in subject._sessions[session]['labels']:
+		% 	for dset in dict(subject._sessions)[session]['labels'][label]:
 		<tr>
 			<td style='text-align:center'><input type='checkbox' name='incomplete' value='{{dset}}'
-				% if 'incomplete' in subject.sessions[session] and dset in subject.sessions[session]['incomplete']:
+				% if 'incomplete' in subject._sessions[session] and dset in subject._sessions[session]['incomplete']:
 					checked='checked'	
 				%end
 			></td>

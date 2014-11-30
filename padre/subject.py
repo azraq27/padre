@@ -154,7 +154,7 @@ class Subject(str):
     def __str__(self):
         return self._subject_id
     
-    def dsets(self,label=None,experiment=None,session=None,type=None,incomplete=False):
+    def dsets(self,label=None,experiment=None,session=None,type=None,include_all=False):
         '''returns list of Dset objects matching the given criteria'''
         if experiment==None and p._global_experiment:
             experiment = p._global_experiment
@@ -163,6 +163,8 @@ class Subject(str):
             include_sessions = [session]
         else:
             include_sessions = self._sessions.keys()
+        if include_all==False:
+            include_sessions = [x for x in include_sessions if 'unverified' not in self._sessions[x] and include_sessions['include']==True]
         for sess in include_sessions:
             if sess in self._sessions:
                 if type:
@@ -177,7 +179,7 @@ class Subject(str):
                     include_labels = self._sessions[sess]['labels']
                 for label in include_labels:
                     if label in self._sessions[sess]['labels']:
-                        return_dsets += [Dset.from_dict(self,sess,dset) for dset in self._sessions[sess]['labels'][label] if incomplete or 'incomplete' not in self._sessions[sess]['labels'][label][dset] or self._sessions[sess]['labels'][label][dset]['incomplete']==False]
+                        return_dsets += [Dset.from_dict(self,sess,dset) for dset in self._sessions[sess]['labels'][label] if include_all or dset['complete']]
         return return_dsets
 
 

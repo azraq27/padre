@@ -45,7 +45,7 @@ def subjects():
 #    sort_key = lambda x: sorted([parse(y[1]) for y in x[1]])[0] if len(x[1]) else datetime.datetime(1,1,1)
 #    subjects = reversed(sorted([(str(s),[(sess,s.sessions[sess]['date']) for sess in s.sessions]) for s in p.subjects()],key=sort_key))
     return {
-            'subjects':reversed(sorted(subjects,key=sort_key)),
+            'subjects':list(reversed(sorted(subjects,key=sort_key))),
             'unverified':unverified,
             'experiments':p.subject.experiments
     }

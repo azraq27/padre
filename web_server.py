@@ -47,7 +47,7 @@ def subjects():
 #    subjects = reversed(sorted([(str(s),[(sess,s.sessions[sess]['date']) for sess in s.sessions]) for s in p.subjects()],key=sort_key))
     return {
             'subjects':list(reversed(sorted(subjects,key=sort_key))),
-            'unverified':unverified,
+            'unverified':list(reversed(sorted(unverified,key=sort_key))),
             'experiments':p.subject.experiments
     }
 

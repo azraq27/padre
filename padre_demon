@@ -25,11 +25,11 @@ def save_log():
     with open(import_log_file,'w') as f:
         f.write(json.dumps(import_log))    
 
-def import_archive(full_file,pi,subject_guess):
+def import_archive(full_file,subject_guess):
 #    tmp_location = '_tmp_unarchive'
     tmp_dir = tempfile.mkdtemp()
     tmp_location = os.path.join(tmp_dir,'_tmp_unarchive')
-    out_dir = os.path.join(processed_location,pi,subject_guess)
+    out_dir = os.path.join(processed_location,subject_guess)
     for d in [tmp_location,tmp_location + '-sorted']:
         if os.path.exists(d):
             shutil.rmtree(d)

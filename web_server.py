@@ -1,5 +1,5 @@
 import padre as p
-from bottle import route,view,run,post,static_file,request
+from bottle import route,view,run,post,static_file,request,redirect
 import datetime
 from dateutil.parser import parse
 from fuzzywuzzy import process
@@ -66,6 +66,12 @@ def edit_subject(subject_id):
         'unverified':unverified,
         'experiments':p.subject.experiments        
     }
+
+@post('/save_subject')
+def save_subject():
+    old_subject_id = request.forms.get('old_subject_id')
+    new_subject_id = request.forms.get('subject_id')
+    return "%s -> %s" % (old_subject_id,new_subject_id)
 
 @route('/edit_subject/<subject_id>/<session>')
 @view('edit_session')

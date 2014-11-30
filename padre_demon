@@ -26,7 +26,6 @@ def save_log():
         f.write(json.dumps(import_log))    
 
 def import_archive(full_file,subject_guess):
-#    tmp_location = '_tmp_unarchive'
     tmp_dir = tempfile.mkdtemp()
     tmp_location = os.path.join(tmp_dir,'_tmp_unarchive')
     out_dir = os.path.join(processed_location,subject_guess)

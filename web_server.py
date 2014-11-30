@@ -125,5 +125,4 @@ if __name__ == '__main__':
     import socket
 #    run(host=socket.gethostname(),port=8003)
     p.subjects()
-    print p.subject.experiments
     run(host='localhost',port=8003)

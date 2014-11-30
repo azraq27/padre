@@ -14,8 +14,8 @@
 	% for sess in unverified:
 	<tr>
 		<td><a href='/edit_subject/{{str(subject)}}/{{sess}}'>{{sess}}</a></td>
-		<td>{{subject.sessions[sess]['date'] if 'date' in subject.sessions else ''}}</td>
-		<td>{{subject.sessions[sess]['experiment'] if 'experiment' in subject.sessions else ''}}</td>
+		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions else ''}}</td>
+		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions else ''}}</td>
 	</tr>
 	% end
 </table>
@@ -32,8 +32,8 @@
 	% for sess in sessions:
 	<tr>
 		<td><a href='/edit_subject/{{str(subject)}}/{{sess}}'>{{sess}}</a></td>
-		<td>{{subject.sessions[sess]['date'] if 'date' in subject.sessions else ''}}</td>
-		<td>{{subject.sessions[sess]['experiment'] if 'experiment' in subject.sessions else ''}}</td>
+		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions else ''}}</td>
+		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions else ''}}</td>
 	</tr>
 	% end
 </table>

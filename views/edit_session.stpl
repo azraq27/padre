@@ -23,7 +23,7 @@ Do not include any other qualifiers like "run1"</p>
 
 <form action='/save_subject/{{subject}}/{{session}}' method=POST enctype="multipart/form-data">
 	<input type='hidden' name='subject_id' value='{{subject}}'/>
-	<h3>Date: <input type="text" id="datepicker" value="{{subject._session[session]["date"]}}"/></h3>
+	<h3>Date: <input type="text" id="datepicker" value="{{subject._sessions[session]["date"]}}"/></h3>
 	<h3>Experiment: <select class='h1_textfield' name='experiment'>
 		% for experiment in experiments:
 		<option value='{{experiment}}'

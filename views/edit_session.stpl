@@ -66,8 +66,7 @@ Do not include any other qualifiers like "run1"</p>
 			<th>Label</th>
 			<th>Filename</th>
 		</tr>
-		% for label in subject._sessions[session]['labels']:
-		% 	for dset in dict(subject._sessions)[session]['labels'][label]:
+		% for dset in sorted(subject.dsets(session=session),key=lambda d: d['filename']):
 		<tr>
 			<td style='text-align:center'><input type='checkbox' name='complete_{{dset['filename']}}'
 				% if dset['complete']:
@@ -75,26 +74,25 @@ Do not include any other qualifiers like "run1"</p>
 				%end
 			></td>
 			<td>
-				<select name='label_{{dset}}'>
-					% for l in labels:
+				<select name='label_{{dset['filename']}}'>
+					% for l in subject.labels:
 					<option value='{{l}}'
-					% if l==label:
+					% if l==dset.label:
 						selected="selected"
 					% end
 					>{{l}}</option>
 					% end
 					<option value="new">New Label</option>
 				</select>
-				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
+				<input class="appearing_box" type="text" name="label_{{dset['filename']}}_new" placeholder="New label..."/>
 			</td>
 			<td style="white-space:nowrap;">{{dset['filename']}}</td>
 			<td>
 				<div class="new_label">
-					<input type="text" name="newlabel_{{dset}}" value="">
+					<input type="text" name="newlabel_{{dset['filename']}}" value="">
 				</div>
 			</td>
 		</tr>
-		%	end
 		% end
 	</table>
 <input type='submit' value='Save Changes'>

@@ -1,7 +1,10 @@
 % include('header.stpl',title='PaDRe: Edit subject %s' % str(subject),new_tab='Edit Subject')
 % include('sidebar.stpl')
 
+<form method=post action='/save_subject'>
+<input type=hidden name='old_subject_id' value={{subject}}/>
 <h1>Subject ID: <input id='subject_id' value='{{subject}}' class='h1_textfield'/><input type='submit' class='h1_button' value='Update' style='width:80px;'></h1>
+</form>
 
 % if len(unverified)>0:
 <h2>Unverified Sessions:</h2>

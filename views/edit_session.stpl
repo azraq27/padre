@@ -67,16 +67,14 @@ Do not include any other qualifiers like "run1"</p>
 			<th>Filename</th>
 		</tr>
 		% for dset in subject.dsets(session=session):
-		% print repr(dset)
-		% print dset.__class__
 		<tr>
-			<td style='text-align:center'><input type='checkbox' name='complete_{{dset['filename']}}'
+			<td style='text-align:center'><input type='checkbox' name='complete_{{dset}}'
 				% if dset['complete']:
 					checked='checked'	
 				%end
 			></td>
 			<td>
-				<select name='label_{{dset['filename']}}'>
+				<select name='label_{{dset}}'>
 					% for l in subject.labels:
 					<option value='{{l}}'
 					% if l==dset.label:
@@ -86,12 +84,12 @@ Do not include any other qualifiers like "run1"</p>
 					% end
 					<option value="new">New Label</option>
 				</select>
-				<input class="appearing_box" type="text" name="label_{{dset['filename']}}_new" placeholder="New label..."/>
+				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
 			<td style="white-space:nowrap;">{{dset['filename']}}</td>
 			<td>
 				<div class="new_label">
-					<input type="text" name="newlabel_{{dset['filename']}}" value="">
+					<input type="text" name="newlabel_{{dset}}" value="">
 				</div>
 			</td>
 		</tr>

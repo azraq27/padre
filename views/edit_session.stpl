@@ -37,6 +37,11 @@ Do not include any other qualifiers like "run1"</p>
 	<input class="appearing_box" type="text" name="new_experiment_text" placeholder="New experiment..."/>
 	</h3>
 	<h3>Type: <select class='h1_textfield' name='type'>
+		<option value='none'
+		% if subject._sessions[session]['type']==None:
+		selected
+		% end
+		>None</option>
 		% for type in types:
 		<option value='{{type}}'
 		% if type==subject._sessions[session]["type"]:

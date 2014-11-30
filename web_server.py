@@ -88,7 +88,9 @@ def edit_session(subject_id,session):
 @post('/save_subject/<subject_id>/<session>')
 @view('save_session')
 def save_session(subject_id,session):
-    return {'form':repr(dict(request.forms))}
+    date = parse(request.forms.get("date")).strftime("%Y-%m-%d")
+    experiment = request.forms.get("experiment")
+    return {'form':[date,experiment]}
     
 
 @post('/search_form')

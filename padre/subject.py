@@ -164,7 +164,7 @@ class Subject(str):
         else:
             include_sessions = self._sessions.keys()
         if include_all==False:
-            include_sessions = [x for x in include_sessions if 'unverified' not in self._sessions[x] and include_sessions['include']==True]
+            include_sessions = [x for x in include_sessions if 'unverified' not in self._sessions[x] and self._sessions[x]['include']==True]
         for sess in include_sessions:
             if sess in self._sessions:
                 if type:

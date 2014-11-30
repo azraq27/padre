@@ -23,7 +23,7 @@ Do not include any other qualifiers like "run1"</p>
 
 <form action='/save_subject/{{subject}}/{{session}}' method=POST enctype="multipart/form-data">
 	<input type='hidden' name='subject_id' value='{{subject}}'/>
-	<h3>Date: <input type="text" id="datepicker" value="{{subject._sessions[session]["date"]}}"/></h3>
+	<h3>Date: <input type="text" name="date" id="datepicker" value="{{subject._sessions[session]["date"]}}"/></h3>
 	<h3>Experiment: <select class='h1_textfield' name='experiment'>
 		% for experiment in experiments:
 		<option value='{{experiment}}'
@@ -62,15 +62,15 @@ Do not include any other qualifiers like "run1"</p>
 		Include this session?</h3>
 	<table width=300>
 		<tr>
-			<th>Incomplete?</th>
+			<th>Complete?</th>
 			<th>Label</th>
 			<th>Filename</th>
 		</tr>
 		% for label in subject._sessions[session]['labels']:
 		% 	for dset in dict(subject._sessions)[session]['labels'][label]:
 		<tr>
-			<td style='text-align:center'><input type='checkbox' name='incomplete' value='{{dset}}'
-				% if 'incomplete' in subject._sessions[session] and dset in subject._sessions[session]['incomplete']:
+			<td style='text-align:center'><input type='checkbox' name='complete_{{dset['filename']}}'
+				% if dset['complete']:
 					checked='checked'	
 				%end
 			></td>

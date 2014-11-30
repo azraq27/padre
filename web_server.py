@@ -17,6 +17,7 @@ def favicon():
 @view('index')
 def index():
     return {'experiments':p.subject.experiments}
+    
 
 @route('/list_subjects')
 @view('list_subjects')

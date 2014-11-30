@@ -35,10 +35,12 @@ def subjects():
                 unverified.append(subj)
     subjects = list(set(subjects) - set(unverified))
     
+    sort_key = lambda s: sorted([parse(s._sessions[sess]['date']) for sess in s._sessions if 'date' in s._sessions[sess]])[0]
+    
 #    sort_key = lambda x: sorted([parse(y[1]) for y in x[1]])[0] if len(x[1]) else datetime.datetime(1,1,1)
 #    subjects = reversed(sorted([(str(s),[(sess,s.sessions[sess]['date']) for sess in s.sessions]) for s in p.subjects()],key=sort_key))
     return {
-            'subjects':subjects,
+            'subjects':reversed(sorted(subjects,key=sort_key)),
             'unverified':unverified,
             'experiments':p.subject.experiments
     }

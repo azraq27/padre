@@ -193,7 +193,7 @@ def _index_one_subject(subject_id):
         if 'labels' in session_dict and session_dict['labels']!='' and session_dict['labels']!=None:
             [tasks.add(x) for x in session_dict['labels']]
         if 'type' in session_dict and session_dict['type']!='' and session_dict['type']!=None:
-            experiments.add(session_dict['type'])
+            types.add(session_dict['type'])
 
 def _index_all_subjects(load_all=False):
     global _all_subjects

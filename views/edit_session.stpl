@@ -82,7 +82,7 @@ Do not include any other qualifiers like "run1"</p>
 				</select>
 				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
-			<td style="white-space:nowrap;">{{dset}}</td>
+			<td style="white-space:nowrap;">{{dset['filename']}}</td>
 			<td>
 				<div class="new_label">
 					<input type="text" name="newlabel_{{dset}}" value="">

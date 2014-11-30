@@ -21,10 +21,11 @@ class Dset(str):
     def __new__(cls,subject,session,dset_fname,label=None,complete=True,meta={}):
         return str.__new__(cls,dset_fname)
         
-    def __init__(self,subject,session,dset_fname,label=None,complete=True,meta={}):
+    def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
         self._dset_fname = dset_fname
         self.complete = complete
         self.meta = meta
+        self.md5 = md5
         
         self.date = subject._sessions[session]['date']
         self.experiment = subject._sessions[session]['experiment']
@@ -52,13 +53,15 @@ class Dset(str):
         return {
             'filename': _dset_fname,
             'complete': complete,
+            'md5': md5,
             'meta': meta
         }
     
     @classmethod
     def from_dict(cls,subject,session,dict_source):
         dset = Dset(subject,session,dict_source['filename'])
-        dset.complete = dict_source['complete']
+        dset.complete = dict_source['complete'] if 'complete' in dict_source else True
+        dset.md5 = dict_source['md5'] if 'md5' in dict_source else None
         dset.meta = p.ForgivingDict.copy_nested_dict(dict_source['meta'])
         return dset
     

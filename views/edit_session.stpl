@@ -66,8 +66,9 @@ Do not include any other qualifiers like "run1"</p>
 			<th>Label</th>
 			<th>Filename</th>
 		</tr>
-		% print repr(subject.dsets(session=session))
 		% for dset in subject.dsets(session=session):
+		% print repr(dset)
+		% print dset.__class__
 		<tr>
 			<td style='text-align:center'><input type='checkbox' name='complete_{{dset['filename']}}'
 				% if dset['complete']:

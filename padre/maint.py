@@ -1,5 +1,5 @@
 import padre as p
-import os
+import os,shutil
 
 def strip_directories(s):
     '''strip fixed leading directories and duplicate files from subjects'''
@@ -83,3 +83,40 @@ def rename(subject_id,new_subject_id,deep=False):
                             nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)                            
             else:
                 nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
+
+def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
+    fuzzyness = 80
+    subj = create_subject(subject_id)
+    try:
+        subj.new_session(session)
+    except p.subject.SessionExists:
+        pass
+    session_dict = dict(subj._sessions[session])
+    session_dict['unverified'] = True
+    session_dict['date'] = '-'.join(session[4:],session[4:6],session[6:8])
+    inverted_labels = {}
+    for label in c.dset_labels:
+        for dset in c.dset_labels[label]:
+            inverted_labels[dset] = label
+    for full_dset in sorted(dsets,key=lambda x:(int(os.path.basename(x).split('-')[1]),int(os.path.basename(x).split('-')[2]))):
+        dset = {}
+        dset['filename'] = os.path.basename(full_dset)
+        if dset['filename'] not in [x['filename'] for x in subj.dsets():
+            dset['md5'] = nl.utils.hash(full_dset)
+            dset['complete'] = True
+            dset['meta'] = {}
+            label_match = process.extractOne(dset['filename'].split('-')[3],inverted_labels.keys())
+            if label_match[1] >= fuzzyness:
+                label = inverted_labels[label_match[0]]
+            else:
+                label = 'unsorted'
+            if label not in session_dict['labels']:
+                session_dict['labels'][label] = []
+            session_dict['labels'][label].append(dset)
+            dset_fname = os.path.join(p.sessions_dir(subj),session,dset['filename'])
+            if not os.path.exists(dset_fname):
+                shutil.move(full_dset,dset_fname)
+    for raw in raw_data:
+        shutil.move(os.path.join(dir_prefix,'raw',raw),p.raw_dir(subj))
+    subj._sessions[session] = session_dict
+    subj.save()

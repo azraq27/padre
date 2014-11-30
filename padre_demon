@@ -25,36 +25,6 @@ def save_log():
     with open(import_log_file,'w') as f:
         f.write(json.dumps(import_log))    
 
-def import_to_padre(subject_id,session,dsets):
-    fuzzyness = 80
-    subj = p.subject.Subject.create(subject_id)
-    try:
-        subj.new_session(session)
-    except p.subject.SessionExists:
-        pass
-    session_dict = dict(subj.sessions[session])
-    session_dict['unverified'] = True
-    inverted_labels = {}
-    for label in c.dset_labels:
-        for dset in c.dset_labels[label]:
-            inverted_labels[dset] = label
-    for full_dset in sorted(dsets,key=lambda x:(int(os.path.basename(x).split('-')[1]),int(os.path.basename(x).split('-')[2]))):
-        dset = os.path.basename(full_dset)
-        if dset not in subj.dsets:
-            label_match = process.extractOne(dset.split('-')[3],inverted_labels.keys())
-            if label_match[1] >= fuzzyness:
-                label = inverted_labels[label_match[0]]
-            else:
-                label = 'unsorted'
-            if label not in session_dict['labels']:
-                session_dict['labels'][label] = []
-            session_dict['labels'][label].append(dset)
-            dset_fname = os.path.join(p.sessions_dir(subj),session,dset)
-            if not os.path.exists(dset_fname):
-                shutil.move(full_dset,dset_fname)
-    subj.sessions[session] = session_dict
-    subj.save()
-
 def import_archive(full_file,pi,subject_guess):
 #    tmp_location = '_tmp_unarchive'
     tmp_dir = tempfile.mkdtemp()
@@ -100,10 +70,8 @@ def import_archive(full_file,pi,subject_guess):
                         nl.notify('successfully created dataset %s' % (subdir+'.nii.gz'))
                 else:
                     nl.notify('failed to create dataset from directory %s' % subdir,level=nl.level.error)
-        nl.notify('importing into padre...')
-        for session in dsets_made:
-            import_to_padre(subject_guess,session,dsets_made[session])
         nl.notify('moving raw data...')
+        raw_data = []
         for subdir in os.listdir(tmp_location + '-sorted'):
             out_file = os.path.join(out_dir,'raw',subdir + '.tgz')
             if not os.path.exists(out_file):
@@ -112,6 +80,8 @@ def import_archive(full_file,pi,subject_guess):
                         tgz.add(os.path.join(tmp_location + '-sorted',subdir))
                 except tarfile.TarError:
                     nl.notify('Error creating compressed raw directory %s' % out_file,level=nl.level.error)
+                else:
+                    raw_data.append(subdir + '.tgz')
         for r,ds,fs in os.walk(tmp_location):
             for f in fs:
                 out_file = os.path.join(out_dir,'raw','unsorted',r.lstrip(tmp_location).lstrip('/'),f)
@@ -119,6 +89,10 @@ def import_archive(full_file,pi,subject_guess):
                     if not os.path.exists(os.path.dirname(out_file)):
                         os.makedirs(os.path.dirname(out_file))
                     shutil.move(os.path.join(r,f),out_file)
+                    raw_data.append(os.path.join('unsorted',r.lstrip(tmp_location).lstrip('/'),f))
+        nl.notify('importing into padre...')
+        for session in dsets_made:
+            p.maint.import_to_padre(subject_guess,session,dsets_made[session],raw_data,out_dir)
     else:
         nl.notify('didn\'t find any files...')
     shutil.rmtree(tmp_dir)

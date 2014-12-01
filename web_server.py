@@ -116,7 +116,7 @@ def save_session(subject_id,session):
                     label = request.forms.get('label_%s_new' % dset_fname)
                     if label not in subj._sessions[session]['labels']:
                         subj._sessions[session]['labels'][label] = []
-                i = subj._sessions[session]['labels'][dset.label].index(dset_fname)
+                i = [x['filename'] for x in subj._sessions[session]['labels'][dset.label]].index(dset_fname)
                 del(subj._sessions[session]['labels'][dset.label][i])
                 if len(subj._sessions[session]['labels'][dset.label])==0:
                     del(subj._sessions[session]['labels'][dset.label])

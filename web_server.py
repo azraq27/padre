@@ -105,7 +105,7 @@ def save_session(subject_id,session):
     for dset in subject.dsets(session=session):
         # label_dset
         # label_dset_new
-        
+        pass
     return {'form':[date,experiment,repr(scan_sheet)]}
     
 

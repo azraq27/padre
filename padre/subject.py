@@ -17,7 +17,7 @@ dset
     |- experiment, label, type, session
 '''
 
-class Dset(str):
+class Dset(object):
     def __new__(cls,subject,session,dset_fname,label=None,complete=True,meta={}):
         return str.__new__(cls,dset_fname)
         
@@ -85,7 +85,7 @@ class Dset(str):
         else:
             return str.__getattribute__(self,name)
 
-class Subject(str):
+class Subject(object):
     '''abstract container for subject information
     
     Subject objects can be obtained by calling the search function :meth:`padre.subjects`

@@ -47,14 +47,14 @@ class Dset(str):
     
     def __abspath__(self):
         '''return the absolute path the the dataset'''
-        return os.path.join(p.sessions_dir(self._subject),session,_dset_fname)
+        return os.path.join(p.sessions_dir(self._subject),self.session,self._dset_fname)
     
     def __dict__(self):
         return {
-            'filename': _dset_fname,
-            'complete': complete,
-            'md5': md5,
-            'meta': meta
+            'filename': self._dset_fname,
+            'complete': self.complete,
+            'md5': self.md5,
+            'meta': self.meta
         }
     
     @classmethod

@@ -102,7 +102,7 @@ class Subject(str):
         
         self._sessions = initial_data['sessions'] if 'sessions' in initial_data else {}
         for sess in self._sessions:
-            if 'unverified' in self._sessions[sess]:
+            if 'unverified' in self._sessions[sess] and not p._include_all:
                 continue
             self.sessions.append(sess)
             for label in self._sessions[sess]['labels']:
@@ -167,7 +167,7 @@ class Subject(str):
         else:
             include_sessions = self._sessions.keys()
         if include_all==False:
-            include_sessions = [x for x in include_sessions if 'unverified' not in self._sessions[x] and ('include' not in self._sessions[x] or self._sessions[x]['include']==True)]
+            include_sessions = [x for x in include_sessions if p._include_all or 'unverified' not in self._sessions[x] and ('include' not in self._sessions[x] or self._sessions[x]['include']==True)]
         for sess in include_sessions:
             if sess in self._sessions:
                 if type:

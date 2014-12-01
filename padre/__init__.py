@@ -5,6 +5,7 @@ Library to organize patient imaging data'''
 version = 2.0
 
 _global_experiment = None
+_include_all = False
 
 from config import *
 

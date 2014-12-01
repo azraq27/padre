@@ -34,7 +34,7 @@ class Dset(str):
             try:
                 for l in subject._sessions[session]['labels']:
                     for d in subject._sessions[session]['labels'][l]:
-                        if d == dset_fname:
+                        if d['filename'] == dset_fname:
                             self.label = l
                             raise StopIteration
             except StopIteration:

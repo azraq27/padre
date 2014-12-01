@@ -69,7 +69,7 @@ class Dset(str):
         if absolute:
             return self.__abspath__()
         else:
-            return _dset_fname
+            return self._dset_fname
     
     def __getattribute__(self,name):
         if name=='info':

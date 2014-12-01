@@ -18,9 +18,6 @@ dset
 '''
 
 class Dset(object):
-    def __new__(cls,subject,session,dset_fname,label=None,complete=True,meta={}):
-        return str.__new__(cls,dset_fname)
-        
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
         self._dset_fname = dset_fname
         self.complete = complete
@@ -72,7 +69,7 @@ class Dset(object):
             return self._dset_fname
     
     def __repr__(self):
-        return self.__str__()
+        return self._dset_fname
     
     def __getattribute__(self,name):
         if name=='info':
@@ -83,16 +80,13 @@ class Dset(object):
                     pass
             return self._info
         else:
-            return str.__getattribute__(self,name)
+            return object.__getattribute__(self,name)
 
 class Subject(object):
     '''abstract container for subject information
     
     Subject objects can be obtained by calling the search function :meth:`padre.subjects`
     '''
-    def __new__(cls,subject_id,initial_data):
-        return str.__new__(cls,subject_id)
-    
     def __init__(self,subject_id,initial_data={}):
         self._subject_id = subject_id
         self.include = initial_data['include'] if 'include' in initial_data else True

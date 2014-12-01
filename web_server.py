@@ -108,21 +108,16 @@ def save_session(subject_id,session):
     subj._sessions[session]['notes'] = request.forms.get("notes")
     subj._sessions[session]['include'] = request.forms.get("include")
     for dset in subj.dsets(session=session,include_all=True):
-        print 'label_%s' % dset
-        label = request.forms.get('label_%s' % dset)
+        dset_fname = dset.__str__(False)
+        label = request.forms.get('label_%s' % dset_fname)
         if label:
             if dset.label!=label:
                 if label=='new':
-                    label = request.forms.get('label_%s_new' % dset)
+                    label = request.forms.get('label_%s_new' % dset_fname)
                     if label not in subj._sessions[session]['labels']:
                         subj._sessions[session]['labels'][label] = []
-                i = None
-                for di in xrange(len(subj._sessions[session]['labels'][dset.label])):
-                    d = subj._sessions[session]['labels'][dset.label][di]
-                    if str(d)==str(dset):
-                        i = di
-                if i:
-                    del(subj._sessions[session]['labels'][dset.label][i])
+                i = subj._sessions[session]['labels'][dset.label].index(dset_fname)
+                del(subj._sessions[session]['labels'][dset.label][i])
                 if len(subj._sessions[session]['labels'][dset.label])==0:
                     del(subj._sessions[session]['labels'][dset.label])
                 subj._sessions[session]['labels'][label].append(dset)

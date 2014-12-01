@@ -108,6 +108,7 @@ def save_session(subject_id,session):
     subj._sessions[session]['notes'] = request.forms.get("notes")
     subj._sessions[session]['include'] = request.forms.get("include")
     for dset in subj.dsets(session=session,include_all=True):
+        print 'label_%s' % dset
         label = request.forms.get('label_%s' % dset)
         if label:
             if dset.label!=label:

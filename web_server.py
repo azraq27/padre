@@ -89,7 +89,6 @@ def edit_session(subject_id,session):
 @view('save_session')
 def save_session(subject_id,session):
     subj = p.load(subject_id)
-    
     subj._sessions[session]['date'] = parse(request.forms.get("date")).strftime("%Y-%m-%d")
     experiment = request.forms.get("experiment")
     if experiment=='new':
@@ -121,7 +120,10 @@ def save_session(subject_id,session):
                 if len(subj._sessions[session]['labels'][dset.label])==0:
                     del(subj._sessions[session]['labels'][dset.label])
                 subj._sessions[session]['labels'][label].append(dset.__dict__())
-    return {'form':[subj.__dict__()]}
+    if 'unverified' in subj._sessions[session]:
+        del(subj._sessions[session]['unverified'])
+    subj.save()
+    redirect('/edit_subject/%s' % subj)
     
 
 @post('/search_form')

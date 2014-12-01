@@ -74,7 +74,7 @@ def rename(subject_id,new_subject_id,deep=False):
             subj.subject_id = new_subject_id
             subj.save()
             if deep:
-                for dset in subj.dsets():
+                for dset in subj.dsets(include_all=True):
                     if str(subj) in os.path.basename(dset):
                         new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
                         try:
@@ -101,7 +101,7 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
     for full_dset in sorted(dsets,key=lambda x:(int(os.path.basename(x).split('-')[1]),int(os.path.basename(x).split('-')[2]))):
         dset = {}
         dset['filename'] = os.path.basename(full_dset)
-        if dset['filename'] not in [x['filename'] for x in subj.dsets():
+        if dset['filename'] not in [x['filename'] for x in subj.dsets(include_all=True):
             dset['md5'] = nl.utils.hash(full_dset)
             dset['complete'] = True
             dset['meta'] = {}

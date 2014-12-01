@@ -107,7 +107,7 @@ def save_session(subject_id,session):
 #        scan_sheet.save(os.path.join(p.sessions_dir(subj),session))
     subj._sessions[session]['notes'] = request.forms.get("notes")
     subj._sessions[session]['include'] = request.forms.get("include")
-    for dset in subj.dsets(session=session):
+    for dset in subj.dsets(session=session,include_all=True):
         label = request.forms.get('label_%s' % dset)
         if dset.label!=label:
             if label=='new':

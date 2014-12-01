@@ -68,7 +68,7 @@ Do not include any other qualifiers like "run1"</p>
 			<th>Label</th>
 			<th>Filename</th>
 		</tr>
-		% for dset in sorted(subject.dsets(session=session)):
+		% for dset in sorted(subject.dsets(session=session,include_all=True)):
 		<tr>
 			<td style='text-align:center'><input type='checkbox' name='complete_{{dset}}'
 				% if dset.complete:

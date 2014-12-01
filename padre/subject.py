@@ -71,6 +71,9 @@ class Dset(str):
         else:
             return self._dset_fname
     
+    def __repr__(self):
+        return self.__str__()
+    
     def __getattribute__(self,name):
         if name=='info':
             if self._info==None:

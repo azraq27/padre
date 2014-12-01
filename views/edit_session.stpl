@@ -59,7 +59,7 @@ Do not include any other qualifiers like "run1"</p>
 	% end
 	<input type="file" name="scan_sheet"/></h3>
 	<h3>Session Notes:<br/>
-	<textarea name="notes">{{subject._sessions[session]['notes'] if 'notes' in subject._sessions[session] else ''}}</textarea></h3>
+	<textarea cols=60 rows=5 name="notes">{{subject._sessions[session]['notes'] if 'notes' in subject._sessions[session] else ''}}</textarea></h3>
 	<h3><input type='checkbox' name='include'{{"checked='checked'" if subject.include else ""}}/>&nbsp;
 		Include this session?</h3>
 	<table width=300>

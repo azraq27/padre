@@ -108,7 +108,9 @@ def save_session(subject_id,session):
     subj._sessions[session]['include'] = True if request.forms.get("include") else False
     for dset in subj.dsets(session=session,include_all=True):
         dset_fname = dset.__str__(False)
-        dset.complete = True if request.forms.get('complete_%s'%dset_fname) else False
+        i = [x['filename'] for x in subj._sessions[session]['labels'][dset.label]].index(dset_fname)
+        subj._sessions[session]['labels'][dset.label][i]['complete'] = True if request.forms.get('complete_%s'%dset_fname) else False
+        dset.complete = subj._sessions[session]['labels'][dset.label][i]['complete']
         label = request.forms.get('label_%s' % dset_fname)
         if label:
             if dset.label!=label:
@@ -116,7 +118,6 @@ def save_session(subject_id,session):
                     label = request.forms.get('label_%s_new' % dset_fname)
                     if label not in subj._sessions[session]['labels']:
                         subj._sessions[session]['labels'][label] = []
-                i = [x['filename'] for x in subj._sessions[session]['labels'][dset.label]].index(dset_fname)
                 del(subj._sessions[session]['labels'][dset.label][i])
                 if len(subj._sessions[session]['labels'][dset.label])==0:
                     del(subj._sessions[session]['labels'][dset.label])

@@ -114,8 +114,13 @@ def save_session(subject_id,session):
                 label = request.forms.get('label_%s_new' % dset)
                 if label not in subj._sessions[session]['labels']:
                     subj._sessions[session]['labels'][label] = []
-            i = subj._sessions[session]['labels'][dset.label].index(dset)
-            del(subj._sessions[session]['labels'][dset.label][i])
+            i = None
+            for di in xrange(len(subj._sessions[session]['labels'][dset.label])):
+                d = subj._sessions[session]['labels'][dset.label][di]
+                if str(d)==str(dset):
+                    i = di
+            if i:
+                del(subj._sessions[session]['labels'][dset.label][i])
             if len(subj._sessions[session]['labels'][dset.label])==0:
                 del(subj._sessions[session]['labels'][dset.label])
             subj._sessions[session]['labels'][label].append(dset)

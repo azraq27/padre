@@ -111,7 +111,7 @@ def save_session(subject_id,session):
         # label_dset
         # label_dset_new
 #        pass
-    return {'form':[subj.__dict__(),scan_sheet,scan_sheet.filename,scan_sheet.save]}
+    return {'form':[subj.__dict__(),scan_sheet]}
     
 
 @post('/search_form')

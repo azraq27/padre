@@ -120,7 +120,7 @@ def save_session(subject_id,session):
                 del(subj._sessions[session]['labels'][dset.label][i])
                 if len(subj._sessions[session]['labels'][dset.label])==0:
                     del(subj._sessions[session]['labels'][dset.label])
-                subj._sessions[session]['labels'][label].append(dset)
+                subj._sessions[session]['labels'][label].append(dset.__dict__())
     return {'form':[subj.__dict__()]}
     
 

@@ -109,21 +109,22 @@ def save_session(subject_id,session):
     subj._sessions[session]['include'] = request.forms.get("include")
     for dset in subj.dsets(session=session,include_all=True):
         label = request.forms.get('label_%s' % dset)
-        if dset.label!=label:
-            if label=='new':
-                label = request.forms.get('label_%s_new' % dset)
-                if label not in subj._sessions[session]['labels']:
-                    subj._sessions[session]['labels'][label] = []
-            i = None
-            for di in xrange(len(subj._sessions[session]['labels'][dset.label])):
-                d = subj._sessions[session]['labels'][dset.label][di]
-                if str(d)==str(dset):
-                    i = di
-            if i:
-                del(subj._sessions[session]['labels'][dset.label][i])
-            if len(subj._sessions[session]['labels'][dset.label])==0:
-                del(subj._sessions[session]['labels'][dset.label])
-            subj._sessions[session]['labels'][label].append(dset)
+        if label:
+            if dset.label!=label:
+                if label=='new':
+                    label = request.forms.get('label_%s_new' % dset)
+                    if label not in subj._sessions[session]['labels']:
+                        subj._sessions[session]['labels'][label] = []
+                i = None
+                for di in xrange(len(subj._sessions[session]['labels'][dset.label])):
+                    d = subj._sessions[session]['labels'][dset.label][di]
+                    if str(d)==str(dset):
+                        i = di
+                if i:
+                    del(subj._sessions[session]['labels'][dset.label][i])
+                if len(subj._sessions[session]['labels'][dset.label])==0:
+                    del(subj._sessions[session]['labels'][dset.label])
+                subj._sessions[session]['labels'][label].append(dset)
     return {'form':[subj.__dict__()]}
     
 

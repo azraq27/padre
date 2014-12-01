@@ -174,7 +174,7 @@ class Subject(str):
                     if self._sessions[sess]['type']!=type:
                         continue
                 if experiment:
-                    if self._session[sess]['experiment']!=experiment:
+                    if self._sessions[sess]['experiment']!=experiment:
                         continue
                 if label:
                     include_labels = [label]

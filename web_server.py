@@ -90,7 +90,23 @@ def edit_session(subject_id,session):
 def save_session(subject_id,session):
     date = parse(request.forms.get("date")).strftime("%Y-%m-%d")
     experiment = request.forms.get("experiment")
-    return {'form':[date,experiment]}
+    if experiment=='new':
+        experiment = request.forms.get("new_experiment_text")
+    type = request.forms.get("type")
+    if type=='none':
+        type = None
+    if type=='new':
+        type = request.forms.get("new_type_text")
+    scan_sheet = request.forms.get("scan_sheet")
+    # scan_sheet.filename
+    # scan_sheet.save()
+    # notes
+    include = request.forms.get("include")
+    for dset in subject.dsets(session=session):
+        # label_dset
+        # label_dset_new
+        
+    return {'form':[date,experiment,repr(scan_sheet)]}
     
 
 @post('/search_form')

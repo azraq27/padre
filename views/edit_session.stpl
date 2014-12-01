@@ -87,11 +87,6 @@ Do not include any other qualifiers like "run1"</p>
 				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
 			<td style="white-space:nowrap;">{{dset}}</td>
-			<td>
-				<div class="new_label">
-					<input type="text" name="newlabel_{{dset}}" value="">
-				</div>
-			</td>
 		</tr>
 		% end
 	</table>

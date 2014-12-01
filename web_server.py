@@ -97,7 +97,7 @@ def save_session(subject_id,session):
         type = None
     if type=='new':
         type = request.forms.get("new_type_text")
-    scan_sheet = request.forms.get("scan_sheet")
+    scan_sheet = request.files.get("scan_sheet")
     # scan_sheet.filename
     # scan_sheet.save()
     # notes
@@ -106,7 +106,7 @@ def save_session(subject_id,session):
         # label_dset
         # label_dset_new
 #        pass
-    return {'form':[date,experiment,repr(scan_sheet)]}
+    return {'form':[date,experiment,scan_sheet.filename]}
     
 
 @post('/search_form')

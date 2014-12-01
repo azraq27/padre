@@ -123,7 +123,7 @@ class Subject(str):
             return None
     
     def __dict__(self):
-        {
+        return {
             'include': self.include,
             'notes': self.notes,
             'meta': self.meta,

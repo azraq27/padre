@@ -1,1 +1,3 @@
-{{form}}
+% for v in form:
+{{repr(v)}}
+% end

@@ -102,6 +102,7 @@ def save_session(subject_id,session):
         type = request.forms.get("new_type_text")
     subj._sessions[session]['type'] = type
     scan_sheet = request.files.get("scan_sheet")
+#    if scan_sheet != 'None':
     # scan_sheet.filename
     # scan_sheet.save()
     # notes
@@ -110,7 +111,7 @@ def save_session(subject_id,session):
         # label_dset
         # label_dset_new
 #        pass
-    return {'form':[subj.__dict__(),repr(scan_sheet)]}
+    return {'form':[subj.__dict__(),scan_sheet,scan_sheet.filename,scan_sheet.save]}
     
 
 @post('/search_form')

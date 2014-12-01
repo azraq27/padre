@@ -102,10 +102,10 @@ def save_session(subject_id,session):
     # scan_sheet.save()
     # notes
     include = request.forms.get("include")
-    for dset in subject.dsets(session=session):
+#    for dset in subject.dsets(session=session):
         # label_dset
         # label_dset_new
-        pass
+#        pass
     return {'form':[date,experiment,repr(scan_sheet)]}
     
 

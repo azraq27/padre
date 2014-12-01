@@ -105,9 +105,10 @@ def save_session(subject_id,session):
         subj._sessions[session]['scan_sheet'] = scan_sheet.filename
 #        scan_sheet.save(os.path.join(p.sessions_dir(subj),session))
     subj._sessions[session]['notes'] = request.forms.get("notes")
-    subj._sessions[session]['include'] = request.forms.get("include")
+    subj._sessions[session]['include'] = True if request.forms.get("include") else False
     for dset in subj.dsets(session=session,include_all=True):
         dset_fname = dset.__str__(False)
+        dset.complete = True if request.forms.get('complete_%s'%dset_fname) else False
         label = request.forms.get('label_%s' % dset_fname)
         if label:
             if dset.label!=label:

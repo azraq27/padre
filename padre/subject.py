@@ -47,7 +47,7 @@ class Dset(str):
     
     def __abspath__(self):
         '''return the absolute path the the dataset'''
-        return os.path.join(p.sessions_dir(_subject),session,_dset_fname)
+        return os.path.join(p.sessions_dir(self._subject),session,_dset_fname)
     
     def __dict__(self):
         return {
@@ -65,8 +65,11 @@ class Dset(str):
         dset.meta = p.ForgivingDict.copy_nested_dict(dict_source['meta'])
         return dset
     
-    def __str__(self):
-        return self.__abspath__()
+    def __str__(self,absolute=True):
+        if absolute:
+            return self.__abspath__()
+        else:
+            return _dset_fname
     
     def __getattribute__(self,name):
         if name=='info':

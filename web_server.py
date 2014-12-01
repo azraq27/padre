@@ -102,16 +102,24 @@ def save_session(subject_id,session):
         type = request.forms.get("new_type_text")
     subj._sessions[session]['type'] = type
     scan_sheet = request.files.get("scan_sheet")
-#    if scan_sheet != 'None':
-    # scan_sheet.filename
-    # scan_sheet.save()
-    # notes
-    include = request.forms.get("include")
-#    for dset in subject.dsets(session=session):
-        # label_dset
-        # label_dset_new
-#        pass
-    return {'form':[subj.__dict__(),scan_sheet==None]}
+    if scan_sheet != None:
+        subj._sessions[session]['scan_sheet'] = scan_sheet.filename
+#        scan_sheet.save(os.path.join(p.sessions_dir(subj),session))
+    subj._sessions[session]['notes'] = request.forms.get("notes")
+    subj._sessions[session]['include'] = request.forms.get("include")
+    for dset in subj.dsets(session=session):
+        label = request.forms.get('label_%s' % dset)
+        if dset.label!=label:
+            if label=='new':
+                label = request.forms.get('label_%s_new' % dset)
+                if label not in subj._sessions[session]['labels']:
+                    subj._sessions[session]['labels'][label] = []
+            i = subj._sessions[session]['labels'][dset.label].index(dset)
+            del(subj._sessions[session]['labels'][dset.label][i])
+            if len(subj._sessions[session]['labels'][dset.label])==0:
+                del(subj._sessions[session]['labels'][dset.label])
+            subj._sessions[session]['labels'][label].append(dset)
+    return {'form':[subj.__dict__()]}
     
 
 @post('/search_form')

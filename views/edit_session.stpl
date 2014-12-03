@@ -109,9 +109,9 @@ Do not include any other qualifiers like "run1"</p>
 				</tr>
 				% for meta in dset.meta:
 				<tr>
-					<td>{{meta['type']}}</td>
+					<td>{{meta}}</td>
 					<td>file</td>
-					<td>{{meta['filename']}}</td>
+					<td>{{dset.meta[meta]}}</td>
 				</tr>
 				% end
 			</td>

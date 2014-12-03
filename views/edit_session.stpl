@@ -70,13 +70,13 @@ Do not include any other qualifiers like "run1"</p>
 		</tr>
 		% for dset in sorted(subject.dsets(session=session,include_all=True),key=lambda d: int(str(d).split('-')[2]) if len(str(d).split('-'))>2 else 0):
 		<tr>
-			<td style='text-align:center'><input type='checkbox' name='complete_{{dset}}'
+			<td style='text-align:center'><input type='checkbox' name='complete_{{dset.__str__(False)}}'
 				% if dset.complete:
 					checked='checked'	
 				%end
 			></td>
 			<td>
-				<select name='label_{{dset}}'>
+				<select name='label_{{dset.__str__(False)}}'>
 					% for l in subject.labels:
 					<option value='{{l}}'
 					% if l==dset.label:
@@ -86,7 +86,7 @@ Do not include any other qualifiers like "run1"</p>
 					% end
 					<option value="new">New Label</option>
 				</select>
-				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
+				<input class="appearing_box" type="text" name="label_{{dset.__str__(False)}}_new" placeholder="New label..."/>
 			</td>
 			<td style="white-space:nowrap;">
 				<a style='cursor:pointer' class='dset_link'>

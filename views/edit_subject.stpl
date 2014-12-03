@@ -34,7 +34,7 @@
 	</tr>
 	% for sess in sessions:
 	<tr
-	% if not subject._sessions[sess]['include'] if 'include' in subject._sessions[sess]:
+	% if 'include' in subject._sessions[sess] and not subject._sessions[sess]['include']:
 	class='not_include'
 	% end
 	>

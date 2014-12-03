@@ -125,7 +125,7 @@ Do not include any other qualifiers like "run1"</p>
 
 <script>
 $('.dset_link').click(function() {
-	$(this).parent().parent().next().slideDown();
+	$(this).parent().parent().next().toggle();
 });
 $('select').change(function() {
 	$('.appearing_box').each(function(k,v) {

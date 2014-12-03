@@ -116,7 +116,7 @@ $(function() {
 });
 
 function showMeta(me) {
-	$(me).show();
+	$('#' + me).show();
 }
 </script>
 

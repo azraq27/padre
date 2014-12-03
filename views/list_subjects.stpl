@@ -28,7 +28,11 @@
 		<th>Last experiment</th>
 	</tr>
 	% for subj in subjects:
-	<tr>
+	<tr
+	% if not subj.include or not all([x['include'] in subj._sessions]):
+	style='background-color:#555'
+	% end
+	>
 		<td><a href='/edit_subject/{{str(subj)}}'>{{str(subj)}}</a></td>
 		<td>{{subj._sessions.values()[-1]['date'] if len(subj._sessions.values())>0 and 'date' in subj._sessions.values()[-1] else ''}}</td>
 		<td>{{subj._sessions.values()[-1]['experiment'] if len(subj._sessions.values())>0 and 'experiment' in subj._sessions.values()[-1] else ''}}</td>

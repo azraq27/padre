@@ -117,6 +117,7 @@ Do not include any other qualifiers like "run1"</p>
 			</td>
 		</tr>
 		% end
+		</table>
 		% end
 	</table>
 <input type='submit' value='Save Changes'>

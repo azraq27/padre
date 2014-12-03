@@ -15,7 +15,7 @@
 		<th>Experiment</th>
 	</tr>
 	% for sess in unverified:
-	<tr>
+	<tr class='not_include'>
 		<td><a href='/edit_subject/{{subject}}/{{sess}}'>{{sess}}</a></td>
 		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions[sess] else ''}}</td>
 		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions[sess] else ''}}</td>
@@ -33,7 +33,11 @@
 		<th>Experiment</th>
 	</tr>
 	% for sess in sessions:
-	<tr>
+	<tr
+	% if not subject._sessions[sess]['include'] if 'include' in subject._sessions[sess]:
+	class='not_include'
+	% end
+	>
 		<td><a href='/edit_subject/{{subject}}/{{sess}}'>{{sess}}</a></td>
 		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions[sess] else ''}}</td>
 		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions[sess] else ''}}</td>

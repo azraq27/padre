@@ -30,7 +30,7 @@
 	% for subj in subjects:
 	<tr
 	% if not subj.include or not all([subj._sessions[x]['include'] for x in subj._sessions if 'include' in subj._sessions[x]]):
-	style='background-color:#555'
+	style='background-color:#555 !important'
 	% end
 	>
 		<td><a href='/edit_subject/{{str(subj)}}'>{{str(subj)}}</a></td>

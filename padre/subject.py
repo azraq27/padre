@@ -236,7 +236,7 @@ def subjects(experiment=None,label=None,type=None,only_included=True):
         all_subjs = [x for x in all_subjs if experiment in [x._sessions[y]['experiment'] for y in x._sessions]]
     if type:
         all_subjs = [x for x in all_subjs if type in [x._sessions[y]['type'] for y in x._sessions]]
-    if only_included:
+    if only_included and not p._include_all:
         all_subjs = [x for x in all_subjs if x.include]
     
     return all_subjs

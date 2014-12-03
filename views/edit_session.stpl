@@ -102,7 +102,7 @@ Do not include any other qualifiers like "run1"</p>
 
 <script>
 $('#dset_link').click(function() {
-	$('tr').closest().show();
+	$(this).parent().parent().hide();
 });
 $('select').change(function() {
 	$('.appearing_box').each(function(k,v) {

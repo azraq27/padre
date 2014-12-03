@@ -104,6 +104,7 @@ Do not include any other qualifiers like "run1"</p>
 function showMeta(i) {
 	el = $('#' + i);
 	el.show();
+	window.alert(i);
 }
 $('select').change(function() {
 	$('.appearing_box').each(function(k,v) {

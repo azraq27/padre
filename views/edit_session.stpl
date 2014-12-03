@@ -88,7 +88,7 @@ Do not include any other qualifiers like "run1"</p>
 				</select>
 				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
-			<td style="white-space:nowrap;"><a id='dset_link'>{{dset.__str__(False)}}</a></td>
+			<td style="white-space:nowrap;"><a class='dset_link'>{{dset.__str__(False)}}</a></td>
 		</tr>
 		<tr style='display:none' id='meta'>
 			<td></td>
@@ -101,8 +101,8 @@ Do not include any other qualifiers like "run1"</p>
 </form>
 
 <script>
-$('#dset_link').click(function() {
-	$(this).parent().parent().hide();
+$('.dset_link').click(function() {
+	$(this).parent().parent().next().show();
 });
 $('select').change(function() {
 	$('.appearing_box').each(function(k,v) {

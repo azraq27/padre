@@ -89,7 +89,7 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
     subj = create_subject(subject_id)
     try:
         subj.new_session(session)
-    except p.subject.SessionExists:
+    except SessionExists:
         pass
     session_dict = dict(subj._sessions[session])
     session_dict['unverified'] = True

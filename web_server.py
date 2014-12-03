@@ -111,6 +111,7 @@ def save_session(subject_id,session):
         i = [x['filename'] for x in subj._sessions[session]['labels'][dset.label]].index(dset_fname)
         subj._sessions[session]['labels'][dset.label][i]['complete'] = True if request.forms.get('complete_%s'%dset_fname) else False
         dset.complete = subj._sessions[session]['labels'][dset.label][i]['complete']
+        print dset.complete
         label = request.forms.get('label_%s' % dset_fname)
         if label:
             if dset.label!=label:

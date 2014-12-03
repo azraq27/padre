@@ -116,6 +116,7 @@ $(function() {
 });
 
 function showMeta(me) {
+	window.alert('hmm');
 	$(me).next('tr').show();
 }
 </script>

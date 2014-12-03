@@ -101,6 +101,9 @@ Do not include any other qualifiers like "run1"</p>
 </form>
 
 <script>
+function showMeta(me) {
+	$('#' + me).show();
+}
 $('select').change(function() {
 	$('.appearing_box').each(function(k,v) {
 		var el = $(v);
@@ -114,10 +117,6 @@ $('select').change(function() {
 $(function() {
 	$( "#datepicker" ).datepicker();
 });
-
-function showMeta(me) {
-	$('#' + me).show();
-}
 </script>
 
 

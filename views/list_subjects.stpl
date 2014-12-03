@@ -29,7 +29,7 @@
 	</tr>
 	% for subj in subjects:
 	<tr
-	% if not subj.include or not all([x['include'] for x in subj._sessions]):
+	% if not subj.include or not all([subj._sessions[x]['include'] for x in subj._sessions]):
 	style='background-color:#555'
 	% end
 	>

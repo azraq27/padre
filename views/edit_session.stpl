@@ -88,13 +88,35 @@ Do not include any other qualifiers like "run1"</p>
 				</select>
 				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
-			<td style="white-space:nowrap;"><a style='cursor:pointer' class='dset_link'>{{dset.__str__(False)}}</a></td>
+			<td style="white-space:nowrap;">
+			% if len(dset.meta):
+				<a style='cursor:pointer' class='dset_link'>
+			% end
+					{{dset.__str__(False)}}
+			% if len(dset.meta):
+				</a>
+			% end
+			</td>
 		</tr>
+		% if len(dset.meta):
 		<tr style='display:none' id='meta'>
-			<td></td>
-			<td></td>
-			<td>Hi there!</td>
+			<td colspan=3>
+				<table>
+				<tr>
+					<th>name</th>
+					<th>type</th>
+					<th>meta data</th>
+				</tr>
+				% for meta in dset.meta:
+				<tr>
+					<td>{{meta['type']}}</td>
+					<td>file</td>
+					<td>{{meta['filename']}}</td>
+				</tr>
+				% end
+			</td>
 		</tr>
+		% end
 		% end
 	</table>
 <input type='submit' value='Save Changes'>

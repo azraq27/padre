@@ -114,6 +114,7 @@ Do not include any other qualifiers like "run1"</p>
 			</td>
 		</tr>
 		</table>
+		Add data: <input type=text/> <input type=file/>
 		% end
 	</table>
 <input type='submit' value='Save Changes'>

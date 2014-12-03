@@ -88,7 +88,7 @@ Do not include any other qualifiers like "run1"</p>
 				</select>
 				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
-			<td style="white-space:nowrap;"><a onclick="showMeta('meta_{{dset.__str__(False)}}')">{{dset.__str__(False)}}</a></td>
+			<td style="white-space:nowrap;"><a onclick="$('#meta_{{dset.__str__(False)}}').show()">{{dset.__str__(False)}}</a></td>
 		</tr>
 		<tr style='display:none' id='meta_{{dset.__str__(False)}}'>
 			<td></td>
@@ -101,11 +101,6 @@ Do not include any other qualifiers like "run1"</p>
 </form>
 
 <script>
-function showMeta(i) {
-	el = $('#' + i);
-	el.show();
-	window.alert(i);
-}
 $('select').change(function() {
 	$('.appearing_box').each(function(k,v) {
 		var el = $(v);

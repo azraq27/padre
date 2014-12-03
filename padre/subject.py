@@ -211,7 +211,6 @@ def _index_all_subjects(load_all=False):
                     _index_one_subject(subject_id)
     if load_all:
         _indexed_and_loaded_all_subjects = True
-        print [x for x in _all_subjects if _all_subjects[x]==None]
 
 _index_all_subjects()
 

@@ -22,5 +22,9 @@ Documentation: http://padre.readthedocs.org
       'Topic :: Scientific/Engineering',
       'Intended Audience :: Science/Research',
       'Development Status :: 3 - Alpha'
+  ],
+  install_requires=[
+      'neural-fmri',
+      'pydicom'
   ]
 )

@@ -102,7 +102,7 @@ Do not include any other qualifiers like "run1"</p>
 
 <script>
 function showMeta(i) {
-	el = $('#' + i)
+	el = $('#' + i);
 	el.show();
 }
 $('select').change(function() {

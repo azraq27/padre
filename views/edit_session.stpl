@@ -89,16 +89,11 @@ Do not include any other qualifiers like "run1"</p>
 				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
 			<td style="white-space:nowrap;">
-			% if len(dset.meta):
 				<a style='cursor:pointer' class='dset_link'>
-			% end
 					{{dset.__str__(False)}}
-			% if len(dset.meta):
 				</a>
-			% end
 			</td>
 		</tr>
-		% if len(dset.meta):
 		<tr style='display:none' id='meta'>
 			<td colspan=3>
 				<table>
@@ -106,17 +101,18 @@ Do not include any other qualifiers like "run1"</p>
 					<th>name</th>
 					<th>type</th>
 					<th>meta data</th>
+					<th></th>
 				</tr>
 				% for meta in dset.meta:
 				<tr>
 					<td>{{meta}}</td>
 					<td>file</td>
 					<td>{{dset.meta[meta]}}</td>
+					<td><input type=file value='Upload'/></td>
 				</tr>
 				% end
 			</td>
 		</tr>
-		% end
 		</table>
 		% end
 	</table>

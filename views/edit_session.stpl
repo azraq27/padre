@@ -101,8 +101,8 @@ Do not include any other qualifiers like "run1"</p>
 </form>
 
 <script>
-function showMeta(me) {
-	el = $('#' + me)
+function showMeta(i) {
+	el = $('#' + i)
 	el.show();
 }
 $('select').change(function() {

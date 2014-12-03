@@ -88,7 +88,7 @@ Do not include any other qualifiers like "run1"</p>
 				</select>
 				<input class="appearing_box" type="text" name="label_{{dset}}_new" placeholder="New label..."/>
 			</td>
-			<td style="white-space:nowrap;"><a onclick="$().next('tr').show()">{{dset.__str__(False)}}</a></td>
+			<td style="white-space:nowrap;"><a onclick="$('tr').show()">{{dset.__str__(False)}}</a></td>
 		</tr>
 		<tr style='display:none' id='meta'>
 			<td></td>

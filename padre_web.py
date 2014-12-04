@@ -14,6 +14,8 @@ if not os.path.exists(web_view_root):
     # Debian reports sys.prefix as '/usr', but places files in '/usr/local'
     web_view_root = os.path.join(sys.prefix,'local','padre_web')
 
+os.chdir(web_view_root)
+
 @route('/style/<filename>')
 def style_file(filename):
     return static_file('views/style/%s'%filename,'.')

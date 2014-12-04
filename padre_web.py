@@ -4,6 +4,12 @@ from bottle import route,view,run,post,static_file,request,redirect
 import datetime
 from dateutil.parser import parse
 from fuzzywuzzy import process
+import sys,os
+
+web_view_root = os.path.join(sys.prefix,'padre_web')
+if not os.path.exists(web_view_root):
+    # Debian reports sys.prefix as '/usr', but places files in '/usr/local'
+    web_view_root = os.path.join(sys.prefix,'local','padre_web')
 
 @route('/style/<filename>')
 def style_file(filename):

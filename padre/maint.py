@@ -85,7 +85,7 @@ def merge(subject_id_from,subject_id_into):
     if subj_from and subj_to:
         merge_attr(subj_from.include,subj_to.include)
         merge_attr(subj_from.notes,subj_to.notes)
-        merge_attr()
+#        merge_attr()
     
 def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
     fuzzyness = 80

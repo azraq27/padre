@@ -4,7 +4,7 @@ setup(
   packages = ['padre'],
   scripts = ['padre_demon.py','padre_web.py','padre_buddy.py'],
   data_files = [
-      ('views',[
+      ('padre_web/views',[
           "views/header.stpl",
           "views/footer.stpl",
           "views/sidebar.stpl",
@@ -14,7 +14,7 @@ setup(
           "views/edit_subject.stpl",
           "views/favicon.ico"
       ]),
-      ('views/style',[
+      ('padre_web/views/style',[
           "views/style/back.png",
           "views/style/bullet.png",
           "views/style/datepicker.css",

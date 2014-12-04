@@ -77,7 +77,7 @@ def rename(subject_id,new_subject_id):
                     os.remove(os.path.join(p.subject_dir(subj),os.path.basename(p.subject_json(subject_id))))
                 except OSError:
                     pass
-
+'''
 def merge(subject_id_from,subject_id_into):
     merge_attr = lambda from,to: to=from if to==None or to=='' and not (from==None or from=='') else pass
     subj_from = p.load(subject_id_from)
@@ -85,8 +85,9 @@ def merge(subject_id_from,subject_id_into):
     if subj_from and subj_to:
         merge_attr(subj_from.include,subj_to.include)
         merge_attr(subj_from.notes,subj_to.notes)
-#        merge_attr()
-    
+        merge_attr()
+''' 
+
 def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
     fuzzyness = 80
     subj = create_subject(subject_id)

@@ -63,7 +63,7 @@ def import_raw(subj,new_dir,remove=False):
     else:
         shutil.copytree(new_dir,dest_dir)
 
-def rename(subject_id,new_subject_id,deep=False):
+def rename(subject_id,new_subject_id):
     subj = Subject.load(subject_id)
     if subj:
         try:
@@ -71,24 +71,27 @@ def rename(subject_id,new_subject_id,deep=False):
         except OSError:
             nl.notify('Error: filesystem reported error moving %s to %s' % (subject_id,new_subject_id),level=nl.level.error)
         else:
-            subj.subject_id = new_subject_id
             subj.save()
-            if deep:
-                for dset in subj.dsets(include_all=True):
-                    if str(subj) in os.path.basename(dset):
-                        new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
-                        try:
-                            os.rename(dset,new_name)
-                        except OSError:
-                            nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)                            
-            else:
-                nl.notify('Successfully renamed %s to %s (NOTE: none of the dataset names are changed in this process)' % (subj,args.new_name))
+            if os.path.exists(p.subject_json(subj)):
+                try:
+                    os.remove(os.path.join(p.subject_dir(subj),os.path.basename(p.subject_json(subject_id))))
+                except OSError:
+                    pass
 
+def merge(subject_id_from,subject_id_into):
+    merge_attr = lambda from,to: to=from if to==None or to=='' and not (from==None or from=='') else pass
+    subj_from = p.load(subject_id_from)
+    subj_to = p.load(subject_id_to)
+    if subj_from and subj_to:
+        merge_attr(subj_from.include,subj_to.include)
+        merge_attr(subj_from.notes,subj_to.notes)
+        merge_attr()
+    
 def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
     fuzzyness = 80
     subj = create_subject(subject_id)
     try:
-        subj.new_session(session)
+        new_session(subj,session)
     except SessionExists:
         pass
     session_dict = dict(subj._sessions[session])

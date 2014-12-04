@@ -29,7 +29,7 @@ setup(
           "tab.png",
           "tab_selected.png"
       ])
-  ]
+  ],
   version = '0.3',
   description = 'patient data repository',
   long_description = '''PaDRe - a patient data repository library (in Python)

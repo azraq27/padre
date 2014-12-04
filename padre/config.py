@@ -7,8 +7,7 @@ import json
 
 verbose = True
 
-if 'PADRE_ROOT' not in os.environ:
-    print '''
+error_msg = '''
 ERROR!! PADRE_ROOT not set!!
 
 Please set the environment variable PADRE_ROOT to the location of the
@@ -19,7 +18,10 @@ For example, in bash you could type:
 
 Or in tcsh you could use:
     setenv PADRE_ROOT /mnt/server/share/data_store
-''')
+'''
+
+if 'PADRE_ROOT' not in os.environ:
+    print error_msg
     padre_root = ''
 else:
     padre_root = os.environ['PADRE_ROOT']

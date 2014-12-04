@@ -1,7 +1,35 @@
 from distutils.core import setup
 setup(
   name = 'padre',
-  packages = ['padre'], # this must be the same as the name above
+  packages = ['padre'],
+  scripts = ['padre_demon.py','padre_web.py','padre_buddy.py'],
+  data_files = [
+      ('views',[
+          "header.stpl",
+          "footer.stpl",
+          "sidebar.stpl",
+          "index.stpl",
+          "list_subjects.stpl",
+          "edit_session.stpl", 
+          "edit_subject.stpl",
+          "favicon.ico"
+      ]),
+      ('views/style',[
+          "back.png",
+          "bullet.png",
+          "datepicker.css",
+          "footer.png",
+          "graphic.png",
+          "link.png",
+          "search.png",
+          "side_back.png",
+          "side_base.png",
+          "side_top.png",
+          "style.css",
+          "tab.png",
+          "tab_selected.png"
+      ])
+  ]
   version = '0.3',
   description = 'patient data repository',
   long_description = '''PaDRe - a patient data repository library (in Python)

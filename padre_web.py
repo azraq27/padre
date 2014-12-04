@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import padre as p
 from bottle import route,view,run,post,static_file,request,redirect
 import datetime

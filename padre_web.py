@@ -6,6 +6,9 @@ from dateutil.parser import parse
 from fuzzywuzzy import process
 import sys,os
 
+import imp
+c = imp.load_source('padre_config',os.path.join(p.padre_root,'padre_config.py'))
+
 web_view_root = os.path.join(sys.prefix,'padre_web')
 if not os.path.exists(web_view_root):
     # Debian reports sys.prefix as '/usr', but places files in '/usr/local'
@@ -182,7 +185,6 @@ def save_session(subject_id,session):
 '''
 if __name__ == '__main__':
     import socket
-#    run(host=socket.gethostname(),port=8003)
     p._include_all = True
     p.subjects()
-    run(host='padre.neuro.mcw.edu',port=80)
+    run(host=c.web_hostname,port=c.web_port)

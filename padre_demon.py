@@ -11,8 +11,8 @@ import_location = os.path.join(p.padre_root,'Import')
 processed_location = os.path.join(p.padre_root,'Processed')
 import_log_file = os.path.join(import_location,'import_log.json')
 
-# load settings from "padre_demon_config.py"
-import padre_demon_config as c
+import imp
+c = imp.load_source('padre_config',os.path.join(p.padre_root,'padre_config.py'))
 
 import_log = {}
 if not os.path.exists(import_location):

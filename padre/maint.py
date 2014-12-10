@@ -16,11 +16,11 @@ def commit_database(wait=True):
             subprocess.check_call(['git','init'])
             with open('.gitignore','w') as f:
                 f.write('\n'.join(_git_ignore))
-        p = subprocess.Popen(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
-        p.wait()
+        proc = subprocess.Popen(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
+        proc.wait()
         subprocess.Popen(['git','commit','-m','library commit'])
         if wait:
-            p.wait()
+            proc.wait()
 
 class commit_wrap:
     '''do a commit before and after this'''

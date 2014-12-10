@@ -38,7 +38,6 @@ def index():
 @view('list_subjects')
 def subjects():
     exp = request.forms.get('exp')
-    print repr(exp)
     if exp!='':
         subjects = p.subjects(experiment=exp)
     else:
@@ -86,7 +85,6 @@ def edit_subject(subject_id):
 def save_subject():
     old_subject_id = request.forms.get('old_subject_id').rstrip('/')
     new_subject_id = request.forms.get('subject_id').rstrip('/')
-    print 'Trying to rename "%s" to "%s"' % (old_subject_id,new_subject_id)
     if p.subject.subject_exists(new_subject_id):
         with p.maint.commit_wrap():
             p.maint.merge(old_subject_id,new_subject_id)
@@ -129,7 +127,7 @@ def save_session(subject_id,session):
         scan_sheet = request.files.get("scan_sheet")
         if scan_sheet != None:
             subj._sessions[session]['scan_sheet'] = scan_sheet.filename
-    #        scan_sheet.save(os.path.join(p.sessions_dir(subj),session))
+            scan_sheet.save(os.path.join(p.sessions_dir(subj),session))
         subj._sessions[session]['notes'] = request.forms.get("notes")
         subj._sessions[session]['include'] = True if request.forms.get("include") else False
         for dset in subj.dsets(session=session,include_all=True):
@@ -137,7 +135,6 @@ def save_session(subject_id,session):
             i = [x['filename'] for x in subj._sessions[session]['labels'][dset.label]].index(dset_fname)
             subj._sessions[session]['labels'][dset.label][i]['complete'] = True if request.forms.get('complete_%s'%dset_fname) else False
             dset.complete = subj._sessions[session]['labels'][dset.label][i]['complete']
-            print dset.complete
             label = request.forms.get('label_%s' % dset_fname)
             if label:
                 if dset.label!=label:

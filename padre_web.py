@@ -81,10 +81,14 @@ def edit_subject(subject_id):
 
 @post('/save_subject')
 def save_subject():
-    with p.maint.commit_wrap():
-        old_subject_id = request.forms.get('old_subject_id')
-        new_subject_id = request.forms.get('subject_id')
-        return "%s -> %s" % (old_subject_id,new_subject_id)
+    old_subject_id = request.forms.get('old_subject_id')
+    new_subject_id = request.forms.get('subject_id')
+    if p.subject.subject_exists(new_subject_id):
+        return 'Need to merge %s into %s (not implemented yet)' % (old_subject_id,new_subject_id)
+    else:
+        with p.maint.commit_wrap():
+            p.maint.rename(old_subject_id,new_subject_id)
+            redirect('/edit_subject/%s' % new_subject_id)
 
 @route('/edit_subject/<subject_id>/<session>')
 @view('edit_session')

@@ -240,6 +240,9 @@ def subjects(experiment=None,label=None,type=None,only_included=True):
     
     return all_subjs
 
+def subject_exists(subj_id):
+    return os.path.exists(p.subject_json(subj_id))
+
 class DatabaseConsistencyError(Exception):
     pass
 

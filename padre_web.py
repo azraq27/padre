@@ -5,6 +5,8 @@ import datetime
 from dateutil.parser import parse
 from fuzzywuzzy import process
 import sys,os
+import HTMLParser
+h = HTMLParser.HTMLParser()
 
 import imp
 c = imp.load_source('padre_config',os.path.join(p.padre_root,'padre_config.py'))
@@ -34,7 +36,7 @@ def index():
 @route('/list_subjects')
 @view('list_subjects')
 def subjects():
-    exp = request.params.get('exp')
+    exp = h.unescape(request.params.get('exp'))
     print repr(exp)
     if exp!='':
         subjects = p.subjects(experiment=exp)

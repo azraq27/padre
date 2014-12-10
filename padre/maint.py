@@ -1,6 +1,6 @@
 import neural as nl
 import padre as p
-import os,shutil,glob
+import os,shutil,glob,subprocess
 
 def commit_database():
     '''database is stored as distributed jsons that are tracked by git -- this saves a new commit'''

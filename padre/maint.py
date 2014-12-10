@@ -16,7 +16,7 @@ def commit_database():
                 subprocess.check_call(['git','init'])
                 with open('.gitignore','w') as f:
                     f.write('\n'.join(_git_ignore))
-            subprocess.check_call(['git','add'] + glob.glob('Data/*/*json*'))
+            subprocess.check_call(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
             subprocess.check_call(['git','commit','-m','library commit'])
     except OSError:
         pass

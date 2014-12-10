@@ -43,9 +43,11 @@ def sessions_dir(subject):
 	'''[subject_dir]/sessions'''
 	return os.path.join(subject_dir(subject),'sessions')
 
+json_ext = 'json2'
+
 def subject_json(subject):
 	''' location of subject's JSON file '''
-	return os.path.join(subject_dir(subject),'%s.json2' % subject)
+	return os.path.join(subject_dir(subject),'%s.%s' % (subject,json_ext))
 
 atlases = {}
 '''dictionary of atlas nicknames and dataset locations'''

@@ -111,7 +111,8 @@ def rename(subject_id,new_subject_id):
                 if os.path.exists(p.subject_json(subj)):
                     try:
                         os.remove(os.path.join(p.subject_dir(subj),os.path.basename(p.subject_json(subject_id))))
-                    except OSError:
+                        del(p._all_subjects[subj])
+                    except OSError,ValueError:
                         pass
     p.subject._index_one_subject(new_subject_id)
 

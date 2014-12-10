@@ -99,7 +99,7 @@ def import_raw(subj,new_dir,remove=False):
 
 def rename(subject_id,new_subject_id):
     with commit_wrap():
-        subj = Subject.load(subject_id)
+        subj = p.load(subject_id)
         if subj:
             try:
                 os.rename(p.subject_dir(subject_id),p.subject_dir(new_subject_id))

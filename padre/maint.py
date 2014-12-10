@@ -62,7 +62,7 @@ def delete_subject(subject_id):
         new_dir += '_1'
     try:
         shutil.move(p.subject_dir(subject_id),new_dir)
-    except IOError:
+    except OSError,IOError:
         nl.notify('Error moving subject directory %s to the trash' % subject_id,level=nl.level.error)
     try:
         del(p.subject._all_subjects[str(subject_id)])

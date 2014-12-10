@@ -81,8 +81,9 @@ def edit_subject(subject_id):
 
 @post('/save_subject')
 def save_subject():
-    old_subject_id = request.forms.get('old_subject_id')
-    new_subject_id = request.forms.get('subject_id')
+    old_subject_id = request.forms.get('old_subject_id').rstrip('/')
+    new_subject_id = request.forms.get('subject_id').rstrip('/')
+print 'Trying to rename "%s" to "%s"' % (old_subject_id,new_subject_id)
     if p.subject.subject_exists(new_subject_id):
         return 'Need to merge %s into %s (not implemented yet)' % (old_subject_id,new_subject_id)
     else:

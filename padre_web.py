@@ -101,9 +101,9 @@ def edit_session(subject_id,session):
     return {
         'subject':subject,
         'session':session,
-        'labels':p.subject.tasks,
-        'experiments':p.subject.experiments,
-        'types': p.subject.types
+        'labels':sorted(p.subject.tasks),
+        'experiments':sorted(p.subject.experiments),
+        'types': sorted(p.subject.types)
     }
 
 @post('/save_subject/<subject_id>/<session>')

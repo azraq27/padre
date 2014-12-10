@@ -30,7 +30,7 @@ def favicon():
 @route('/index')
 @view('index')
 def index():
-    return {'experiments':p.subject.experiments}
+    return {'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())}
     
 
 @route('/list_subjects')
@@ -62,7 +62,7 @@ def subjects():
     return {
             'subjects':list(reversed(sorted(subjects,key=sort_key))),
             'unverified':list(reversed(sorted(unverified,key=sort_key))),
-            'experiments':p.subject.experiments
+            'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())
     }
 
 @route('/edit_subject/<subject_id>')
@@ -76,9 +76,9 @@ def edit_subject(subject_id):
     sessions = list(set(subject.sessions) - set(unverified))
     return {
         'subject':subject,
-        'sessions':sessions,
-        'unverified':unverified,
-        'experiments':p.subject.experiments        
+        'sessions':sorted(sessions),
+        'unverified':sorted(unverified),
+        'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())        
     }
 
 @post('/save_subject')
@@ -173,7 +173,7 @@ def search_form():
     return {
             'subjects':subjects,
             'unverified':unverified,
-            'experiments':p.subject.experiments
+            'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())
     }
 
 

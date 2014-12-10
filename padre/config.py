@@ -29,6 +29,7 @@ data_dir = os.path.join(padre_root,'Data') #: [padre_root]/Data
 analyses_dir = os.path.join(padre_root,'Analyses') #: [padre_root]/Analyses
 atlas_dir = os.path.join(padre_root,'Atlases')
 stimfile_dir = os.path.join(padre_root,'Stimfiles')
+trash_dir = os.path.join(padre_root,'Trash')
 
 
 def subject_dir(subject):

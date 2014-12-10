@@ -1,6 +1,6 @@
 import neural as nl
 import padre as p
-import os,shutil,glob,subprocess
+import os,shutil,glob,subprocess,datetime
 
 _git_ignore = [
     '*','!Data','!Data/*',
@@ -52,8 +52,19 @@ def create_subject(subject_id):
             subj = p.Subject(subject_id)
         subj.init_directories()
         subj.save()
-
     return subj
+
+def delete_subject(subject_id):
+    if not os.path.exists(p.trash_dir):
+        os.makedirs(p.trash_dir)
+    new_dir = os.path.join(p.trash_dir,'%s-%s' % (subject_id,datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S').format()))
+    while os.path.exists(new_dir):
+        new_dir += '_1'
+    try:
+        shutil.move(p.subject_dir(subject_dir),new_dir)
+    except IOError:
+        nl.notify('Error moving subject directory %s to the trash' % subject_id,level=nl.level.error)
+    del(p.subject._all_subjects[subject_id])
     
 class SessionExists(LookupError):
     pass

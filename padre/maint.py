@@ -19,7 +19,7 @@ def commit_database():
                     f.write('\n'.join(_git_ignore))
             subprocess.check_call(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
             subprocess.check_call(['git','commit','-m','library commit'])
-    except OSError:
+    except OSError,subprocess.CalledProcessError:
         pass
 
 class commit_wrap:

@@ -147,7 +147,7 @@ def save_session(subject_id,session):
                     if len(subj._sessions[session]['labels'][dset.label])==0:
                         del(subj._sessions[session]['labels'][dset.label])
                     if label not in subj._sessions[session]['labels']:
-                        subj._sessions[session]['labels'] = []
+                        subj._sessions[session]['labels'][label] = []
                     subj._sessions[session]['labels'][label].append(dset.__dict__())
         if 'unverified' in subj._sessions[session]:
             del(subj._sessions[session]['unverified'])

@@ -64,7 +64,7 @@ def delete_subject(subject_id):
         shutil.move(p.subject_dir(subject_id),new_dir)
     except IOError:
         nl.notify('Error moving subject directory %s to the trash' % subject_id,level=nl.level.error)
-    del(p.subject._all_subjects[subject_id])
+    del(p.subject._all_subjects[str(subject_id)])
     
 class SessionExists(LookupError):
     pass

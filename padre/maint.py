@@ -18,7 +18,7 @@ def commit_database(wait=True):
                 f.write('\n'.join(_git_ignore))
         proc = subprocess.Popen(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
         proc.wait()
-        subprocess.Popen(['git','commit','-m','library commit'])
+        subprocess.Popen(['git','commit','-am','library commit'])
         if wait:
             proc.wait()
 
@@ -111,8 +111,11 @@ def rename(subject_id,new_subject_id):
                 if os.path.exists(p.subject_json(subj)):
                     try:
                         os.remove(os.path.join(p.subject_dir(subj),os.path.basename(p.subject_json(subject_id))))
+                    except OSError:
+                        pass
+                    try:
                         del(p._all_subjects[subject_id])
-                    except OSError,ValueError:
+                    except ValueError:
                         pass
     p.subject._index_one_subject(new_subject_id)
 

@@ -88,7 +88,9 @@ def save_subject():
     new_subject_id = request.forms.get('subject_id').rstrip('/')
     print 'Trying to rename "%s" to "%s"' % (old_subject_id,new_subject_id)
     if p.subject.subject_exists(new_subject_id):
-        return 'Need to merge %s into %s (not implemented yet)' % (old_subject_id,new_subject_id)
+        with p.maint.commit_wrap():
+            p.maint.merge(old_subject_id,new_subject_id)
+            redirect('/edit_subject/%s' % new_subject_id)
     else:
         with p.maint.commit_wrap():
             p.maint.rename(old_subject_id,new_subject_id)

@@ -1,3 +1,4 @@
+% import cgi
 <div id="site_content">
   <div id="sidebar_container">
     <div id="content_header"></div>
@@ -22,7 +23,7 @@
        <h3>Experiments</h3>
        <ul>
 	  % for exp in experiments:
-         <li><a href="/list_subjects?exp={{exp}}">{{exp}}</a></li>
+         <li><a href="/list_subjects?exp={{cgi.escape(exp)}}">{{exp}}</a></li>
 	  % end
        </ul>
      </div>

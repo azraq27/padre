@@ -110,6 +110,8 @@ def save_session(subject_id,session):
         subj = p.load(subject_id)
         subj._sessions[session]['date'] = parse(request.forms.get("date")).strftime("%Y-%m-%d")
         experiment = request.forms.get("experiment")
+        if experiment=='none':
+            experiment = None
         if experiment=='new':
             experiment = request.forms.get("new_experiment_text")
         subj._sessions[session]['experiment'] = experiment

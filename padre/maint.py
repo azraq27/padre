@@ -2,12 +2,20 @@ import neural as nl
 import padre as p
 import os,shutil,glob,subprocess
 
+_git_ignore = [
+    '*','!Data','!Data/*','!Data/*/*json','!Data/*/*json?','*.7z',
+    '*.dmg','*.gz','*.iso','*.jar','*.rar','*.tar','*.tgz','*.tbz','*.zip',
+    '.DS_Store','.DS_Store?','._*','.Spotlight-V100','.Trashes','ehthumbs.db','Thumbs.db'
+]
+
 def commit_database():
     '''database is stored as distributed jsons that are tracked by git -- this saves a new commit'''
     try:
         with nl.run_in(p.padre_root):
             if not os.path.exists('.git'):
                 subprocess.check_call(['git','init'])
+                with open('.gitignore','w') as f:
+                    f.write('\n'.join(_git_ignore))
             subprocess.check_call(['git','add'] + glob.glob('Data/*/*json*'))
             subprocess.check_call(['git','commit','-m','library commit'])
     except OSError:

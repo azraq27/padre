@@ -25,6 +25,11 @@ Do not include any other qualifiers like "run1"</p>
 	<input type='hidden' name='subject_id' value='{{subject}}'/>
 	<h3>Date: <input type="text" name="date" id="datepicker" value="{{subject._sessions[session]["date"]}}"/></h3>
 	<h3>Experiment: <select class='h1_textfield' name='experiment'>
+		<option value='none'
+		% if subject._sessions[session]['experiment']==None:
+		selected
+		% end
+		>None</option>
 		% for experiment in experiments:
 		<option value='{{experiment}}'
 		% if experiment==subject._sessions[session]["experiment"]:

@@ -3,8 +3,9 @@ import padre as p
 import os,shutil,glob,subprocess
 
 _git_ignore = [
-    '*','!Data','!Data/*','!Data/*/*json','!Data/*/*json?','*.7z',
-    '*.dmg','*.gz','*.iso','*.jar','*.rar','*.tar','*.tgz','*.tbz','*.zip',
+    '*','!Data','!Data/*','!Data/*/*json',
+    '!Data/*/*.%s' % p.json_ext,
+    '*.7z','*.dmg','*.gz','*.iso','*.jar','*.rar','*.tar','*.tgz','*.tbz','*.zip',
     '.DS_Store','.DS_Store?','._*','.Spotlight-V100','.Trashes','ehthumbs.db','Thumbs.db'
 ]
 

@@ -114,6 +114,7 @@ class Subject(object):
     @classmethod
     def load(cls,subject_id):
         ''' returns a subject object initialized using JSON file '''
+        subject_id = subject_id.rstrip('/')
         json_file = p.subject_json(subject_id)
         try:
             with open(json_file) as f:

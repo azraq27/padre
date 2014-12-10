@@ -20,7 +20,7 @@
    <div class="sidebar">
      <div class="sidebar_top"></div>
      <div class="sidebar_item">
-	     <form action=POST method='/list_subjects' id='exp_form'>
+	     <form method=POST action='/list_subjects' id='exp_form'>
 	     <input type='hidden' name='exp' id='exp' value='none'/>
        <h3>Experiments</h3>
        <ul>

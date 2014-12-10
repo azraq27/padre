@@ -81,9 +81,10 @@ def edit_subject(subject_id):
 
 @post('/save_subject')
 def save_subject():
-    old_subject_id = request.forms.get('old_subject_id')
-    new_subject_id = request.forms.get('subject_id')
-    return "%s -> %s" % (old_subject_id,new_subject_id)
+    with p.maint.commit_wrap():
+        old_subject_id = request.forms.get('old_subject_id')
+        new_subject_id = request.forms.get('subject_id')
+        return "%s -> %s" % (old_subject_id,new_subject_id)
 
 @route('/edit_subject/<subject_id>/<session>')
 @view('edit_session')
@@ -100,44 +101,45 @@ def edit_session(subject_id,session):
 @post('/save_subject/<subject_id>/<session>')
 @view('save_session')
 def save_session(subject_id,session):
-    subj = p.load(subject_id)
-    subj._sessions[session]['date'] = parse(request.forms.get("date")).strftime("%Y-%m-%d")
-    experiment = request.forms.get("experiment")
-    if experiment=='new':
-        experiment = request.forms.get("new_experiment_text")
-    subj._sessions[session]['experiment'] = experiment
-    type = request.forms.get("type")
-    if type=='none':
-        type = None
-    if type=='new':
-        type = request.forms.get("new_type_text")
-    subj._sessions[session]['type'] = type
-    scan_sheet = request.files.get("scan_sheet")
-    if scan_sheet != None:
-        subj._sessions[session]['scan_sheet'] = scan_sheet.filename
-#        scan_sheet.save(os.path.join(p.sessions_dir(subj),session))
-    subj._sessions[session]['notes'] = request.forms.get("notes")
-    subj._sessions[session]['include'] = True if request.forms.get("include") else False
-    for dset in subj.dsets(session=session,include_all=True):
-        dset_fname = dset.__str__(False)
-        i = [x['filename'] for x in subj._sessions[session]['labels'][dset.label]].index(dset_fname)
-        subj._sessions[session]['labels'][dset.label][i]['complete'] = True if request.forms.get('complete_%s'%dset_fname) else False
-        dset.complete = subj._sessions[session]['labels'][dset.label][i]['complete']
-        print dset.complete
-        label = request.forms.get('label_%s' % dset_fname)
-        if label:
-            if dset.label!=label:
-                if label=='new':
-                    label = request.forms.get('label_%s_new' % dset_fname)
-                    if label not in subj._sessions[session]['labels']:
-                        subj._sessions[session]['labels'][label] = []
-                del(subj._sessions[session]['labels'][dset.label][i])
-                if len(subj._sessions[session]['labels'][dset.label])==0:
-                    del(subj._sessions[session]['labels'][dset.label])
-                subj._sessions[session]['labels'][label].append(dset.__dict__())
-    if 'unverified' in subj._sessions[session]:
-        del(subj._sessions[session]['unverified'])
-    subj.save()
+    with p.maint.commit_wrap():
+        subj = p.load(subject_id)
+        subj._sessions[session]['date'] = parse(request.forms.get("date")).strftime("%Y-%m-%d")
+        experiment = request.forms.get("experiment")
+        if experiment=='new':
+            experiment = request.forms.get("new_experiment_text")
+        subj._sessions[session]['experiment'] = experiment
+        type = request.forms.get("type")
+        if type=='none':
+            type = None
+        if type=='new':
+            type = request.forms.get("new_type_text")
+        subj._sessions[session]['type'] = type
+        scan_sheet = request.files.get("scan_sheet")
+        if scan_sheet != None:
+            subj._sessions[session]['scan_sheet'] = scan_sheet.filename
+    #        scan_sheet.save(os.path.join(p.sessions_dir(subj),session))
+        subj._sessions[session]['notes'] = request.forms.get("notes")
+        subj._sessions[session]['include'] = True if request.forms.get("include") else False
+        for dset in subj.dsets(session=session,include_all=True):
+            dset_fname = dset.__str__(False)
+            i = [x['filename'] for x in subj._sessions[session]['labels'][dset.label]].index(dset_fname)
+            subj._sessions[session]['labels'][dset.label][i]['complete'] = True if request.forms.get('complete_%s'%dset_fname) else False
+            dset.complete = subj._sessions[session]['labels'][dset.label][i]['complete']
+            print dset.complete
+            label = request.forms.get('label_%s' % dset_fname)
+            if label:
+                if dset.label!=label:
+                    if label=='new':
+                        label = request.forms.get('label_%s_new' % dset_fname)
+                        if label not in subj._sessions[session]['labels']:
+                            subj._sessions[session]['labels'][label] = []
+                    del(subj._sessions[session]['labels'][dset.label][i])
+                    if len(subj._sessions[session]['labels'][dset.label])==0:
+                        del(subj._sessions[session]['labels'][dset.label])
+                    subj._sessions[session]['labels'][label].append(dset.__dict__())
+        if 'unverified' in subj._sessions[session]:
+            del(subj._sessions[session]['unverified'])
+        subj.save()
     redirect('/edit_subject/%s' % subj)
     
 
@@ -160,31 +162,7 @@ def search_form():
             'experiments':p.subject.experiments
     }
 
-'''
-@route('/<subject_id>')
-@view('edit_subject')
-def subject_list(subject_id):
-    return {
-        'subject_id': subject_id,
-        'subj': p.load(subject_id)
-    }
 
-@route('/<subject_id>/<session>')
-@view('edit_session')
-def edit_session(subject_id,session):
-    return {
-        'subject_id': subject_id,
-        'subj': p.load(subject_id),
-        'session': session,
-        'labels': p.subject.tasks
-    }
-
-@post('/save_session/<subject_id>/<session>')
-def save_session(subject_id,session):
-    new_subject_id = request.forms.get('new_subject_id')
-    if new_subject_id!=subject_id:
-        pass
-'''
 if __name__ == '__main__':
     import socket
     p._include_all = True

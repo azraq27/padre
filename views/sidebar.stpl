@@ -6,7 +6,7 @@
       <div class="sidebar_top"></div>
       <div class="sidebar_item">
         <h3>Find Subject:</h3>
-        <form method="post" action="search_form" id="search_form">
+        <form method="post" action="/search_form" id="search_form">
           <p>
             <input class="search" type="text" name="search_field" placeholder="Enter subject id....." />
             <input name="search" type="image" style="border: 0; margin: 0 0 -9px 5px;" src="/style/search.png" alt="Search" title="Search" />

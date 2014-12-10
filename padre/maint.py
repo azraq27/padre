@@ -106,6 +106,7 @@ def rename(subject_id,new_subject_id):
             except OSError:
                 nl.notify('Error: filesystem reported error moving %s to %s' % (subject_id,new_subject_id),level=nl.level.error)
             else:
+                subj._subject_id = new_subject_id
                 subj.save()
                 if os.path.exists(p.subject_json(subj)):
                     try:

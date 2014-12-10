@@ -126,7 +126,7 @@ def merge(subject_id_from,subject_id_into):
                 t=f
         dset_i = lambda label_dict,dset_fname: [x['filename'] for x in label_dict].index(dset_fname)
         subj_from = p.load(subject_id_from)
-        subj_to = p.load(subject_id_to)
+        subj_to = p.load(subject_id_into)
         if subj_from and subj_to:
             merge_attr(subj_from.include,subj_to.include)
             merge_attr(subj_from.notes,subj_to.notes)

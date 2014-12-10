@@ -106,7 +106,7 @@ def rename(subject_id,new_subject_id):
 
 def merge(subject_id_from,subject_id_into):
     with commit_wrap():
-        merge_attr = lambda f,t: t=f if t==None or t=='' and not (f==None or f=='') else pass
+        merge_attr = lambda f,t: t=f if t==None or t=='' and not (f==None or f=='') else t=t
         dset_i = lambda label_dict,dset_fname: [x['filename'] for x in label_dict].index(dset_fname)
         subj_from = p.load(subject_id_from)
         subj_to = p.load(subject_id_to)

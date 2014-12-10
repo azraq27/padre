@@ -117,13 +117,15 @@ def save_session(subject_id,session):
             experiment = None
         if experiment=='new':
             experiment = request.forms.get("new_experiment_text")
+            p.subject.experiments.add(experiment)
         subj._sessions[session]['experiment'] = experiment
-        type = request.forms.get("type")
-        if type=='none':
-            type = None
-        if type=='new':
-            type = request.forms.get("new_type_text")
-        subj._sessions[session]['type'] = type
+        typex = request.forms.get("type")
+        if typex=='none':
+            typex = None
+        if typex=='new':
+            typex = request.forms.get("new_type_text")
+            p.subject.types.add(typex)
+        subj._sessions[session]['type'] = typex
         scan_sheet = request.files.get("scan_sheet")
         if scan_sheet != None:
             subj._sessions[session]['scan_sheet'] = scan_sheet.filename
@@ -140,6 +142,7 @@ def save_session(subject_id,session):
                 if dset.label!=label:
                     if label=='new':
                         label = request.forms.get('label_%s_new' % dset_fname)
+                        p.subject.tasks.add(label)
                         if label not in subj._sessions[session]['labels']:
                             subj._sessions[session]['labels'][label] = []
                     del(subj._sessions[session]['labels'][dset.label][i])

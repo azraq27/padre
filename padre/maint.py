@@ -112,7 +112,7 @@ def rename(subject_id,new_subject_id):
                         os.remove(os.path.join(p.subject_dir(subj),os.path.basename(p.subject_json(subject_id))))
                     except OSError:
                         pass
-    p._index_one_subject(new_subject_id)
+    p.subject._index_one_subject(new_subject_id)
 
 def merge(subject_id_from,subject_id_into):
     with commit_wrap():

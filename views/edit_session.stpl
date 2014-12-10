@@ -82,7 +82,7 @@ Do not include any other qualifiers like "run1"</p>
 			></td>
 			<td>
 				<select name='label_{{dset.__str__(False)}}'>
-					% for l in p.tasks:
+					% for l in labels:
 					<option value='{{l}}'
 					% if l==dset.label:
 						selected="selected"

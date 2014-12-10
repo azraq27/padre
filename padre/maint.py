@@ -9,18 +9,18 @@ _git_ignore = [
     '.DS_Store','.DS_Store?','._*','.Spotlight-V100','.Trashes','ehthumbs.db','Thumbs.db'
 ]
 
-def commit_database():
+def commit_database(wait=True):
     '''database is stored as distributed jsons that are tracked by git -- this saves a new commit'''
-    try:
-        with nl.run_in(p.padre_root):
-            if not os.path.exists('.git'):
-                subprocess.check_call(['git','init'])
-                with open('.gitignore','w') as f:
-                    f.write('\n'.join(_git_ignore))
-            subprocess.check_call(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
-            subprocess.check_call(['git','commit','-m','library commit'])
-    except OSError,subprocess.CalledProcessError:
-        pass
+    with nl.run_in(p.padre_root):
+        if not os.path.exists('.git'):
+            subprocess.check_call(['git','init'])
+            with open('.gitignore','w') as f:
+                f.write('\n'.join(_git_ignore))
+        p = subprocess.Popen(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
+        p.wait()
+        subprocess.Popen(['git','commit','-m','library commit'])
+        if wait:
+            p.wait()
 
 class commit_wrap:
     '''do a commit before and after this'''

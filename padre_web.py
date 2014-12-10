@@ -34,9 +34,10 @@ def index():
     
 
 @route('/list_subjects')
+@post('/list_subjects')
 @view('list_subjects')
 def subjects():
-    exp = h.unescape(request.params.get('exp'))
+    exp = request.forms.get('exp')
     print repr(exp)
     if exp!='':
         subjects = p.subjects(experiment=exp)

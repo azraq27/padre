@@ -114,7 +114,7 @@ def rename(subject_id,new_subject_id):
                     except OSError:
                         pass
                     try:
-                        del(p._all_subjects[subject_id])
+                        del(p.subject._all_subjects[subject_id])
                     except ValueError:
                         pass
     p.subject._index_one_subject(new_subject_id)

@@ -158,6 +158,7 @@ def merge_session(subj_from,subj_to,sess):
                     subj_to._sessions[sess]['labels'][label][to_i] = dict(dset.items() + subj_to._sessions[sess]['labels'][label][to_i].items())
                 except ValueError:
                     subj_to._sessions[sess]['labels'][label].append(dset)
+    del(subj_from._sessions[sess])
     new_sess_dir = os.path.join(p.sessions_dir(subj_to),sess)
     from_sess_dir = os.path.join(p.sessions_dir(subj_from),sess)
     if not os.path.exists(new_sess_dir):

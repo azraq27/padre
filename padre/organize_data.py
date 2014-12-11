@@ -76,7 +76,7 @@ def categorize_dset(dset):
 
 def scan_subjects_dir():
     '''this no longer works'''
-	raise Exception('This function has been depreciated and is not currently working')
+    raise Exception('This function has been depreciated and is not currently working')
 	for subject_id in os.listdir(padre.data_dir):
 		subj = padre.Subject.create(subject_id)
 		for session in os.listdir(padre.sessions_subject_dir(subj)):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import padre as p
-from bottle import route,view,run,post,static_file,request,redirect
+from bottle import route,view,run,post,static_file,request,redirect,error
 import datetime
 from dateutil.parser import parse
 from fuzzywuzzy import process
@@ -25,6 +25,13 @@ def style_file(filename):
 @route('/favicon.ico')
 def favicon():
     return static_file('views/favicon.ico','.')
+
+@route('view_pdf/<subject>/<session>/<filename>')
+def view_pdf(subject,session,filename):
+    if not filename.endswith(".pdf"):
+        error()
+    else:
+        return static_file(os.path.join(p.session_dir(subject),session,filename))
 
 @route('/')
 @route('/index')

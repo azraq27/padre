@@ -18,7 +18,7 @@ def commit_database(wait=True):
                 f.write('\n'.join(_git_ignore))
         proc = subprocess.Popen(['git','add'] + glob.glob('Data/*/*.%s' % p.json_ext))
         proc.wait()
-        subprocess.Popen(['git','commit','-am','library commit'])
+        proc = subprocess.Popen(['git','commit','-am','library commit'])
         if wait:
             proc.wait()
 

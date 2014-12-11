@@ -59,7 +59,7 @@ Do not include any other qualifiers like "run1"</p>
 	<input class="appearing_box" type="text" name="new_type_text" placeholder="New type..."/>
 	</h3>
 	<h3>Scan sheet: 
-	% if 'scan_sheet' in subject._sessions[session]:
+	% if 'scan_sheet' in subject._sessions[session] and subject._sessions[session]['scan_sheet']!=None and subject._sessions[session]['scan_sheet']!='':
 	<a href='/view_pdf/{{subject}}/{{session}}/{{subject._sessions[session]['scan_sheet']}}'>{{subject._sessions[session]['scan_sheet']}}</a>
 	% end
 	<input type="file" name="scan_sheet"/></h3>

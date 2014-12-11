@@ -154,6 +154,19 @@ def save_session(subject_id,session):
         if 'unverified' in subj._sessions[session]:
             del(subj._sessions[session]['unverified'])
         subj.save()
+        new_subj_id = request.forms.get("new_subject_id")
+        if new_subj_id and new_subj_id!='':
+            # create_subject will load the subject if it already exists...
+            new_subj = p.maint.create_subject(new_subj_id)
+            if new_subj:
+                p.maint.merge_session(subj,new_subj,session)
+                subj.save()
+                new_subj.save()
+                p.subject._index_one_subject(subj)
+                p.subject._index_one_subject(new_subj)
+                subj = new_subj
+        else:
+            p.subject._index_one_subject(subj)
     redirect('/edit_subject/%s' % subj)
     
 

@@ -133,6 +133,35 @@ def rename(subject_id,new_subject_id):
                         pass
     p.subject._index_one_subject(new_subject_id)
 
+def merge_session(subj_from,subj_to,sess):
+    if sess not in subj_to._sessions:
+        subj_to._sessions[sess] = subj_from._sessions[sess]
+    else:
+        for k in subj_from._sessions[sess]:
+            if k!= 'labels':
+                if k in subj_to._sessions[sess]:
+                    merge_attr(subj_from._sessions[sess][k],subj_to._sessions[sess][k])
+                else:
+                    subj_to._sessions[sess][k] = subj_from._sessions[sess][k]
+        for label in subj_from._sessions[sess]['labels']:
+            if label not in subj_to._sessions[sess]['labels']:
+                subj_to._sessions[sess]['labels'][label] = []
+            for dset in subj_from._sessions[sess]['labels'][label]:
+                try:
+                    to_i = dset_i(subj_to._sessions[sess]['labels'][label],dset['filename'])
+                    subj_to._sessions[sess]['labels'][label][to_i] = dict(dset.items() + subj_to._sessions[sess]['labels'][label][to_i].items())
+                except ValueError:
+                    subj_to._sessions[sess]['labels'][label].append(dset)
+    new_sess_dir = os.path.join(p.sessions_dir(subj_to),sess)
+    if not os.path.exists(new_sess_dir):
+        os.makedirs(new_sess_dir)
+    for r,ds,fs in os.walk(os.path.join(p.sessions_dir(subj_from),sess)):
+        for f in fs:
+            dset_f = os.path.join(new_sess_dir,f)
+            if not os.path.exists(dset_f):
+                os.rename(os.path.join(r,f),dset_f)
+    
+
 def merge(subject_id_from,subject_id_into):
     nl.notify('Trying to merge %s into %s' % (subject_id_from,subject_id_into))
     with commit_wrap():
@@ -143,43 +172,11 @@ def merge(subject_id_from,subject_id_into):
         subj_from = p.load(subject_id_from)
         subj_to = p.load(subject_id_into)
         if subj_from and subj_to:
-            print 'ok... got the subjects loaded'
             merge_attr(subj_from.include,subj_to.include)
             merge_attr(subj_from.notes,subj_to.notes)
             subj_to.meta = dict(subj_from.meta.items() + subj_to.meta.items())
             for sess in subj_from._sessions:
-                print 'checking session %s' % sess
-                if sess not in subj_to._sessions:
-                    print 'doesnt exist, just copying the data'
-                    subj_to._sessions[sess] = subj_from._sessions[sess]
-                else:
-                    print 'ech... gotta merge it'
-                    for k in subj_from._sessions[sess]:
-                        if k!= 'labels':
-                            if k in subj_to._sessions[sess]:
-                                merge_attr(subj_from._sessions[sess][k],subj_to._sessions[sess][k])
-                            else:
-                                subj_to._sessions[sess][k] = subj_from._sessions[sess][k]
-                    for label in subj_from._sessions[sess]['labels']:
-                        if label not in subj_to._sessions[sess]['labels']:
-                            subj_to._sessions[sess]['labels'][label] = []
-                        for dset in subj_from._sessions[sess]['labels'][label]:
-                            try:
-                                to_i = dset_i(subj_to._sessions[sess]['labels'][label],dset['filename'])
-                                subj_to._sessions[sess]['labels'][label][to_i] = dict(dset.items() + subj_to._sessions[sess]['labels'][label][to_i].items())
-                            except ValueError:
-                                subj_to._sessions[sess]['labels'][label].append(dset)
-                new_sess_dir = os.path.join(p.sessions_dir(subj_to),sess)
-                print 'new session dir = %s' % new_sess_dir
-                if not os.path.exists(new_sess_dir):
-                    os.makedirs(new_sess_dir)
-                for r,ds,fs in os.walk(os.path.join(p.sessions_dir(subj_from),sess)):
-                    for f in fs:
-                        dset_f = os.path.join(new_sess_dir,f)
-                        print 'checking %s' % dset_f
-                        if not os.path.exists(dset_f):
-                            print 'trying to copy'
-                            os.rename(os.path.join(r,f),dset_f)
+                merge_session(subj_from,subj_to,sess)
             subj_to.save()
             delete_subject(subj_from)
 

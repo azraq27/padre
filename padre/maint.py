@@ -9,6 +9,9 @@ _git_ignore = [
     '.DS_Store','.DS_Store?','._*','.Spotlight-V100','.Trashes','ehthumbs.db','Thumbs.db'
 ]
 
+import imp
+c = imp.load_source('padre_config',os.path.join(p.padre_root,'padre_config.py'))
+
 def commit_database(wait=True):
     '''database is stored as distributed jsons that are tracked by git -- this saves a new commit'''
     with nl.run_in(p.padre_root):

@@ -9,7 +9,7 @@ Recommended Method
 	the recommended method for accessing the data is using Python scripts that directly include the
 	library. It's terribly easy. Just import the library in any script, and get going.
 	
-	.. highlight::
+	.. highlight:: py
 	
 		import padre as p
 	

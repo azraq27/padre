@@ -9,9 +9,7 @@ Global Functions
 Several functions are available at the root-level of the library, the most important of which
 is the :meth:`padre.subjects` function (which is a shortcut to the function :meth:`padre.subject.subjects`)
 
-.. currentmodule:: padre.__init__
-
-.. automethod:: subjects
+.. automethod:: padre.subject.subjects
 
 Using this list, it is easy to filter again to find a specific subset of subjects. For example,
 to get a list of all subjects who have had a left ATL surgery::

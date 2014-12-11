@@ -60,7 +60,7 @@ Do not include any other qualifiers like "run1"</p>
 	</h3>
 	<h3>Scan sheet: 
 	% if 'scan_sheet' in subject._sessions[session]:
-	<a href='#'>{{subject._sessions[session]['scan_sheet']}}</a>
+	<a href='/view_pdf/{{subject}}/{{session}}/{{subject._sessions[session]['scan_sheet']}}'>{{subject._sessions[session]['scan_sheet']}}</a>
 	% end
 	<input type="file" name="scan_sheet"/></h3>
 	<h3>Session Notes:<br/>

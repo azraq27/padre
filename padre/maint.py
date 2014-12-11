@@ -133,6 +133,11 @@ def rename(subject_id,new_subject_id):
                         pass
     p.subject._index_one_subject(new_subject_id)
 
+def merge_attr(f,t):
+    if t==None or t=='' and not (f==None or f==''):
+        t=f
+
+
 def merge_session(subj_from,subj_to,sess):
     if sess not in subj_to._sessions:
         subj_to._sessions[sess] = subj_from._sessions[sess]
@@ -165,9 +170,6 @@ def merge_session(subj_from,subj_to,sess):
 def merge(subject_id_from,subject_id_into):
     nl.notify('Trying to merge %s into %s' % (subject_id_from,subject_id_into))
     with commit_wrap():
-        def merge_attr(f,t):
-            if t==None or t=='' and not (f==None or f==''):
-                t=f
         dset_i = lambda label_dict,dset_fname: [x['filename'] for x in label_dict].index(dset_fname)
         subj_from = p.load(subject_id_from)
         subj_to = p.load(subject_id_into)

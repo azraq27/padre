@@ -185,7 +185,8 @@ def merge(subject_id_from,subject_id_into):
             merge_attr(subj_from.include,subj_to.include)
             merge_attr(subj_from.notes,subj_to.notes)
             subj_to.meta = dict(subj_from.meta.items() + subj_to.meta.items())
-            for sess in subj_from._sessions:
+            sess_keys = subj_from._sessions.keys()
+            for sess in sess_keys:
                 merge_session(subj_from,subj_to,sess)
             subj_to.save()
             delete_subject(subj_from)

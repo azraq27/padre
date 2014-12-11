@@ -129,7 +129,7 @@ def padre_list(args):
             subj = p.load(params['subject'])
             if subj:
                 dsets = subj.dsets(session=params['session'],type=params['type'],label=params['label'],experiment=params['experiment'])
-                print '\n'.join(dsets)
+                print '\n'.join([str(x) for x in dsets])
         return
             
 

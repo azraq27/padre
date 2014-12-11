@@ -1,12 +1,12 @@
 Examples of usage
 ===================
 
-Here are some "real-life" examples of how I would process data. I also use the `neural <https://github.com/azraq27/neural` library
+Here are some "real-life" examples of how I would process data. I also use the `neural <https://github.com/azraq27/neural>` library
 for a lot of my processing, so you'll see it pop up here as well.
 
 In these examples, my experiment is called "HitHeads" and it has two conditions: "hard" and "soft".
 
-First, preprocess the data:
+First, preprocess the data::
 
 	import padre as p
 	import neural as nl
@@ -33,7 +33,7 @@ First, preprocess the data:
 		# Now we have our anatomy and a list of our epis, so align them!
 		nl.afni.align_anat_epi(anatomy,epis)
 
-Next, deconvolve:
+Next, deconvolve::
 
 	import padre as p
 	import neural as nl

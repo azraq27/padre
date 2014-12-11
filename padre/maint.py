@@ -170,7 +170,7 @@ def merge_session(subj_from,subj_to,sess):
     if len(os.listdir(from_sess_dir))==0:
         os.rmdir(from_sess_dir)
     else:
-        new_dir = os.path.join(p.trash_dir,'%s-%s-%s' % (subject_id,sess,datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S').format()))
+        new_dir = os.path.join(p.trash_dir,'%s-%s-%s' % (subj_from,sess,datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S').format()))
         while os.path.exists(new_dir):
             new_dir += '_1'
         os.rename(from_sess_dir,new_dir)

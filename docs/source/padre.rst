@@ -9,7 +9,7 @@ is the :meth:`padre.subjects` function (which is a shortcut to the function :met
 
 .. automethod:: padre.subject.subjects
 
-Once you have the subject objects, you can play with them using the methods in :docs:`subject`
+Once you have the subject objects, you can play with them using the methods in :doc:`subject`
 
 Extra Stuff
 -------------
@@ -24,21 +24,20 @@ Directory and File Locations
 -----------------------------
 
 .. automodule:: padre.config
+
+
+	.. autodata:: padre_root
+		:annotation:
+
+	.. autodata:: data_dir
+		:annotation:
+
+	.. autodata:: analyses_dir
+		:annotation:
 	
-	*Directories:*
-	
-		.. autodata:: padre_root
-			:annotation:
-	
-		.. autodata:: data_dir
-			:annotation:
-	
-		.. autodata:: analyses_dir
-			:annotation:
-		
-		.. automethod:: padre.config.subject_dir		
-		.. automethod:: padre.config.raw_dir
-		.. automethod:: padre.config.sessions_dir
+	.. automethod:: padre.config.subject_dir		
+	.. automethod:: padre.config.raw_dir
+	.. automethod:: padre.config.sessions_dir
 
 	.. automethod:: padre.config.subject_json
 

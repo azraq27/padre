@@ -20,8 +20,6 @@ A couple quick examples to get you started:
 .. tip:: 
 	Loop through all the subjects and do something to all their datasets::
 	
-	.. highlight:: py
-	
 		import padre as p
 	
 		for subject in p.subjects():

@@ -90,15 +90,43 @@ class Dset(object):
 class Subject(object):
     '''abstract container for subject information
     
-    Subject objects can be obtained by calling the search function :meth:`padre.subjects`
+    If cast as string, will return subject id. Subject objects can be obtained by 
+    calling the search function :meth:`padre.subjects` or by loading directly using
+    :meth:`padre.load`
+    
+    *Instance variables:*
+    
+    .. autoinstanceattribute:: Subject.include
+        :annotation:
+    
+    .. autoinstanceattribute:: Subject.sessions
+        :annotation:
+        
+    .. autoinstanceattribute:: Subject.labels
+        :annotation:
+        
+    .. autoinstanceattribute:: Subject.experiments
+        :annotation:
+    
+    .. autoinstanceattribute:: Subject.meta
+        :annotation:
+    
+    .. autoinstanceattribute:: Subject.notes
+        :annotation:
+    
     '''
     def __init__(self,subject_id,initial_data={}):
         self._subject_id = subject_id
-        self.include = initial_data['include'] if 'include' in initial_data else True
+        #: If ``False``, this subject will be excluded from standard analyses
+        self.include = initial_data['include'] if 'include' in initial_data else True  
+        #: Free text notes on subject
         self.notes = initial_data['notes'] if 'notes' in initial_data else ''
         
+        #: List of session names
         self.sessions = []
+        #: List of labels used by this subject
         self.labels = []
+        #: List of experiments this subject has data for
         self.experiments = []
         self._dsets = []
         
@@ -115,6 +143,8 @@ class Subject(object):
         self.experiments = list(set(self.labels))
         
         self.meta = p.ForgivingDict.copy_nested_dict(initial_data['meta']) if 'meta' in initial_data else p.ForgivingDict()
+        '''Dictionary of meta-data
+        Standard entries include: ``clinical``, ``demo`` (i.e., demographic), ``neuropsych``, and ``behavioral``'''
     
     @classmethod
     def load(cls,subject_id):

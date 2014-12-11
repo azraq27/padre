@@ -4,20 +4,7 @@ padre.subject - Subject Objects
 .. currentmodule:: padre.subject
 .. autoclass:: Subject
 	
-**Loading a subject from the disk:**
-
-	.. automethod:: Subject.load
-
-	*Standard instance variables:*
-	
-		.. autoinstanceattribute:: Subject.subject_id
-			:annotation:
-		
-		.. autoinstanceattribute:: Subject.include
-			:annotation:
-		
-		.. autoinstanceattribute:: Subject.notes
-			:annotation:
+.. automethod:: Subject.load
 		
 			
 

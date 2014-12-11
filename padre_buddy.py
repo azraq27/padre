@@ -32,7 +32,7 @@ all_experiments = p.subject.experiments
 all_objects = [(x,'subject') for x in all_subjects] + [(x,'label') for x in all_labels] + [(x,'type') for x in all_types] + [(x,'experiment') for x in all_experiments]
 
 def error(msg,miss=None):
-    nl.notify(msg,level=nl.level.error)
+    nl.notify(msg + '\n',level=nl.level.error)
     if miss:
         try:
             import urllib,urllib2
@@ -61,9 +61,7 @@ def identify_listable(keyword):
         return None
 
 def padre_info(args):
-    subject_match = process.extractOne(args.something,all_subjects)
-    if subject_match[1]>=fuzzyness:
-        p.load(subject_match[0]).pretty_print()
+    pass
 
 def padre_list(args):
     global all_objects
@@ -133,160 +131,31 @@ def padre_list(args):
                 dsets = subj.dsets(session=params['session'],type=params['type'],label=params['label'],experiment=params['experiment'])
                 print '\n'.join([str(x) for x in dsets])
         return
-            
 
-def read_neuropsych_from_excel(excel_file):
-    '''read the neuropsych variables from an excel file
-    
-    assumes the format given in "ExampleNeuropsych.xlsx"
-    if the file "metadata.json" exists, will use the following keys:
-        :approved_columns:  list of names of columns that will be imported
-        :column_transforms: dictionary containing column names as keys and string values
-                            that will be executed as a ``lambda x: [value]`` to transform
-                            the imported values
-        :column_groups:     dictionary with keys as group names and values as lists of 
-                            column names. Will import given column names under the attribute
-                            group name
-    '''
-    data_row = lambda sheet,row: [sheet.cell(row=row,column=i+1).value for i in xrange(sheet.get_highest_column())]
-    column_named = lambda header,row,name: row[header.index(name)]
-    approved_columns = None
-    column_transforms = None
-    column_groups = None
-    if os.path.exists(os.path.join(p.padre_root,'metadata.json')):
-        with open(os.path.join(p.padre_root,'metadata.json')) as f:
-            metadata = json.loads(f.read())
-        if 'approved_columns' in metadata:
-            approved_columns = metadata['approved_columns']
-        if 'column_transforms' in metadata:
-            column_transforms = metadata['column_transforms']
-        if 'column_groups' in metadata:
-            # in the JSON file they're listed as group->column, so invert that
-            inverse_groups = metadata['column_groups']
-            column_groups = {}
-            for group in inverse_groups:
-                for col in inverse_groups[group]:
-                    column_groups[col] = group
-    wb = openpyxl.load_workbook(excel_file)
-    for sheet_name in wb.get_sheet_names():
-        sheet = wb.get_sheet_by_name(sheet_name)
-        if sheet.calculate_dimension() != 'A1:A1':
-            # There's some data in this worksheet
-            header = data_row(sheet,1)
-            import_cols = []
-            for col in header:
-                if col and col.lower()!='name' and col.lower()!='subject_id':
-                    if approved_columns and col.lower() not in approved_columns:
-                        nl.notify('Ignoring column: %s (not a designated column name)' % col,level=nl.level.warning)
-                    else:
-                        import_cols.append(col)
-            for row_i in xrange(2,sheet.get_highest_row()+1):
-                row = data_row(sheet,row_i)
-                if ((isinstance(row[0],basestring) and row[0][0]=='#') or
-                    ''.join([str(x) for x in row if x])==''):
-                    # This row starts with a "#" or doesn't contain any data
-                    continue
-                subject_id = column_named(header,row,'subject_id')
-                if subject_id==None or subject_id=='':
-                    nl.notify('No subject_id listed for the following row:\n\t%s' % '  '.join([str(x) for x in row]),level=nl.level.error)
-                    continue
-                s = p.Subject.load(subject_id)
-                if s:
-                    with nl.notify('Importing for subject %s' % s):
-                        for col in import_cols:
-                            data = column_named(header,row,col)
-                            if data!=None and data!='' and not (isinstance(data,basestring) and data.lower()=='na'):
-                                if column_transforms and col in column_transforms:
-                                    data = (lambda x: eval(column_transforms[col]))(data)
-                                if column_groups and col in column_groups:
-                                    nl.notify('setting %s.%s = %s' % (column_groups[col],col,repr(data)))
-                                    if column_groups[col] not in dir(s):
-                                        s.add_attr(column_groups[col])
-                                    if not isinstance(getattr(s,column_groups[col]),dict):
-                                        setattr(s,column_groups[col],{})
-                                    getattr(s,column_groups[col])[col] = data
-                                else:
-                                    nl.notify('setting %s = %s' % (col,repr(data)))
-                                    if col not in dir(s):
-                                        s.add_attr(col)
-                                    setattr(s,col,data)
-                    s.save()
-                else:
-                    nl.notify('Couldn\'t find subject %s' % subject_id,level=nl.level.error)
-
-def padre_create(args):
-    if args.subject:
-        subj = p.Subject.create(args.subject)
-        subj.save()
-        nl.notify('Creating new subject %s' % args.subject)
-    else:
-        nl.notify('Error: you need to specify a subject id',level=nl.level.error)
-
-def padre_rename(args):
-    if args.subject:
-        subj = p.load(args.subject)
-        if subj:
-            try:
-                os.rename(p.subject_dir(subj),p.subject_dir(args.new_name))
-            except OSError:
-                nl.notify('Error: filesystem reported error moving %s to %s' % (subj,args.new_name),level=nl.level.error)
-            else:
-                subj.subject_id = args.new_name
-                subj.save()
-                if os.path.exists(p.subject_json(args.new_name)):
-                    try:
-                        os.remove(os.path.join(p.subject_dir(args.new_name),'%s.json' % args.subject))
-                    except OSError:
-                        pass
-                if args.deep:
-                    subj.dsets.session_dict.session_dir = p.sessions_dir(args.new_name)
-                    for dset in subj.dsets():
-                        if args.subject in os.path.basename(dset):
-                            new_name = os.path.join(os.path.dirname(dset),os.path.basename(dset).replace(args.subject,args.new_name))
-                            try:
-                                os.rename(dset,new_name)
-                            except OSError:
-                                nl.notify('Error: filesystem reported error moving %s to %s' % (dset,new_name),level=nl.level.error)                            
-                nl.notify('Successfully renamed %s to %s' % (args.subject,args.new_name))
-                if not args.deep:
-                    nl.notify('(NOTE: none of the dataset names are changed in this process. Use "--deep" to change filenames)')
-    else:
-        nl.notify('Error: you need to specify a subject id to rename',level=nl.level.error)
-
-def padre_add(args):
-    if args.neuropsych:
-        read_neuropsych_from_excel(args.neuropsych)
-
-def padre_dir(args):
-    if args.subject:
-        print p.subject_dir(args.subject)
-    else:
-        nl.notify('Error: you need to specify a subject id to print their directory',level=nl.level.error)
-    
-def padre_json(args):
-    if args.subject:
-        print p.subject_json(args.subject)
-    else:
-        nl.notify('Error: you need to specify a subject id to print their JSON file',level=nl.level.error)
-
-def padre_edit_session(args):
-    pass
-
-def padre_remove(args):
-    pass
-
-def padre_set(args):
-    pass
-
-def padre_report(args):
-    pass
-
-def padre_import(args):
-    subject_guess = args.subject
-    if subject_guess==None:
-        subject_guess = os.path.basename(args.directory)
-    import padre_demon
-    padre_demon.import_archive(args.directory,subject_guess)
+def padre_link(args):
+    global all_objects
+    params = {'subject':args.subject,'session':args.session,'type':args.type,'experiment':args.experiment,'label':args.label}
+    added_sessions = False
+    for arg in args.something:
+        if params['subject'] and not added_sessions:
+            subj = p.load(params['subject'])
+            if subj:
+                all_objects += [(x,'session') for x in subj.sessions]
+            added_sessions = True
+        obj = identify_object(arg)
+        if obj:
+            params[obj[1]] = obj[0]
+        else:
+            error('Error: Sorry, I can\'t figure out what you mean by "%s"' % arg, arg)
+            return
+    if not params['subject']:
+        error('Error: You at least need to give me a subject!')
+    subj = p.load(params['subject'])
+    if not subj:
+        error('Error: Couldn\'t load subject %s' % params['subject'])
+    dsets = subj.dsets(session=params['session'],type=params['type'],label=params['label'],experiment=params['experiment'])
+    for dset in dsets:
+        os.symlink(dset,os.path.basename(dset))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -307,6 +176,10 @@ if __name__ == '__main__':
     parser_list = subparsers.add_parser('list',help='retrieve a list of things')
     parser_list.add_argument('something',nargs='*',help='keywords identifying all the things you want')
     parser_list.set_defaults(func=padre_list)
+    
+    parser_link = subparsers.add_parser('link',help='create symbolic links in the current directory to datasets matching the given parameters')
+    parser_link.add_argument('something',nargs='*',help='keywords identifying the datasets you want')
+    parser_link.set_defaults(func=padre_link)
     
     args = parser.parse_args()
     args.func(args)

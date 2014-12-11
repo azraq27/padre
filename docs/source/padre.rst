@@ -9,8 +9,10 @@ is the :meth:`padre.subjects` function (which is a shortcut to the function :met
 
 .. automethod:: padre.subject.subjects
 
-Extra Data
-------------
+Once you have the subject objects, you can play with them using the methods in :docs:`subject`
+
+Extra Stuff
+-------------
 
 .. autodata:: padre.config.atlases
 	:annotation:

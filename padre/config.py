@@ -20,9 +20,10 @@ Or in tcsh you could use:
     setenv PADRE_ROOT /mnt/server/share/data_store
 '''
 
+padre_root = '' #: The absolute path to the root of the padre directory tree (taken from the PADRE_ROOT environment variable)
+
 if 'PADRE_ROOT' not in os.environ:
     print error_msg
-    padre_root = ''
 else:
     padre_root = os.environ['PADRE_ROOT']
 data_dir = os.path.join(padre_root,'Data') #: [padre_root]/Data
@@ -56,9 +57,9 @@ def subject_json(subject):
 
 atlases = {}
 '''dictionary of atlas nicknames and dataset locations
-each atlas is listed by its recognizable name (e.g., ``TT_N27``) and contains (optionally) any of the following useful information:
+each atlas is listed by its recognizable name (e.g., ``TT_N27``) and contains (*optionally*) any of the following useful information:
 
-:file:  an absolute path to the atlas filename (required)
+:file:  an absolute path to the atlas filename (*required*)
 :space: a description of the space this atlas is registered to (e.g., tlrc or mni)
 :notes: free-text notes on the atlas
 

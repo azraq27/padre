@@ -201,7 +201,7 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
             pass
         session_dict = dict(subj._sessions[session])
         session_dict['unverified'] = True
-        session_dict['date'] = '-'.join(session[4:],session[4:6],session[6:8])
+        session_dict['date'] = '-'.join([session[4:],session[4:6],session[6:8]])
         inverted_labels = {}
         for label in c.dset_labels:
             for dset in c.dset_labels[label]:

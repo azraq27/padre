@@ -48,6 +48,7 @@ def subjects():
         for sess in subj._sessions:
             if 'unverified' in subj._sessions[sess]:
                 unverified.append(subj)
+                continue
     subjects = list(set(subjects) - set(unverified))
     
     def sort_key(s):

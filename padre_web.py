@@ -26,12 +26,9 @@ def style_file(filename):
 def favicon():
     return static_file('views/favicon.ico','.')
 
-@route('/view_pdf/<subject>/<session>/<filename>')
-def view_pdf(subject,session,filename):
-    if not filename.endswith(".pdf"):
-        error()
-    else:
-        return static_file(os.path.join('Data',subject,'sessions',session,filename),root=p.padre_root)
+@route('/view_file/<subject>/<session>/<filename>')
+def view_file(subject,session,filename):
+    return static_file(os.path.join('Data',subject,'sessions',session,filename),root=p.padre_root)
 
 @route('/')
 @route('/index')

@@ -60,7 +60,7 @@ Do not include any other qualifiers like "run1"</p>
 	</h3>
 	<h3>Scan sheet: 
 	% if 'scan_sheet' in subject._sessions[session] and subject._sessions[session]['scan_sheet']!=None and subject._sessions[session]['scan_sheet']!='':
-	<a href='/view_pdf/{{subject}}/{{session}}/{{subject._sessions[session]['scan_sheet']}}'>{{subject._sessions[session]['scan_sheet']}}</a>
+	<a href='/view_file/{{subject}}/{{session}}/{{subject._sessions[session]['scan_sheet']}}'>{{subject._sessions[session]['scan_sheet']}}</a>
 	% end
 	<input type="file" name="scan_sheet"/></h3>
 	<h3>Session Notes:<br/>
@@ -112,7 +112,7 @@ Do not include any other qualifiers like "run1"</p>
 				<tr>
 					<td>{{meta}}</td>
 					<td>file</td>
-					<td>{{dset.meta[meta]}}</td>
+					<td><a href='/view_file/{{subject}}/{{session}}/{{dset.meta[meta]}}'>{{dset.meta[meta]}}</a></td>
 				</tr>
 				% end
 			</td>

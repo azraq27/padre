@@ -91,7 +91,7 @@ def new_session(subj,session_name):
         session_dir = os.path.join(p.sessions_dir(subj),session_name)
         if not os.path.exists(session_dir):
             os.makedirs(session_dir)
-        subj._sessions[session_name] = {'labels':[]}
+        subj._sessions[session_name] = {'labels':{}}
 
 def delete_session(subj,session_name,purge=False):
     ''' delete a session

@@ -26,4 +26,8 @@ Basic workflow concepts
 -------------------------
 
 The raw data is stored within padre, and is accessible from anywhere through the library functions. For efficiency, it's 
-not recommended to copy the raw data out of 
+not recommended to copy the raw data out of the repository, but to try to work with it in place. This is pretty easy to do within
+the library itself, because all files are referred to by absolute file references, so it doesn't matter what directory you are in
+when you refer to a file. If you need to access the data easily outside the library, the :doc:`padre_buddy.py <padre_buddy.py>` script should
+allow you to work with the files without having to copy them.
+

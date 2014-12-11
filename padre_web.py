@@ -26,7 +26,7 @@ def style_file(filename):
 def favicon():
     return static_file('views/favicon.ico','.')
 
-@route('view_pdf/<subject>/<session>/<filename>')
+@route('/view_pdf/<subject>/<session>/<filename>')
 def view_pdf(subject,session,filename):
     if not filename.endswith(".pdf"):
         error()

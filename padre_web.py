@@ -99,11 +99,13 @@ def save_subject():
     if p.subject.subject_exists(new_subject_id):
         with p.maint.commit_wrap():
             p.maint.merge(old_subject_id,new_subject_id)
-            redirect('/edit_subject/%s' % new_subject_id)
     else:
         with p.maint.commit_wrap():
             p.maint.rename(old_subject_id,new_subject_id)
-            redirect('/edit_subject/%s' % new_subject_id)
+    p.subject._index_one_subject(new_subject_id)
+    if old_subject_id in p.subject._all_subjects:
+        del(p.subject._all_subjects[old_subject_id])
+    redirect('/edit_subject/%s' % new_subject_id)
 
 @route('/edit_subject/<subject_id>/<session>')
 @view('edit_session')
@@ -165,6 +167,7 @@ def save_session(subject_id,session):
         if 'unverified' in subj._sessions[session]:
             del(subj._sessions[session]['unverified'])
         subj.save()
+        p.subject._all_subjects[str(subj)] = subj
         new_subj_id = request.forms.get("new_subject_id")
         if new_subj_id and new_subj_id!='':
             # create_subject will load the subject if it already exists...

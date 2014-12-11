@@ -30,7 +30,7 @@ setup(
           "views/style/tab_selected.png"
       ])
   ],
-  version = '1.0',
+  version = '2.1',
   description = 'patient data repository',
   long_description = '''PaDRe - a patient data repository library (in Python)
 --------------------------------------------------------
@@ -44,7 +44,7 @@ Documentation: http://padre.readthedocs.org
   author = 'Bill Gross',
   author_email = 'bill.gross@me.com',
   url = 'https://github.com/azraq27/padre',
-  download_url = 'https://github.com/azraq27/padre/tarball/1.0',
+  download_url = 'https://github.com/azraq27/padre/tarball/2.1',
   keywords = ['neuroimaging', 'afni', 'fsl', 'fmri'],
   classifiers = [
       'Topic :: Scientific/Engineering',

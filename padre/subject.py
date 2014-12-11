@@ -20,9 +20,24 @@ dset
 class Dset(object):
     '''object to contain dataset filename and meta-data
     
-    will automatically prepend the absolute location of the filename when cast as a 
-    string. To just return the filename with no directory information, call :meth:`__str__`
-    with argument ``False``'''
+    Calling :meth:`subject.dsets` with return a list of these objects. They can be treated as 
+    strings most of the time, because they will return the absolute location of the dataset
+    filename when cast as strings. If you want to explicitly convert them into the file location
+    you can manually cast them as a string (``str(dset)``). To return only the filename,
+    with no directory information, you can call :meth:`__str__` with the argument ``False``
+    
+    Other information contained in the objects include:
+    
+    :complete:      Whether this is a complete, usable dataset
+    :date:          Date this was acquired
+    :experiment:    Experiment in which this was aquired
+    :label:         Kind of dataset (e.g., ``anatomy``)
+    :type:          Type of session this was acquired during
+    :session:       Label of session this was acquired during
+    :md5:           md5 checksum of dataset file (used for checking for data corruption)
+    :meta:          dictionary of meta data associated with this dataset (e.g., ``eprime`` or ``eprime-txt``)
+    :info:          object containing information from a call to ``3dinfo`` (for more information see the neural library)'''
+    
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
         self._dset_fname = dset_fname
         self.complete = complete

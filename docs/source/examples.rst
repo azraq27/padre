@@ -1,7 +1,7 @@
 Examples of usage
 ===================
 
-Here are some "real-life" examples of how I would process data. I also use the `neural <https://github.com/azraq27/neural>` library
+Here are some "real-life" examples of how I would process data. I also use the `neural <https://github.com/azraq27/neural>`_ library
 for a lot of my processing, so you'll see it pop up here as well.
 
 In these examples, my experiment is called "HitHeads" and it has two conditions: "hard" and "soft".

@@ -75,6 +75,8 @@ def categorize_dset(dset):
 					return d
 
 def scan_subjects_dir():
+    '''this no longer works'''
+	raise Exception('This function has been depreciated and is not currently working')
 	for subject_id in os.listdir(padre.data_dir):
 		subj = padre.Subject.create(subject_id)
 		for session in os.listdir(padre.sessions_subject_dir(subj)):
@@ -82,12 +84,12 @@ def scan_subjects_dir():
 				subj.new_session(session)
 				try:
 					if str(int(session))==session:
-						subj.sessions[session]['date'] = session
+						subj._sessions[session]['date'] = session
 				except ValueError:
 					pass
 			already_found_dsets = []
-			for set_type in subj.sessions[session]['sets']:
-				already_found_dsets += subj.sessions[session]['sets'][set_type]
+			for set_type in subj._sessions[session]['sets']:
+				already_found_dsets += subj._sessions[session]['sets'][set_type]
 			for dset in sorted(os.listdir(os.path.join(padre.sessions_subject_dir(subj),session))):
 				if dset not in already_found_dsets:
 					type_guess = categorize_dset(dset)

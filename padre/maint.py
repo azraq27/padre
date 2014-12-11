@@ -84,7 +84,7 @@ def new_session(subj,session_name):
         session_dir = os.path.join(p.sessions_dir(subj),session_name)
         if not os.path.exists(session_dir):
             os.makedirs(session_dir)
-        subj.sessions[session_name] = {'labels':[]}
+        subj._sessions[session_name] = {'labels':[]}
 
 def delete_session(subj,session_name,purge=False):
     ''' delete a session
@@ -93,7 +93,7 @@ def delete_session(subj,session_name,purge=False):
     If ``purge`` is given as ``True``, then it will also delete the files from
     the disk (be careful!). ``purge`` will also automatically call ``save``.'''
     with commit_wrap():
-        del(subj.sessions[session_name])
+        del(subj._sessions[session_name])
         if purge:
             session_dir = os.path.join(p.sessions_dir(subj),session_name)
             if os.path.exists(session_dir):

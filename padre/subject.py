@@ -227,8 +227,14 @@ def subjects(experiment=None,label=None,type=None,only_included=True):
     :label:         only return subjects who have datasets with that label
     :type:          only return subjects who have a session of given type
     
-    :only_included: if True, will exclude any subjects with ``subject.include``
+    :only_included: if True (the default), will exclude any subjects with ``subject.include``
                     set to False
+    
+    Using this list, it is easy to filter again to find a specific subset of subjects. For example,
+    to get a list of all subjects who have had a left ATL surgery::
+
+    	subjects = [s for s in padre.subjects() if s.meta['clinical']['surgery_type']=='left atl']
+    
     '''
     if not _indexed_and_loaded_all_subjects:
         _index_all_subjects(True)

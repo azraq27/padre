@@ -11,45 +11,85 @@ import padre as p
 import neural as nl
 import openpyxl
 
-fuzzyness = 80
+fuzzyness = 90
 
 listable_objects = {
     'atlases': ['atlases','templates'],
     'subjects': ['subjects','patients'],
     'experiments': ['experiments', 'studies', 'study'],
-    'labels': ['labels','types'],
+    'labels': ['labels','tasks'],
+    'types': ['types'],
     'sessions': ['sessions','scans','dates'],
     'dsets': ['dsets','datasets','runs','files']
 }
 
 all_subjects = p.subject._all_subjects.keys()
 all_labels = p.subject.tasks
-all_attrs = p.subject.root_level_attrs
+all_types = p.subject.types
+all_experiments = p.subject.experiments
 
+all_objects = [(x,'subject') for x in all_subjects] + [(x,'label') for x in all_labels] + [(x,'type') for x in all_types] + [(x,'experiment') for x in all_experiments]
 
-def report(miss):
-    '''tries to keep a central list of all misses'''
-    try:
-        import urllib,urllib2
-        data = {'miss':miss}
-        data_enc = urllib.urlencode(data)
-        urllib2.urlopen('http://wolflion.org/cgi-bin/report.py?%s' % data_enc)
-    except:
-        pass
+def error(msg,miss=None):
+    nl.notify(msg,level=nl.level.error)
+    if miss:
+        try:
+            import urllib,urllib2
+            data = {'miss':miss}
+            data_enc = urllib.urlencode(data)
+            urllib2.urlopen('http://wolflion.org/cgi-bin/report.py?%s' % data_enc)
+        except:
+            pass
 
-def padre_get(args):
+def identify_object(obj):
+    '''tries to match to an existing object
+    returns a tuple of (object,object_id)'''
+    best_match = process.extractOne(obj,[x[0] for x in all_objects])
+    if best_match[1]>fuzzyness:
+        return [x for x in all_objects if x[0]==best_match[0]][0]
+    else:
+        return None
+
+def identify_listable(keyword):
+    '''tries to match keyword to some listable object'''    
+    possible_names = [x for s in listable_objects.values() for x in s]
+    best_match = process.extractOne(keyword,possible_names)
+    if best_match[1]>fuzzyness:
+        return [x for x in listable_objects if best_match[0] in listable_objects[x]][0]
+    else:
+        return None
+
+def padre_info(args):
     subject_match = process.extractOne(args.something,all_subjects)
     if subject_match[1]>=fuzzyness:
         p.load(subject_match[0]).pretty_print()
 
 def padre_list(args):
-    possible_names = [x for s in listable_objects.values() for x in s]
-    best_match = process.extractOne(args.something,possible_names)
-    if best_match[1]<fuzzyness:
-        report(args.something)
-        nl.notify('I\'m sorry, I couldn\'t understand "%s"' %args.something)
+    params = {'subject':args.subject,'session':args.session,'type':args.type,'experiment':args.experiment,'label':args.label}
+    listable = None
+    added_sessions = False
+    for arg in args.something:
+        if params['subject'] and not added_sessions:
+            subj = p.load(params['subject'])
+            if subj:
+                all_objects += [(x,'session') for x in subj.sessions]
+            added_sessions = True
+        obj = identify_object(arg)
+        if obj:
+            params[obj[1]] = obj[0]
+        else:
+            l = identify_listable(arg)
+            if l:
+                listable = l
+            else:
+                error('Error: Sorry, I can\'t figure out what you mean by "%s"' % arg, arg)
+                return
+    
+    if listable==None:
+        error('Error: You didn\'t tell me what you wanted to list!')
         return
-    if best_match[0]=='atlases':
+    
+    if listable=='atlases':
         if args.quiet:
             print '\n'.join(p.atlases.keys())
         else:
@@ -60,27 +100,37 @@ def padre_list(args):
                 if 'notes' in p.atlases[atlas]:
                     print ': ' + p.atlases[atlas]['notes'],
                 print ''
-    if best_match[0]=='subjects':
-        print '\n'.join([str(x) for x in p.subjects(label=args.label,experiment=args.experiment)])
+    if listable=='subjects':
+        print '\n'.join([str(x) for x in p.subjects(type=params['type'],label=params['label'],experiment=params['experiment'])])
         return
-    if best_match[0]=='labels':
+    if listable=='labels':
         print '\n'.join(all_labels)
         return
-    if best_match[0]=='experiments':
-        print '\n'.join(p.subject.experiments)
+    if listable=='experiments':
+        print '\n'.join(all_experiments)
         return
-    if best_match[0]=='sessions' or best_match[0]=='dsets':
-        if args.subject:
-            subj = p.load(args.subject)
-            if subj:
-                if best_match[0]=='sessions':
-                    print subj.sessions(label=args.label,experiment=args.experiment).keys()                    
-                if best_match[0]=='dsets':
-                    print subj.dsets(label=args.label,experiment=args.experiment)
+    if listable=='types':
+        print '\n'.join(all_types)
+        return
+    if listable=='sessions':
+        if not params['subject']:
+            error('Error: sorry, I need a subject to list their sessions')
         else:
-            nl.notify('Error: you need to specify a subject to list sessions or dsets',level=nl.level.error)
+            subj = p.load(params['subject'])
+            if subj:
+                sessions = list(subj.sessions)
+                sessions = [x for x in sessions if len(subj.dsets(session=x,type=params['type'],label=params['label'],experiment=params['experiment']))>0]
+                print '\n'.join(sessions)
         return
-        
+    if listable=='dsets':
+        if not params['subject']:
+            error('Error: sorry, I need a subject to list their datasets')
+        else:
+            subj = p.load(params['subject'])
+            if subj:
+                dsets = subj.dsets(session=params['session'],type=params['type'],label=params['label'],experiment=params['experiment'])
+                print '\n',join(dsets)
+        return
             
 
 def read_neuropsych_from_excel(excel_file):
@@ -239,19 +289,21 @@ def padre_import(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--quiet','-q',action='store_true',help='just print the bare information (good for scripts)')
+    
     specify_group = parser.add_argument_group(title='explicitly specify object',description='(certain commands are also able to parse fuzzy keyword arguments)')
     specify_group.add_argument('-s','--subject',help='subject id')
     specify_group.add_argument('-n','--session',help='session identifier, by convention date of the scanning session in the format YYYYMMDD, but could really be any unique string')
+    specify_group.add_argument('-t','--type',help='session type')
     specify_group.add_argument('-l','--label',help='label for dataset (the type of dataset; anatomy, sdtones)')
     specify_group.add_argument('-e','--experiment',help='experiment identifier')
     subparsers = parser.add_subparsers(title='commands')
     
-    parser_get = subparsers.add_parser('get',help='retrieve one thing')
-    parser_get.add_argument('something',nargs='*',help='keywords identifying what you want')
-    parser_get.set_defaults(func=padre_get)
+    parser_info = subparsers.add_parser('info',help='get details on a single object')
+    parser_info.add_argument('something',nargs='*',help='keywords identifying what you want')
+    parser_info.set_defaults(func=padre_info)
     
     parser_list = subparsers.add_parser('list',help='retrieve a list of things')
-    parser_list.add_argument('something',nargs='*',help='keyword identifying all the things you want')
+    parser_list.add_argument('something',nargs='*',help='keywords identifying all the things you want')
     parser_list.set_defaults(func=padre_list)
     
     parser_create = subparsers.add_parser('create',help='create a brand-new empty subject')
@@ -259,7 +311,6 @@ if __name__ == '__main__':
     
     parser_rename = subparsers.add_parser('rename',help='rename the specified subject to a new id')
     parser_rename.add_argument('new_name',help='new subject id')
-    parser_rename.add_argument('--deep',action='store_true',help='also rename all of the datasets')
     parser_rename.set_defaults(func=padre_rename)
     
     parser_dir = subparsers.add_parser('dir',help='print the directory for a subject')

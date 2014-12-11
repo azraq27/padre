@@ -31,7 +31,7 @@ def view_pdf(subject,session,filename):
     if not filename.endswith(".pdf"):
         error()
     else:
-        return static_file(os.path.join(p.sessions_dir(subject),session,filename),root=p.padre_root)
+        return static_file(os.path.join('Data',subject,'sessions',session,filename),root=p.padre_root)
 
 @route('/')
 @route('/index')

@@ -74,7 +74,7 @@ Do not include any other qualifiers like "run1"</p>
 			<th>Label</th>
 			<th>Filename</th>
 		</tr>
-		% for dset in sorted(subject.dsets(session=session,include_all=True),key=lambda d: int(str(d).split('-')[2]) if len(str(d).split('-'))>2 else 0):
+		% for dset in sorted(subject.dsets(session=session,include_all=True),key=lambda d: str(d).split('-')[2] if len(str(d).split('-'))>2 else 0):
 		<tr>
 			<td style='text-align:center'><input type='checkbox' name='complete_{{dset.__str__(False)}}'
 				% if dset.complete:

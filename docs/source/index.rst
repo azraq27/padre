@@ -52,6 +52,7 @@ The Contents
    setup
    padre
    subject
+   padre_buddy.py
    organization
    installation
 

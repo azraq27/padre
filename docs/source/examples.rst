@@ -39,6 +39,7 @@ Next, deconvolve::
 	import neural as nl
 	
 	# this is the name of a stimfile that we made somewhere else
+	# for example, neural as has very nice E-Prime file parser!
 	stimfile_name = lambda dset: '%s-stimfile.1D' % dset
 	
 	# Same as before, but just a one-liner

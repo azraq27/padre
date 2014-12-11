@@ -308,42 +308,5 @@ if __name__ == '__main__':
     parser_list.add_argument('something',nargs='*',help='keywords identifying all the things you want')
     parser_list.set_defaults(func=padre_list)
     
-    parser_create = subparsers.add_parser('create',help='create a brand-new empty subject')
-    parser_create.set_defaults(func=padre_create)
-    
-    parser_rename = subparsers.add_parser('rename',help='rename the specified subject to a new id')
-    parser_rename.add_argument('new_name',help='new subject id')
-    parser_rename.set_defaults(func=padre_rename)
-    
-    parser_dir = subparsers.add_parser('dir',help='print the directory for a subject')
-    parser_dir.set_defaults(func=padre_dir)
-    
-    parser_json = subparsers.add_parser('json',help='print the location of the JSON file for a subject')
-    parser_json.set_defaults(func=padre_json)
-    
-    parser_add = subparsers.add_parser('add',help='add new data to an existing subject')
-    parser_add.add_argument('-d','--dset',help='filename to dataset to add')
-    parser_add.add_argument('-p','--neuropsych',help='filename to neuropsych file to add')
-    parser_add.add_argument('-t','--scansheet',help='filename to PDF of scan sheet to add')
-    parser_add.set_defaults(func=padre_add)
-    
-    parser_remove = subparsers.add_parser('remove',help='remove a file or dataset from a subject')
-    parser_remove.add_argument('-d','--dset',help='dataset name to remove')
-    parser_remove.add_argument('-p','--neuropsych',help='neuropsych name to remove')
-    parser_remove.set_defaults(func=padre_remove)
-    
-    parser_set = subparsers.add_parser('set',help='set an attribute of a subject')
-    parser_set.add_argument('attr_name',help='name of attribute')
-    parser_set.add_argument('new_value',help='value to set')
-    parser_set.set_defaults(func=padre_set)  
-    
-    parser_report = subparsers.add_parser('report',help='get database statistics')
-    parser_report.add_argument('something',help='something identifying what you want')
-    parser_report.set_defaults(func=padre_report)
-    
-    parser_import = subparsers.add_parser('import',help='manually import directory. If subject not explicitly set, will use directory name as subject id')
-    parser_import.add_argument('directory',help='directory containing raw data to import')
-    parser_import.set_defaults(func=padre_import)
-    
     args = parser.parse_args()
     args.func(args)

@@ -44,8 +44,8 @@ class Dset(object):
         self.meta = meta
         self.md5 = md5
         
-        self.date = subject._sessions[session]['date']
-        self.experiment = subject._sessions[session]['experiment']
+        self.date = subject._sessions[session]['date'] if 'date' in subject._sessions[session] else None
+        self.experiment = subject._sessions[session]['experiment'] if 'experiment' in subject._sessions[session] else None
         self.label = label
         if self.label == None:
             try:
@@ -56,7 +56,7 @@ class Dset(object):
                             raise StopIteration
             except StopIteration:
                 pass
-        self.type = subject._sessions[session]['type']
+        self.type = subject._sessions[session]['type'] if 'type' in subject._sessions[session] else None
         self.session = session
         
         self._info = None

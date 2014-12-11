@@ -90,11 +90,9 @@ class Dset(object):
 class Subject(object):
     '''abstract container for subject information
     
-    If cast as string, will return subject id. Subject objects can be obtained by 
+    If cast as string(``str(subject)``), will return subject id. Subject objects can be obtained by 
     calling the search function :meth:`padre.subjects` or by loading directly using
     :meth:`padre.load`
-    
-    *Instance variables:*
     
     .. autoinstanceattribute:: Subject.include
         :annotation:
@@ -113,6 +111,8 @@ class Subject(object):
     
     .. autoinstanceattribute:: Subject.notes
         :annotation:
+    
+    .. automethod:: Subject.load
     
     '''
     def __init__(self,subject_id,initial_data={}):
@@ -148,7 +148,10 @@ class Subject(object):
     
     @classmethod
     def load(cls,subject_id):
-        ''' returns a subject object initialized using JSON file '''
+        ''' returns a subject object initialized using JSON file
+        If no subject can be loaded, will print an error and return ``None``
+        
+        This method is imported to the root-level, and can be called as :meth:``padre.load``'''
         subject_id = str(subject_id).rstrip('/')
         json_file = p.subject_json(subject_id)
         try:
@@ -167,7 +170,7 @@ class Subject(object):
         }
              
     def save(self,json_file=None):
-        ''' save current state to JSON file (overwrites) '''
+        ''' save current state to JSON file '''
         if json_file==None:
             json_file = p.subject_json(self._subject_id)
         save_dict = self.__dict__()
@@ -191,7 +194,18 @@ class Subject(object):
         return self._subject_id
     
     def dsets(self,label=None,experiment=None,session=None,type=None,include_all=False):
-        '''returns list of Dset objects matching the given criteria'''
+        '''returns list of :class:`Dset` objects matching the given criteria
+        
+        This is the primary method for accessing the datasets. This does not return strings, but :class:`Dset` objects.
+        Datasets can be searched using the following parameters:
+        
+            :label:         type of dataset (e.g., ``anatomy`` or a task name)
+            :experiment:    name of experiment this dataset belongs to
+            :session:       name of session this dataset was collected in
+            :type:          arbitrary tag for session (e.g., ``preop`` or ``session_5``)
+            
+        By default, datasets that are tagged as ``unverified`` or ``incomplete`` are not returned. To return all
+        datasets, call with ``include_all=True``'''
         if experiment==None and p._global_experiment:
             experiment = p._global_experiment
         return_dsets = []

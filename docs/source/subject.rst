@@ -3,8 +3,6 @@ padre.subject - Subject Objects
 
 .. currentmodule:: padre.subject
 .. autoclass:: Subject
-	
-.. automethod:: Subject.load
 		
 			
 

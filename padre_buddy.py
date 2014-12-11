@@ -23,6 +23,7 @@ listable_objects = {
     'dsets': ['dsets','datasets','runs','files']
 }
 
+p.subjects()
 all_subjects = p.subject._all_subjects.keys()
 all_labels = p.subject.tasks
 all_types = p.subject.types

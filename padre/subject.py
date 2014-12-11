@@ -23,7 +23,7 @@ class Dset(object):
     Calling :meth:`subject.dsets` with return a list of these objects. They can be treated as 
     strings most of the time, because they will return the absolute location of the dataset
     filename when cast as strings. If you want to explicitly convert them into the file location
-    you can manually cast them as a string (``str(dset)``). To return only the filename,
+    you can manually cast them as a string, ``str(dset)``. To return only the filename,
     with no directory information, you can call :meth:`__str__` with the argument ``False``
     
     Other information contained in the objects include:

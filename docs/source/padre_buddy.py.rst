@@ -32,7 +32,7 @@ explicitly specify object::
 
 commands::
 
-    :info:                get details on a single object
-    :list:                retrieve a list of things
-    :link:                create symbolic links in the current directory to
-                          datasets matching the given parameters
+:info:                get details on a single object
+:list:                retrieve a list of things
+:link:                create symbolic links in the current directory to
+                  datasets matching the given parameters

@@ -1,7 +1,7 @@
 </div></div>
     <div id="content_footer"></div>
     <div id="footer">
-      <p><a href="/">Home</a> | <a href="/list_subjects">Subjects</a> | <a href="http://padre.readthedocs.org/en/latest/">Docs</a> | <a href="/about">About</a></p>
+      <p><a href="/">Home</a> | <a href="/list_subjects">Subjects</a> | <a href="http://padre.readthedocs.org/en/stable/">Docs</a> | <a href="/about">About</a></p>
       <p>Created by Bill Gross  | <a href="https://github.com/azraq27/padre">padre GitHub Repository</a></p>
     </div>
   </div>

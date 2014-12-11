@@ -38,7 +38,7 @@
 	  % if tab=='docs':
 	  class="selected"
 	  % end
-	  ><a href="http://padre.readthedocs.org/en/latest/">Docs</a></li>
+	  ><a href="http://padre.readthedocs.org/en/stable/">Docs</a></li>
           <li
 	  % if tab=='about':
 	  class="selected"

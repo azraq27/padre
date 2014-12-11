@@ -155,7 +155,7 @@ def padre_link(args):
         error('Error: Couldn\'t load subject %s' % params['subject'])
     dsets = subj.dsets(session=params['session'],type=params['type'],label=params['label'],experiment=params['experiment'])
     for dset in dsets:
-        os.symlink(dset,os.path.basename(dset))
+        os.symlink(str(dset),os.path.basename(str(dset)))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

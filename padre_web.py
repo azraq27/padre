@@ -164,6 +164,11 @@ def save_session(subject_id,session):
                     if label not in subj._sessions[session]['labels']:
                         subj._sessions[session]['labels'][label] = []
                     subj._sessions[session]['labels'][label].append(dset.__dict__())
+            add_meta = request.files.get('add_meta_%s' % dset_fname)
+            if add_meta:
+                meta_type = request.forms.get('meta_type_%s'%dset_fname)
+                subj._sessions[session]['labels'][dset.label][i]['meta'][meta_type] = add_meta.filename
+                add_meta.save(os.path.join(p.sessions_dir(subj),session))
         if 'unverified' in subj._sessions[session]:
             del(subj._sessions[session]['unverified'])
         subj.save()

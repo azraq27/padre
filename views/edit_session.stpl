@@ -107,20 +107,18 @@ Do not include any other qualifiers like "run1"</p>
 					<th>name</th>
 					<th>type</th>
 					<th>meta data</th>
-					<th></th>
 				</tr>
 				% for meta in dset.meta:
 				<tr>
 					<td>{{meta}}</td>
 					<td>file</td>
 					<td>{{dset.meta[meta]}}</td>
-					<td><input type=file value='Upload'/></td>
 				</tr>
 				% end
 			</td>
 		</tr>
 		</table>
-		Add data: <select><option>eprime</option><option>eprime-txt</option></select> <input type=file /> <input type=submit value='Save'/>
+		Add data: <select name="meta_type_{{dset.__str__(False)}}"><option>eprime</option><option>eprime-txt</option></select> <input name="add_meta_{{dset.__str__(False)}}" type=file /> <input type=submit value='Save'/>
 		% end
 	</table>
 <input type='submit' value='Save Changes'>

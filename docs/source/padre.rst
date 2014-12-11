@@ -9,6 +9,7 @@ Global Functions
 Several functions are available at the root-level of the library, the most important of which
 is the :meth:`padre.subjects` function (which is a shortcut to the function :meth:`padre.subject.subjects`)
 
+.. currentmodule:: padre
 .. automethod:: subjects
 
 Using this list, it is easy to filter again to find a specific subset of subjects. For example,

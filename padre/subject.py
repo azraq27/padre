@@ -18,6 +18,11 @@ dset
 '''
 
 class Dset(object):
+    '''object to contain dataset filename and meta-data
+    
+    will automatically prepend the absolute location of the filename when cast as a 
+    string. To just return the filename with no directory information, call :meth:`__str__`
+    with argument ``False``'''
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
         self._dset_fname = dset_fname
         self.complete = complete

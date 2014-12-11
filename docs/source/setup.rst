@@ -15,5 +15,5 @@ The Not-Recommended Method
 ---------------------------
 
 If you hate Python, kittens, and love, you could write all of your scripts in some awful language,
-like C shell + awk, and lookup the location of the data using the command-line script named :docs:`padre_buddy.py <padre_buddy.py>`.
+like C shell + awk, and lookup the location of the data using the command-line script named :doc:`padre_buddy.py <padre_buddy.py>`.
 

@@ -20,23 +20,20 @@ Directory structure
 		Data/
 		|-- [subj_id]/
 		|   |-- [subj_id].json				# config file, containing subject meta-data
-		|	|-- raw/				# directory with all of the raw data,
-		|	|					# not necessarily organized
-		|	|-- sessions/				# data organized by scanning "session",
-		|		|				# as in, one physical visit to the scanner
-		|	    |-- [session_name]/	
-		|		|	|-- [datasets]		# all of the datasets, arbitrarily named
-		|		|	|-- [scan_sheets]
-		|		|	|-- [behavioral files]
-		|		|	|-- [other meta]	# other files associated with a session
+		|   |
+		|   |-- raw/				 	# directory with all of the raw data, unorganized
+		|   |-- sessions/				# data organized by scanning "session",
+		|	|					# as in, one physical visit to the scanner
+		|	|-- [session_name]/	
+		|		|-- [datasets]		# all of the datasets, arbitrarily named
+		|		|-- [scan_sheets]
+		|		|-- [behavioral files]
+		|		|-- [other meta]	# other files associated with a session
 		|		|-- ...
 		|-- ..
 	
-		Analyses/
-		|-- [analysis_name]/				# directories with self-contained analyses,
-		|						# organized however they want
-		|-- ...
-		
+	
+	
 		Shared/
 		|-- Atlases/					# standard atlas volumes
 		|   |-- atlases.json				# file describing the atlases

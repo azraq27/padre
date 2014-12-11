@@ -159,14 +159,21 @@ def merge_session(subj_from,subj_to,sess):
                 except ValueError:
                     subj_to._sessions[sess]['labels'][label].append(dset)
     new_sess_dir = os.path.join(p.sessions_dir(subj_to),sess)
+    from_sess_dir = os.path.join(p.sessions_dir(subj_from),sess)
     if not os.path.exists(new_sess_dir):
         os.makedirs(new_sess_dir)
-    for r,ds,fs in os.walk(os.path.join(p.sessions_dir(subj_from),sess)):
+    for r,ds,fs in os.walk(from_sess_dir):
         for f in fs:
             dset_f = os.path.join(new_sess_dir,f)
             if not os.path.exists(dset_f):
                 os.rename(os.path.join(r,f),dset_f)
-    
+    if len(os.listdir(from_sess_dir))==0:
+        os.rmdir(from_sess_dir)
+    else:
+        new_dir = os.path.join(p.trash_dir,'%s-%s-%s' % (subject_id,sess,datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S').format()))
+        while os.path.exists(new_dir):
+            new_dir += '_1'
+        os.rename(from_sess_dir,new_dir)
 
 def merge(subject_id_from,subject_id_into):
     nl.notify('Trying to merge %s into %s' % (subject_id_from,subject_id_into))

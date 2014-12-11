@@ -2,9 +2,10 @@ padre.subject - Subject Objects
 ================================
 
 .. currentmodule:: padre.subject
+
 .. autoclass:: Subject
 		
-			
+.. autoclass:: Dset			
 
 Accessing Datasets
 --------------------

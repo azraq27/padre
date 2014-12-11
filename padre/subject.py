@@ -114,6 +114,8 @@ class Subject(object):
     
     .. automethod:: Subject.load
     
+    .. automethod:: Subject.dsets
+    
     '''
     def __init__(self,subject_id,initial_data={}):
         self._subject_id = subject_id

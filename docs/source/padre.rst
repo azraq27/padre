@@ -9,6 +9,15 @@ is the :meth:`padre.subjects` function (which is a shortcut to the function :met
 
 .. automethod:: padre.subject.subjects
 
+Extra Data
+------------
+
+.. autodata:: padre.config.atlases
+	:annotation:
+
+.. autodata:: padre.config.stimfiles
+	:annotation:
+
 Directory and File Locations
 -----------------------------
 

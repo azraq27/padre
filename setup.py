@@ -53,6 +53,7 @@ Documentation: http://padre.readthedocs.org
   ],
   install_requires=[
       'neural-fmri',
-      'pydicom'
+      'pydicom',
+      'fuzzywuzzy'
   ]
 )

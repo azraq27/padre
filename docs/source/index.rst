@@ -6,11 +6,14 @@
 Welcome to PaDRe (Patient Data Repository) documentation!
 ===========================================================
 
-This library provides an organized way to query patient data libraries.
+This library provides an organized way to store and analyze imaging data.
 
-At a minimum, read the :doc:`organization` page to orient yourself to the 
-directory structure and :doc:`setup`. For instructions on how to install
-the system and setup client machines, see :doc:`installation`
+The :doc:`setup` page explains the basics on how to use the library, and the
+:doc:`padre` and :doc:`subject` pages have the documentation for all of the functions you'll need.
+
+If you're interested in the nuts and bolts of the library, :doc:`organization`
+explains the internals of the library, and :doc:`installation` explains how to
+setup a new repository or client machine.
 
 A couple quick examples to get you started:
 	
@@ -21,26 +24,24 @@ A couple quick examples to get you started:
 	
 		for subject in p.subjects():
 			print 'Processing subject %s' % subject
-			for dset in subject.dsets:
+			for dset in subject.dsets():
 				do_something_to_a_dset(dset)
 
 	Find all the subjects for a particular experiment and do something 
 	to the functional task datasets::
 		
 		for subject in p.subjects('experiment-name'):
-			# This usage will give us the first session with complete
-			# data that contains a dataset that is labeled 'functional-task'
-			with session in subject.sessions(label='functional-task'):
-				for dset in session['labels']['functional-task']:
-					do_something_to_a_dset(dset)
-	
-	Find all subjects in an experiment and do something to the anatomy that
-	was collected in the same session as a functional task::
+			for dset in subject.dsets('functional-task'):
+				do_something_to_a_dset(dset)
+		
+	Find all subjects in an experiment and do something to all the anatomies that
+	were collected in the same session as a functional task::
 	
 		for subject in p.subjects('experiment-name'):
-			with session in subject.sessions(label='functional-task'):
-				for dset in session['labels']['anatomy']:
-					do_something_to_an_anatomy(dset)
+			for session in subject.sessions:
+				if len(subject.dsets('functional-task',session=session)):
+					for dset in subject.dsets('anatomy',session=session):
+						do_something_to_an_anatomy(dset)
 
 
 The Contents
@@ -49,9 +50,10 @@ The Contents
    :maxdepth: 2
    
    setup
-   organization
    padre
    subject
+   organization
+   installation
 
 Indices and tables
 ==================

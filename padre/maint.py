@@ -10,7 +10,10 @@ _git_ignore = [
 ]
 
 import imp
-c = imp.load_source('padre_config',os.path.join(p.padre_root,'padre_config.py'))
+c = None
+padre_config_file = os.path.join(p.padre_root,'padre_config.py')
+if os.path.exists(padre_config_file):
+    c = imp.load_source('padre_config',padre_config_file)
 
 def commit_database(wait=True):
     '''database is stored as distributed jsons that are tracked by git -- this saves a new commit'''

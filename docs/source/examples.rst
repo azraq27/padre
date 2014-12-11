@@ -26,9 +26,9 @@ First, preprocess the data::
 		for condition in ['hard','soft']:
 			epis += subj.dsets(condition)
 		# If you're a sharp Python programmer, you'll realize I also could have done:
-		epis = [x for y in [subj.dsets(a) for a in ['hard','soft]] for x in y]
+		epis = [x for y in [subj.dsets(a) for a in ['hard','soft']] for x in y]
 		# or maybe more readibly...
-		epis = nl.flatten([subj.dsets(a) for a in ['hard','soft]])
+		epis = nl.flatten([subj.dsets(a) for a in ['hard','soft']])
 		
 		# Now we have our anatomy and a list of our epis, so align them!
 		nl.afni.align_anat_epi(anatomy,epis)

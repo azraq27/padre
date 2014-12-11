@@ -65,6 +65,7 @@ def padre_info(args):
         p.load(subject_match[0]).pretty_print()
 
 def padre_list(args):
+    global all_objects
     params = {'subject':args.subject,'session':args.session,'type':args.type,'experiment':args.experiment,'label':args.label}
     listable = None
     added_sessions = False

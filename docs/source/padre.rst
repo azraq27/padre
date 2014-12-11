@@ -11,7 +11,7 @@ is the :meth:`padre.subjects` function (which is a shortcut to the function :met
 
 .. currentmodule:: padre
 
-	.. automethod:: subjects
+.. automethod:: subjects
 
 Using this list, it is easy to filter again to find a specific subset of subjects. For example,
 to get a list of all subjects who have had a left ATL surgery::

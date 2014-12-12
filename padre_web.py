@@ -211,4 +211,7 @@ if __name__ == '__main__':
     import socket
     p._include_all = True
     p.subjects()
-    run(host=c.web_hostname,port=c.web_port)
+    if 'web_server' in dir(c):
+        run(server=c.web_server,host=c.web_hostname,port=c.web_port)
+    else:
+        run(host=c.web_hostname,port=c.web_port)

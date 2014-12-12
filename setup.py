@@ -54,6 +54,7 @@ Documentation: http://padre.readthedocs.org
   install_requires=[
       'neural-fmri',
       'pydicom',
-      'fuzzywuzzy'
+      'fuzzywuzzy',
+      'python-Levenshtein'
   ]
 )

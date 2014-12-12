@@ -216,7 +216,7 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
         for full_dset in sorted(dsets,key=lambda x:(int(os.path.basename(x).split('-')[1]),int(os.path.basename(x).split('-')[2]))):
             dset = {}
             dset['filename'] = os.path.basename(full_dset)
-            if dset['filename'] not in [x['filename'] for x in subj.dsets(include_all=True)]:
+            if dset['filename'] not in [x.__str__(False) for x in subj.dsets(include_all=True)]:
                 dset['md5'] = nl.utils.hash(full_dset)
                 dset['complete'] = True
                 dset['meta'] = {}

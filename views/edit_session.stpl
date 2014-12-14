@@ -26,13 +26,13 @@ Do not include any other qualifiers like "run1"</p>
 	<h3>Date: <input type="text" name="date" id="datepicker" value="{{subject._sessions[session]["date"]}}"/></h3>
 	<h3>Experiment: <select class='h1_textfield' name='experiment'>
 		<option value='none'
-		% if subject._sessions[session]['experiment']==None:
+		% if 'experiment' in subject._sessions[session] and subject._sessions[session]['experiment']==None:
 		selected
 		% end
 		>None</option>
 		% for experiment in experiments:
 		<option value='{{experiment}}'
-		% if experiment==subject._sessions[session]["experiment"]:
+		% if 'experiment' in subject._sessions[session] and experiment==subject._sessions[session]["experiment"]:
 		selected
 		% end
 		>{{experiment}}</option>
@@ -49,7 +49,7 @@ Do not include any other qualifiers like "run1"</p>
 		>None</option>
 		% for type in types:
 		<option value='{{type}}'
-		% if type==subject._sessions[session]["type"]:
+		% if ty[e in subject._sessions[session] and type==subject._sessions[session]["type"]:
 		selected
 		% end
 		>{{type}}</option>

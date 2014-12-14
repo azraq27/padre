@@ -49,7 +49,7 @@ Do not include any other qualifiers like "run1"</p>
 		>None</option>
 		% for type in types:
 		<option value='{{type}}'
-		% if ty[e in subject._sessions[session] and type==subject._sessions[session]["type"]:
+		% if 'type' in subject._sessions[session] and type==subject._sessions[session]["type"]:
 		selected
 		% end
 		>{{type}}</option>

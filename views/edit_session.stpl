@@ -43,7 +43,7 @@ Do not include any other qualifiers like "run1"</p>
 	</h3>
 	<h3>Type: <select class='h1_textfield' name='type'>
 		<option value='none'
-		% if subject._sessions[session]['type']==None:
+		% if 'type' in subject._sessions[session] and subject._sessions[session]['type']==None:
 		selected
 		% end
 		>None</option>

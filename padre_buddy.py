@@ -46,7 +46,7 @@ def identify_object(obj):
     '''tries to match to an existing object
     returns a tuple of (object,object_id)'''
     best_match = process.extractOne(obj,[x[0] for x in all_objects])
-    if best_match[1]>fuzzyness:
+    if best_match and best_match[1]>fuzzyness:
         return [x for x in all_objects if x[0]==best_match[0]][0]
     else:
         return None
@@ -104,7 +104,8 @@ def padre_list(args):
         print '\n'.join([str(x) for x in p.subjects(type=params['type'],label=params['label'],experiment=params['experiment'])])
         return
     if listable=='labels':
-        print '\n'.join(all_labels)
+        labels = [a for b in [y['labels'] for y in [x._sessions for x in p.subjects(type=params['type'],label=params['label'],experiment=params['experiment'])]] for a in b]
+        print '\n'.join(labels)
         return
     if listable=='experiments':
         print '\n'.join(all_experiments)

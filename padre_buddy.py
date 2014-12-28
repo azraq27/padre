@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # depends on:
 #   neural
 #   padre
 #   fuzzywuzzy
 #   openpyxl
 
-import argparse,os,json
+import argparse,os,json,sys,shutil
 from fuzzywuzzy import process
 import padre as p
 import neural as nl
@@ -20,7 +20,8 @@ listable_objects = {
     'labels': ['labels','tasks'],
     'types': ['types'],
     'sessions': ['sessions','scans','dates'],
-    'dsets': ['dsets','datasets','runs','files']
+    'dsets': ['dsets','datasets','runs','files'],
+    'meta': ['meta','metadata','behavioral','eprime']
 }
 
 p.subjects()
@@ -41,6 +42,7 @@ def error(msg,miss=None):
             urllib2.urlopen('http://wolflion.org/cgi-bin/report.py?%s' % data_enc)
         except:
             pass
+    sys.exit()
 
 def identify_object(obj):
     '''tries to match to an existing object
@@ -60,14 +62,30 @@ def identify_listable(keyword):
     else:
         return None
 
-def padre_info(args):
-    pass
+def identify_dsets(dset_names,subjects):
+    '''try to find each dset filename in ``dset_names`` within the list of subject objects ``subjects``'''
+    found_dsets = {}
+    leftover_names = list(dset_names)
+    for subj in subjects:
+        for sess in subj._sessions:
+            for label in subj._sessions[sess]['labels']:
+                for i in xrange(len(subj._sessions[sess]['labels'][label])):
+                    dset = subj._sessions[sess]['labels'][label][i]
+                    if dset['filename'] in dset_names:
+                        if dset['filename'] in found_dsets:
+                            error('Error: with the given parameters, I found the dataset name %s more than once' % dset['filename'])
+                            return None
+                        found_dsets[dset['filename']] = (subj,sess,label,dset,i)
+                        del(leftover_names[leftover_names.index(dset['filename'])])
+    return (found_dsets,leftover_names)
 
-def padre_list(args):
-    global all_objects
+def identify_params(args,allow_unidentified=False):
+    '''go through the args and try to assign unassigned jibberish'''
     params = {'subject':args.subject,'session':args.session,'type':args.type,'experiment':args.experiment,'label':args.label}
+    global all_objects
     listable = None
     added_sessions = False
+    unidentified_args = []
     for arg in args.something:
         if params['subject'] and not added_sessions:
             subj = p.load(params['subject'])
@@ -82,12 +100,45 @@ def padre_list(args):
             if l:
                 listable = l
             else:
-                error('Error: Sorry, I can\'t figure out what you mean by "%s"' % arg, arg)
-                return
+                unidentified_args.append(arg)
+    if not allow_unidentified and len(unidentified_args)>0:
+        error('Error: Sorry, I can\'t figure out what you mean by "%s"' % arg, arg)
+    
+    return (params,listable,unidentified_args)
+ 
+
+def padre_info(args):
+    pass
+
+def subjects_from_params(params):
+    if params['subject']:
+        all_subjs = [p.load(params['subject'])]
+    else:
+        all_subjs = p.subjects(type=params['type'],label=params['label'],experiment=params['experiment'])
+    return all_subjs
+
+def padre_list(args):
+    (params,listable,unidentified_args) = identify_params(args,True)
     
     if listable==None:
         error('Error: You didn\'t tell me what you wanted to list!')
         return
+    
+    all_subjs = subjects_from_params(params)
+    
+    all_dsets = {}
+    if listable=='meta':
+        if len(unidentified_args)>0:
+            (all_dsets,unidentified_args) = identify_dsets(unidentified_args,all_subjs)
+   
+    if listable=='meta':
+        if len(all_dsets)==0:
+            error('Error: To list meta-data, you need to give me the name of a dataset')
+            return
+        for dset in all_dsets:
+            subj,sess,label,dset_dict,i = all_dsets[dset]
+            for meta in dset_dict['meta']:
+                print '\t'.join([dset,meta,dset_dict['meta'][meta]])
     
     if listable=='atlases':
         if args.quiet:
@@ -101,17 +152,21 @@ def padre_list(args):
                     print ': ' + p.atlases[atlas]['notes'],
                 print ''
     if listable=='subjects':
-        print '\n'.join([str(x) for x in p.subjects(type=params['type'],label=params['label'],experiment=params['experiment'])])
+        print '\n'.join([str(x) for x in all_subjs])
         return
     if listable=='labels':
-        labels = [a for b in [y['labels'] for y in [x._sessions for x in p.subjects(type=params['type'],label=params['label'],experiment=params['experiment'])]] for a in b]
+        labels = set(nl.flatten([[x._sessions[y]['labels'].keys() for y in x._sessions] for x in all_subjs]))
         print '\n'.join(labels)
         return
     if listable=='experiments':
-        print '\n'.join(all_experiments)
+        experiments = set(nl.flatten([[x._sessions[y]['experiment'] for y in x._sessions if 'experiment' in x._sessions[y]] for x in all_subjs]))
+        experiments = [x for x in experiments if x!=None and x!='']
+        print '\n'.join(experiments)
         return
     if listable=='types':
-        print '\n'.join(all_types)
+        types = set(nl.flatten([[x._sessions[y]['type'] for y in x._sessions if 'type' in x._sessions[y]] for x in all_subjs]))
+        types = [x for x in types if x!=None and x!='']
+        print '\n'.join(types)
         return
     if listable=='sessions':
         if not params['subject']:
@@ -134,21 +189,8 @@ def padre_list(args):
         return
 
 def padre_link(args):
-    global all_objects
-    params = {'subject':args.subject,'session':args.session,'type':args.type,'experiment':args.experiment,'label':args.label}
-    added_sessions = False
-    for arg in args.something:
-        if params['subject'] and not added_sessions:
-            subj = p.load(params['subject'])
-            if subj:
-                all_objects += [(x,'session') for x in subj.sessions]
-            added_sessions = True
-        obj = identify_object(arg)
-        if obj:
-            params[obj[1]] = obj[0]
-        else:
-            error('Error: Sorry, I can\'t figure out what you mean by "%s"' % arg, arg)
-            return
+    (params,listable,unidentified_args) = identify_params(args)
+    
     if not params['subject']:
         error('Error: You at least need to give me a subject!')
     subj = p.load(params['subject'])
@@ -158,6 +200,17 @@ def padre_link(args):
     for dset in dsets:
         os.symlink(str(dset),os.path.basename(str(dset)))
 
+def padre_add_meta(args):
+    (params,listable,unidentified_args) = identify_params(args,True)
+    all_subjs = subjects_from_params(params)
+    (all_dsets,unidentified_args) = identify_dsets(unidentified_args,all_subjs)
+    if len(all_dsets)!=1:
+        error('Error: To add meta-data, you need to give me the name of exactly one dataset')
+    (subj,sess,label,dset,i) = all_dsets[0]
+    subj._sessions[sess][label][i]['meta'][args.meta_type] = os.path.basename(args.filename)
+    shutil.copy(args.filename,p.sessions_dir(subj,sess))
+    print 'Added %s (%s) to %s' % (os.path.basename(args.filename),args.meta_type,str(subj))
+ 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--quiet','-q',action='store_true',help='just print the bare information (good for scripts)')
@@ -181,6 +234,12 @@ if __name__ == '__main__':
     parser_link = subparsers.add_parser('link',help='create symbolic links in the current directory to datasets matching the given parameters')
     parser_link.add_argument('something',nargs='*',help='keywords identifying the datasets you want')
     parser_link.set_defaults(func=padre_link)
+    
+    parser_add_meta = subparsers.add_parser('add_meta',help='attach a file as metadata to a dataset')
+    parser_add_meta.add_argument('meta_type',help='keyword to identify the metadata file')
+    parser_add_meta.add_argument('filename',help='filename of meta file you\'d like to add')
+    parser_add_meta.add_argument('something',nargs='*',help='keywords identifying all the things you want')
+    parser_add_meta.set_defaults(func=padre_add_meta)
     
     args = parser.parse_args()
     args.func(args)

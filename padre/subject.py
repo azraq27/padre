@@ -17,6 +17,16 @@ dset
     |- experiment, label, type, session
 '''
 
+class PrefixDict(dict):
+    def __init__(self,*args):
+        dict.__init__(self,*args)
+        self.prefix = None
+    
+    def __getitem__(self,key,raw=False):
+        if self.prefix!=None and raw==False:
+            return self.prefix + dict.__getitem__(self,key)
+        return dict.__getitem__(self,key)
+
 class Dset(object):
     '''object to contain dataset filename and meta-data
     
@@ -41,7 +51,8 @@ class Dset(object):
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
         self._dset_fname = dset_fname
         self.complete = complete
-        self.meta = meta
+        self.meta = PrefixDict(meta)
+        self.meta.prefix = os.path.join(p.sessions_dir(self._subject),self.session)
         self.md5 = md5
         
         self.date = subject._sessions[session]['date'] if 'date' in subject._sessions[session] else None
@@ -79,7 +90,8 @@ class Dset(object):
         dset = Dset(subject,session,dict_source['filename'])
         dset.complete = dict_source['complete'] if 'complete' in dict_source else True
         dset.md5 = dict_source['md5'] if 'md5' in dict_source else None
-        dset.meta = p.ForgivingDict.copy_nested_dict(dict_source['meta'])
+        dset.meta = PrefixDict(dict_source['meta'])
+        dset.meta.prefix = os.path.join(p.sessions_dir(self._subject),self.session)
         return dset
     
     def __str__(self,absolute=True):

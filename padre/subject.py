@@ -52,7 +52,7 @@ class Dset(object):
         self._dset_fname = dset_fname
         self.complete = complete
         self.meta = PrefixDict(meta)
-        self.meta.prefix = os.path.join(p.sessions_dir(self._subject),self.session)
+        self.meta.prefix = os.path.join(p.sessions_dir(subject),session)
         self.md5 = md5
         
         self.date = subject._sessions[session]['date'] if 'date' in subject._sessions[session] else None

@@ -91,7 +91,7 @@ class Dset(object):
         dset.complete = dict_source['complete'] if 'complete' in dict_source else True
         dset.md5 = dict_source['md5'] if 'md5' in dict_source else None
         dset.meta = PrefixDict(dict_source['meta'])
-        dset.meta.prefix = os.path.join(p.sessions_dir(self._subject),self.session)
+        dset.meta.prefix = os.path.join(p.sessions_dir(subject),session)
         return dset
     
     def __str__(self,absolute=True):

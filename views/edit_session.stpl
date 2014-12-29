@@ -20,6 +20,7 @@ Do not include any other qualifiers like "run1"</p>
 <h2><a href='/edit_subject/{{subject}}'>Back to subject {{subject}}</a></h2>
 
 <link rel="stylesheet" type="text/css" href="/style/datepicker.css" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 
 <script>
   $(function() {

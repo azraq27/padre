@@ -130,13 +130,12 @@ def save_session(subject_id,session):
             experiment = request.forms.get("new_experiment_text")
             p.subject.experiments.add(experiment)
         subj._sessions[session]['experiment'] = experiment
-        '''tagx = request.forms.get("tag")
-        if tagx=='none':
-            tagx = None
-        if tagx=='new':
-            tagx = request.forms.get("new_tag_text")
-            p.subject.tags.add(tagx)
-        subj._sessions[session]['type'] = typex'''
+        tag = request.forms.get("new_tag")
+        if tag and tag!='':
+            p.subject.tags.add(tag)
+            if 'tags' not in subj._sessions[session]:
+                subj._sessions[session]['tags'] = []
+            subj._sessions[session]['tags'].append(tag)
         scan_sheet = request.files.get("scan_sheet")
         if scan_sheet != None:
             subj._sessions[session]['scan_sheet'] = scan_sheet.filename
@@ -184,11 +183,15 @@ def save_session(subject_id,session):
                 subj = new_subj
         else:
             p.subject._index_one_subject(subj)
-    redirect('/edit_subject/%s' % subj)
+    redirect('/edit_session/%s/%s' % (subj,session))
     
 @route('/delete_tag/<subject>/<session>/<tag>')
 def delete_tag(subject,session,tag):
-    return tag
+    subj = p.load(subject)
+    if 'tags' in subj._session[session] and tag in subj._session[session]['tags']:
+        del(subj._sessions[session]['tags'][subj._sessions[session]['tags'].index(tag)])
+    subj.save()
+    redirect('/edit_session/%s/%s' % (subject,session))
 
 @post('/search_form')
 @view('list_subjects')

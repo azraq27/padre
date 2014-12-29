@@ -15,7 +15,7 @@ If you're interested in the nuts and bolts of the library, :doc:`organization`
 explains the internals of the library, and :doc:`installation` explains how to
 setup a new repository or client machine.
 
-Here are a couple quick examples to get you started, and more full-length examples in :doc:`examples`:
+Here are a couple quick examples to get you started, and more full-length examples in :doc:`examples` and :doc:`tutorial`:
 	
 .. tip:: 
 	Loop through all the subjects and do something to all their datasets::
@@ -51,6 +51,7 @@ The Contents
    
    setup
    examples
+   tutorial
    padre
    subject
    padre_buddy.py

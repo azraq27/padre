@@ -24,7 +24,9 @@ Do not include any other qualifiers like "run1"</p>
 <script>
   $(function() {
     var availableTags = [
-    {{','.join(tags)}}
+    % for tag in tags:
+    "{{tag}}",
+    % end
     ];
     $( "#tags" ).autocomplete({
       source: availableTags

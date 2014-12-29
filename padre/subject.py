@@ -333,7 +333,7 @@ def subjects(experiment=None,label=None,tags=None,only_included=True):
     if tags:
         if isinstance(tags,basestring):
             tags = [tags]
-        all_subjs = [x for x in all_subjs if all([tag in nl.flatten([x._sessions[y]['tags'] for y in x._sessions if 'tags' in x._sessions[y]]) for tag in tags])
+        all_subjs = [x for x in all_subjs if all([tag in nl.flatten([x._sessions[y]['tags'] for y in x._sessions if 'tags' in x._sessions[y]]) for tag in tags])]
     if only_included and not p._include_all:
         all_subjs = [x for x in all_subjs if x.include]
     

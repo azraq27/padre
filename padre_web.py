@@ -192,7 +192,7 @@ def delete_tag(subject,session,tag):
         if 'tags' in subj._sessions[session] and tag in subj._sessions[session]['tags']:
             del(subj._sessions[session]['tags'][subj._sessions[session]['tags'].index(tag)])
         subj.save()
-    redirect('/edit_session/%s/%s' % (subject,session))
+    redirect('/edit_subject/%s/%s' % (subject,session))
 
 @post('/search_form')
 @view('list_subjects')

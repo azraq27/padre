@@ -183,14 +183,15 @@ def save_session(subject_id,session):
                 subj = new_subj
         else:
             p.subject._index_one_subject(subj)
-    redirect('/edit_session/%s/%s' % (subj,session))
+    redirect('/edit_subject/%s/%s' % (subj,session))
     
 @route('/delete_tag/<subject>/<session>/<tag>')
 def delete_tag(subject,session,tag):
     subj = p.load(subject)
-    if 'tags' in subj._session[session] and tag in subj._session[session]['tags']:
-        del(subj._sessions[session]['tags'][subj._sessions[session]['tags'].index(tag)])
-    subj.save()
+    if subj:
+        if 'tags' in subj._sessions[session] and tag in subj._sessions[session]['tags']:
+            del(subj._sessions[session]['tags'][subj._sessions[session]['tags'].index(tag)])
+        subj.save()
     redirect('/edit_session/%s/%s' % (subject,session))
 
 @post('/search_form')

@@ -21,6 +21,17 @@ Do not include any other qualifiers like "run1"</p>
 
 <link rel="stylesheet" type="text/css" href="/style/datepicker.css" />
 
+<script>
+  $(function() {
+    var availableTags = [
+    {{','.join(tags)}}
+    ];
+    $( "#tags" ).autocomplete({
+      source: availableTags
+    });
+  });
+  </script>
+
 <form action='/save_subject/{{subject}}/{{session}}' method=POST enctype="multipart/form-data">
 	<input type='hidden' name='subject_id' value='{{subject}}'/>
 	<h3>Date: <input type="text" name="date" id="datepicker" value="{{subject._sessions[session]["date"]}}"/></h3>
@@ -48,7 +59,7 @@ Do not include any other qualifiers like "run1"</p>
 		<span class='pill delete'><a href='#'>X</a></span>
 		%     end
 		% end
-	<input class="appearing_box" type="text" name="new_type_text" placeholder="New type..."/>
+	<input id="tags" type="text" name="new_tag" placeholder="Add tag..."/>
 	</h3>
 	<h3>Scan sheet: 
 	% if 'scan_sheet' in subject._sessions[session] and subject._sessions[session]['scan_sheet']!=None and subject._sessions[session]['scan_sheet']!='':

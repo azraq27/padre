@@ -8,13 +8,13 @@ subject
     |- dsets(label,exp,...)
     |- meta('demographics','clinical','behavioral','neuropsych')
         # list available options:
-    |- sessions, experiments, labels, types
+    |- sessions, experiments, labels, tags
 
 dset
     |- complete
     |- meta('eprime','scan_sheet')
     |- info #dset_info object
-    |- experiment, label, type, session
+    |- experiment, label, tags, session
 '''
 
 class PrefixDict(dict):
@@ -42,7 +42,7 @@ class Dset(object):
     :date:          Date this was acquired
     :experiment:    Experiment in which this was aquired
     :label:         Kind of dataset (e.g., ``anatomy``)
-    :type:          Type of session this was acquired during
+    :tags:          Tags of session this was acquired during
     :session:       Label of session this was acquired during
     :md5:           md5 checksum of dataset file (used for checking for data corruption)
     :meta:          dictionary of meta data associated with this dataset (e.g., ``eprime`` or ``eprime-txt``)
@@ -67,7 +67,7 @@ class Dset(object):
                             raise StopIteration
             except StopIteration:
                 pass
-        self.type = subject._sessions[session]['type'] if 'type' in subject._sessions[session] else None
+        self.tags = subject._sessions[session]['tags'] if 'tags' in subject._sessions[session] else None
         self.session = session
         
         self._info = None
@@ -222,7 +222,7 @@ class Subject(object):
     def __str__(self):
         return self._subject_id
     
-    def dsets(self,label=None,experiment=None,session=None,type=None,include_all=False):
+    def dsets(self,label=None,experiment=None,session=None,tags=None,include_all=False):
         '''returns list of :class:`Dset` objects matching the given criteria
         
         This is the primary method for accessing the datasets. This does not return strings, but :class:`Dset` objects.
@@ -231,7 +231,7 @@ class Subject(object):
             :label:         type of dataset (e.g., ``anatomy`` or a task name)
             :experiment:    name of experiment this dataset belongs to
             :session:       name of session this dataset was collected in
-            :type:          arbitrary tag for session (e.g., ``preop`` or ``session_5``)
+            :tags:          arbitrary tag for session (e.g., ``preop`` or ``session_5``)
             
         By default, datasets that are tagged as ``unverified`` or ``incomplete`` are not returned. To return all
         datasets, call with ``include_all=True``'''
@@ -246,8 +246,10 @@ class Subject(object):
             include_sessions = [x for x in include_sessions if p._include_all or 'unverified' not in self._sessions[x] and ('include' not in self._sessions[x] or self._sessions[x]['include']==True)]
         for sess in include_sessions:
             if sess in self._sessions:
-                if type:
-                    if self._sessions[sess]['type']!=type:
+                if tags:
+                    if isinstance(tags,basestring):
+                        tags = [tags]
+                    if 'tags' not in self._sessions[sess] or not all([tag in self._sessions[sess]['tags'] for tag in tags]):
                         continue
                 if experiment:
                     if self._sessions[sess]['experiment']!=experiment:
@@ -264,7 +266,7 @@ class Subject(object):
 
 tasks = set()
 experiments = set()
-types = set()
+tags = set()
 _all_subjects = {}
 _indexed_and_loaded_all_subjects = False
 
@@ -276,8 +278,9 @@ def _index_one_subject(subject_id):
             experiments.add(session_dict['experiment'])
         if 'labels' in session_dict and session_dict['labels']!='' and session_dict['labels']!=None:
             [tasks.add(x) for x in session_dict['labels']]
-        if 'type' in session_dict and session_dict['type']!='' and session_dict['type']!=None:
-            types.add(session_dict['type'])
+        if 'tags' in session_dict and session_dict['tags']!=[] and session_dict['tags']!=None:
+            for tag in session_dict['tags']: 
+                tags.add(tag)
 
 def _index_all_subjects(load_all=False):
     global _all_subjects
@@ -293,18 +296,27 @@ def _index_all_subjects(load_all=False):
 
 _index_all_subjects()
 
-def subjects(experiment=None,label=None,type=None,only_included=True):
+def subjects(experiment=None,label=None,tags=None,only_included=True):
     '''returns a list of subject objects for all subjects with valid JSON files
     
     :experiment:    only return subjects that have a scan for the given experiment
     :label:         only return subjects who have datasets with that label
-    :type:          only return subjects who have a session of given type
+    :tags:          only return subjects who have a session with given tag
     
     :only_included: if True (the default), will exclude any subjects with ``subject.include``
                     set to False
     
-    Using this list, it is easy to filter again to find a specific subset of subjects. For example,
-    to get a list of all subjects who have had a left ATL surgery::
+    Using this list, it is easy to filter again to find a specific subset of subjects. 
+    
+    For example, for all the subjects for the experiment ``Exp1``::
+    
+        subjects = padre.subjects('Exp1')
+    
+    To find all subjects who contain a run called ``rest``::
+    
+        subjects = padre.subjects(label='rest')
+    
+    To get a list of all subjects who have had a left ATL surgery::
 
     	subjects = [s for s in padre.subjects() if s.meta['clinical']['surgery_type']=='left atl']
     
@@ -318,8 +330,10 @@ def subjects(experiment=None,label=None,type=None,only_included=True):
         all_subjs = [x for x in all_subjs if len(x.dsets(label))]
     if experiment:
         all_subjs = [x for x in all_subjs if experiment in [x._sessions[y]['experiment'] for y in x._sessions if 'experiment' in x._sessions[y]]]
-    if type:
-        all_subjs = [x for x in all_subjs if type in [x._sessions[y]['type'] for y in x._sessions if 'type' in x._sessions[y]]]
+    if tags:
+        if isinstance(tags,basestring):
+            tags = [tags]
+        all_subjs = [x for x in all_subjs if all([tag in nl.flatten([x._sessions[y]['tags'] for y in x._sessions if 'tags' in x._sessions[y]]) for tag in tags])
     if only_included and not p._include_all:
         all_subjs = [x for x in all_subjs if x.include]
     

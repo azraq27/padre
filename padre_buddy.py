@@ -18,7 +18,7 @@ listable_objects = {
     'subjects': ['subjects','patients'],
     'experiments': ['experiments', 'studies', 'study'],
     'labels': ['labels','tasks'],
-    'types': ['types'],
+    'tags': ['types','tags'],
     'sessions': ['sessions','scans','dates'],
     'dsets': ['dsets','datasets','runs','files'],
     'meta': ['meta','metadata','behavioral','eprime']
@@ -27,10 +27,10 @@ listable_objects = {
 p.subjects()
 all_subjects = p.subject._all_subjects.keys()
 all_labels = p.subject.tasks
-all_types = p.subject.types
+all_tags = p.subject.tags
 all_experiments = p.subject.experiments
 
-all_objects = [(x,'subject') for x in all_subjects] + [(x,'label') for x in all_labels] + [(x,'type') for x in all_types] + [(x,'experiment') for x in all_experiments]
+all_objects = [(x,'subject') for x in all_subjects] + [(x,'label') for x in all_labels] + [(x,'tag') for x in all_tags] + [(x,'experiment') for x in all_experiments]
 
 def error(msg,miss=None):
     nl.notify(msg + '\n',level=nl.level.error)
@@ -81,7 +81,7 @@ def identify_dsets(dset_names,subjects):
 
 def identify_params(args,allow_unidentified=False):
     '''go through the args and try to assign unassigned jibberish'''
-    params = {'subject':args.subject,'session':args.session,'type':args.type,'experiment':args.experiment,'label':args.label}
+    params = {'subject':args.subject,'session':args.session,'tag':args.tag,'experiment':args.experiment,'label':args.label}
     global all_objects
     listable = None
     added_sessions = False
@@ -114,7 +114,7 @@ def subjects_from_params(params):
     if params['subject']:
         all_subjs = [p.load(params['subject'])]
     else:
-        all_subjs = p.subjects(type=params['type'],label=params['label'],experiment=params['experiment'])
+        all_subjs = p.subjects(tag=params['tag'],label=params['label'],experiment=params['experiment'])
     return all_subjs
 
 def padre_list(args):
@@ -163,10 +163,10 @@ def padre_list(args):
         experiments = [x for x in experiments if x!=None and x!='']
         print '\n'.join(experiments)
         return
-    if listable=='types':
-        types = set(nl.flatten([[x._sessions[y]['type'] for y in x._sessions if 'type' in x._sessions[y]] for x in all_subjs]))
-        types = [x for x in types if x!=None and x!='']
-        print '\n'.join(types)
+    if listable=='tags':
+        tags = set(nl.flatten([[x._sessions[y]['tags'] for y in x._sessions if 'tags' in x._sessions[y]] for x in all_subjs]))
+        tags = [x for x in tags if x!=None and x!='']
+        print '\n'.join(tags)
         return
     if listable=='sessions':
         if not params['subject']:
@@ -175,7 +175,7 @@ def padre_list(args):
             subj = p.load(params['subject'])
             if subj:
                 sessions = list(subj.sessions)
-                sessions = [x for x in sessions if len(subj.dsets(session=x,type=params['type'],label=params['label'],experiment=params['experiment']))>0]
+                sessions = [x for x in sessions if len(subj.dsets(session=x,tag=params['tag'],label=params['label'],experiment=params['experiment']))>0]
                 print '\n'.join(sessions)
         return
     if listable=='dsets':
@@ -184,7 +184,7 @@ def padre_list(args):
         else:
             subj = p.load(params['subject'])
             if subj:
-                dsets = subj.dsets(session=params['session'],type=params['type'],label=params['label'],experiment=params['experiment'])
+                dsets = subj.dsets(session=params['session'],tag=params['tag'],label=params['label'],experiment=params['experiment'])
                 print '\n'.join([str(x) for x in dsets])
         return
 
@@ -196,7 +196,7 @@ def padre_link(args):
     subj = p.load(params['subject'])
     if not subj:
         error('Error: Couldn\'t load subject %s' % params['subject'])
-    dsets = subj.dsets(session=params['session'],type=params['type'],label=params['label'],experiment=params['experiment'])
+    dsets = subj.dsets(session=params['session'],tag=params['tag'],label=params['label'],experiment=params['experiment'])
     for dset in dsets:
         os.symlink(str(dset),os.path.basename(str(dset)))
 
@@ -218,7 +218,7 @@ if __name__ == '__main__':
     specify_group = parser.add_argument_group(title='explicitly specify object',description='(certain commands are also able to parse fuzzy keyword arguments)')
     specify_group.add_argument('-s','--subject',help='subject id')
     specify_group.add_argument('-n','--session',help='session identifier, by convention date of the scanning session in the format YYYYMMDD, but could really be any unique string')
-    specify_group.add_argument('-t','--type',help='session type')
+    specify_group.add_argument('-t','--tag',help='session tag')
     specify_group.add_argument('-l','--label',help='label for dataset (the type of dataset; anatomy, sdtones)')
     specify_group.add_argument('-e','--experiment',help='experiment identifier')
     subparsers = parser.add_subparsers(title='commands')

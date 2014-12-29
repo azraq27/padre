@@ -114,7 +114,7 @@ def edit_session(subject_id,session):
         'session':session,
         'labels':sorted(p.subject.tasks,key=lambda x: x.lower()),
         'experiments':sorted(p.subject.experiments,key=lambda x: x.lower()),
-        'types': sorted(p.subject.types,key=lambda x: x.lower())
+        'tags': sorted(p.subject.tags,key=lambda x: x.lower())
     }
 
 @post('/save_subject/<subject_id>/<session>')
@@ -130,13 +130,13 @@ def save_session(subject_id,session):
             experiment = request.forms.get("new_experiment_text")
             p.subject.experiments.add(experiment)
         subj._sessions[session]['experiment'] = experiment
-        typex = request.forms.get("type")
-        if typex=='none':
-            typex = None
-        if typex=='new':
-            typex = request.forms.get("new_type_text")
-            p.subject.types.add(typex)
-        subj._sessions[session]['type'] = typex
+        '''tagx = request.forms.get("tag")
+        if tagx=='none':
+            tagx = None
+        if tagx=='new':
+            tagx = request.forms.get("new_tag_text")
+            p.subject.tags.add(tagx)
+        subj._sessions[session]['type'] = typex'''
         scan_sheet = request.files.get("scan_sheet")
         if scan_sheet != None:
             subj._sessions[session]['scan_sheet'] = scan_sheet.filename

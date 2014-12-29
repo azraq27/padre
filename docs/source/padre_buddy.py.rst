@@ -4,7 +4,7 @@ padre_buddy.py - Your friendly command-line helper
 Usage:
 ----------
 
-padre_buddy.py [-h] [--quiet] [-s SUBJECT] [-n SESSION] [-t TYPE]
+padre_buddy.py [-h] [--quiet] [-s SUBJECT] [-n SESSION] [-t TAG]
                       [-l LABEL] [-e EXPERIMENT]
                       {info,list,link} ...
 
@@ -23,7 +23,7 @@ explicitly specify object::
                         session identifier, by convention date of the scanning
                         session in the format YYYYMMDD, but could really be
                         any unique string
-  -t TYPE, --type TYPE  session type
+  -t TAG, --tag TAG  session tag
   -l LABEL, --label LABEL
                         label for dataset (the type of dataset; anatomy,
                         sdtones)

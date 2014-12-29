@@ -31,8 +31,8 @@ setup(
       ])
   ],
   version = '2.1.2',
-  description = 'patient data repository',
-  long_description = '''PaDRe - a patient data repository library (in Python)
+  description = 'participant data repository',
+  long_description = '''PaDRe - a participant data repository library (in Python)
 --------------------------------------------------------
 
 This library is used to organize a large data repository of imaging data. The functions

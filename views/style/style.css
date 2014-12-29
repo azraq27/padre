@@ -344,3 +344,22 @@ table tr td
   border-top: 1px solid #FFF;}
  
   .not_include td {background:#DADADA;}
+
+  .pill {
+      font-family: Helvetica, Tahoma, Geneva, sans-serif;
+      font-weight: bold;
+      display:inline-block;
+      font-size:14px;
+      padding:4px 8px;
+      text-shadow: 1px 1px #555;
+      color: #FFF;
+      border: 1px solid #455;
+      border-radius: 10px 0px 0px 10px;
+      background: #488;
+  }
+
+  .delete {
+      border-radius: 0px 10px 10px 0px;
+      background: #666;
+      text-decoration: none;
+  }

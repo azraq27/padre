@@ -1,6 +1,6 @@
 '''PaDRe -- Patient Data Repository
 
-Library to organize patient imaging data'''
+Library to organize participant imaging data'''
 
 version = 2.0
 

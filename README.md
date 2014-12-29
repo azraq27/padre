@@ -1,7 +1,7 @@
 padre
 =====
 
-PaDRe - a patient data repository library (in Python)
+PaDRe - a participant data repository library (in Python)
 --------------------------------------------------------
 
 This library is used to organize a large data repository of imaging data. The functions

@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PaDRe (Patient Data Repository) documentation!
+Welcome to PaDRe (Participant Data Repository) documentation!
 ===========================================================
 
 This library provides an organized way to store and analyze imaging data.

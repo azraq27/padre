@@ -41,21 +41,13 @@ Do not include any other qualifiers like "run1"</p>
 	</select>
 	<input class="appearing_box" type="text" name="new_experiment_text" placeholder="New experiment..."/>
 	</h3>
-	<h3>Type: <select class='h1_textfield' name='type'>
-		<option value='none'
-		% if 'type' in subject._sessions[session] and subject._sessions[session]['type']==None:
-		selected
+	<h3>Tags: 
+		% if 'tags' in subject._sessions[session]:
+		%     for tag in subject._sessions[session]['tags']:
+		<span class='pill'>{{tag}}</span>
+		<span class='pill delete'><a href='#'>X</a></span>
+		%     end
 		% end
-		>None</option>
-		% for type in types:
-		<option value='{{type}}'
-		% if 'type' in subject._sessions[session] and type==subject._sessions[session]["type"]:
-		selected
-		% end
-		>{{type}}</option>
-		% end
-		<option value='new'>New Type</option>
-	</select>
 	<input class="appearing_box" type="text" name="new_type_text" placeholder="New type..."/>
 	</h3>
 	<h3>Scan sheet: 

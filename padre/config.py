@@ -49,7 +49,7 @@ def sessions_dir(subject):
 	'''[subject_dir]/sessions'''
 	return os.path.join(subject_dir(subject),'sessions')
 
-json_ext = 'json2'  #: extension used for the JSON file
+json_ext = 'json'  #: extension used for the JSON file
 
 def subject_json(subject):
 	''' location of subject's JSON file '''

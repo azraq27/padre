@@ -59,7 +59,7 @@ Do not include any other qualifiers like "run1"</p>
 		% if 'tags' in subject._sessions[session]:
 		%     for tag in subject._sessions[session]['tags']:
 		<span class='pill'>{{tag}}</span>
-		<span class='pill delete'><a href='#'>X</a></span>
+		<span class='pill delete'><a href='/delete_tag/{{subject}}/{{session}}/{{tag}}'>X</a></span>
 		%     end
 		% end
 	<input id="tags" type="text" name="new_tag" placeholder="Add tag..."/>

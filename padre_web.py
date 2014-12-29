@@ -186,6 +186,9 @@ def save_session(subject_id,session):
             p.subject._index_one_subject(subj)
     redirect('/edit_subject/%s' % subj)
     
+@route('/delete_tag/<subject>/<session>/<tag>')
+def delete_tag(subject,session,tag):
+    return tag
 
 @post('/search_form')
 @view('list_subjects')

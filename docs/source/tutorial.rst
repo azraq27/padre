@@ -53,9 +53,9 @@ Now that we have our list of subjects, we can loop through the data and run some
 		# The dsets function will return the datasets we're interested in.
 		# The first argument is the dset label, but you could also specify
 		# session parameters like tags or session name
-		anatomy = subj.dsets('anatomy')[0]
 		# The "[0]" needs to be there because dsets() always returns a list
-		epis = subj.dsets('task1') + subj.dsets('task2')
+		anatomy = subj.dsets('anatomy')[0]
 		# epis now is a list of all of the task1 and task2 datasets
+		epis = subj.dsets('task1') + subj.dsets('task2')
 		# run the "align_epi_anat.py" script (using the neural library)
 		nl.afni.align_epi_anat(anatomy,epis)

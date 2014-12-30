@@ -1,11 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # depends on:
 #   neural
 #   padre
 #   fuzzywuzzy
 #   openpyxl
 
-import argparse,os,json,sys,shutil
+import argparse,os,json,sys,shutil,getpass
 from fuzzywuzzy import process
 import padre as p
 import neural as nl
@@ -21,7 +21,7 @@ listable_objects = {
     'tags': ['types','tags'],
     'sessions': ['sessions','scans','dates'],
     'dsets': ['dsets','datasets','runs','files'],
-    'meta': ['meta','metadata','behavioral','eprime']
+    'metadata': ['meta','metadata','behavioral','eprime']
 }
 
 p.subjects()
@@ -43,6 +43,8 @@ def error(msg,miss=None):
         except:
             pass
     sys.exit()
+
+from neural.personality import _unic_bub_print,decompress
 
 def identify_object(obj):
     '''tries to match to an existing object
@@ -114,7 +116,7 @@ def subjects_from_params(params):
     if params['subject']:
         all_subjs = [p.load(params['subject'])]
     else:
-        all_subjs = p.subjects(tag=params['tag'],label=params['label'],experiment=params['experiment'])
+        all_subjs = p.subjects(tags=params['tag'],label=params['label'],experiment=params['experiment'])
     return all_subjs
 
 def padre_list(args):
@@ -124,14 +126,17 @@ def padre_list(args):
         error('Error: You didn\'t tell me what you wanted to list!')
         return
     
+    if getpass.getuser()==decompress('eNrLLcqvyk3MAwAMOAMF'):
+        sys.stderr.write(_unic_bub_print('%s!!!' %listable.capitalize())+'\n\n')
+    
     all_subjs = subjects_from_params(params)
     
     all_dsets = {}
-    if listable=='meta':
+    if listable=='metadata':
         if len(unidentified_args)>0:
             (all_dsets,unidentified_args) = identify_dsets(unidentified_args,all_subjs)
    
-    if listable=='meta':
+    if listable=='metadata':
         if len(all_dsets)==0:
             error('Error: To list meta-data, you need to give me the name of a dataset')
             return

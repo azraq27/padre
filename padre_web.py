@@ -22,28 +22,28 @@ if not os.path.exists(web_view_root):
 
 os.chdir(web_view_root)
 
-@route('/style/<filename>')
+@app.route('/style/<filename>')
 def style_file(filename):
     return static_file('views/style/%s'%filename,'.')
 
-@route('/favicon.ico')
+@app.route('/favicon.ico')
 def favicon():
     return static_file('views/favicon.ico','.')
 
-@route('/view_file/<subject>/<session>/<filename>')
+@app.route('/view_file/<subject>/<session>/<filename>')
 def view_file(subject,session,filename):
     return static_file(os.path.join('Data',subject,'sessions',session,filename),root=p.padre_root)
 
-@route('/')
-@route('/index')
-@view('index')
+@app.route('/')
+@app.route('/index')
+@app.view('index')
 def index():
     return {'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())}
     
 
-@route('/list_subjects')
-@post('/list_subjects')
-@view('list_subjects')
+@app.route('/list_subjects')
+@app.post('/list_subjects')
+@app.view('list_subjects')
 def subjects():
     exp = request.forms.get('exp')
     if exp!='':
@@ -77,8 +77,8 @@ def subjects():
             'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())
     }
 
-@route('/edit_subject/<subject_id>')
-@view('edit_subject')
+@app.route('/edit_subject/<subject_id>')
+@app.view('edit_subject')
 def edit_subject(subject_id):
     subject = p.load(subject_id)
     unverified = []
@@ -93,7 +93,7 @@ def edit_subject(subject_id):
         'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())        
     }
 
-@post('/save_subject')
+@app.post('/save_subject')
 def save_subject():
     old_subject_id = request.forms.get('old_subject_id').rstrip('/')
     new_subject_id = request.forms.get('subject_id').rstrip('/')
@@ -108,8 +108,8 @@ def save_subject():
         del(p.subject._all_subjects[old_subject_id])
     redirect('/edit_subject/%s' % new_subject_id)
 
-@route('/edit_subject/<subject_id>/<session>')
-@view('edit_session')
+@app.route('/edit_subject/<subject_id>/<session>')
+@app.view('edit_session')
 def edit_session(subject_id,session):
     subject = p.load(subject_id)
     return {
@@ -120,8 +120,8 @@ def edit_session(subject_id,session):
         'tags': sorted(p.subject.tags,key=lambda x: x.lower())
     }
 
-@post('/save_subject/<subject_id>/<session>')
-@view('save_session')
+@app.post('/save_subject/<subject_id>/<session>')
+@app.view('save_session')
 def save_session(subject_id,session):
     with p.maint.commit_wrap():
         subj = p.load(subject_id)
@@ -188,7 +188,7 @@ def save_session(subject_id,session):
             p.subject._index_one_subject(subj)
     redirect('/edit_subject/%s/%s' % (subj,session))
     
-@route('/delete_tag/<subject>/<session>/<tag>')
+@app.route('/delete_tag/<subject>/<session>/<tag>')
 def delete_tag(subject,session,tag):
     subj = p.load(subject)
     if subj:
@@ -197,8 +197,8 @@ def delete_tag(subject,session,tag):
         subj.save()
     redirect('/edit_subject/%s/%s' % (subject,session))
 
-@post('/search_form')
-@view('list_subjects')
+@app.post('/search_form')
+@app.view('list_subjects')
 def search_form():
     search_string = request.forms.get('search_field')
     matches = [x[0] for x in process.extract(search_string,[str(x) for x in p.subjects()]) if x[1]>90]

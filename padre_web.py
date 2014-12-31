@@ -36,14 +36,14 @@ def view_file(subject,session,filename):
 
 @app.route('/')
 @app.route('/index')
-@app.view('index')
+@view('index')
 def index():
     return {'experiments':sorted(p.subject.experiments,key=lambda x: x.lower())}
     
 
 @app.route('/list_subjects')
 @app.post('/list_subjects')
-@app.view('list_subjects')
+@view('list_subjects')
 def subjects():
     exp = request.forms.get('exp')
     if exp!='':
@@ -78,7 +78,7 @@ def subjects():
     }
 
 @app.route('/edit_subject/<subject_id>')
-@app.view('edit_subject')
+@view('edit_subject')
 def edit_subject(subject_id):
     subject = p.load(subject_id)
     unverified = []
@@ -109,7 +109,7 @@ def save_subject():
     redirect('/edit_subject/%s' % new_subject_id)
 
 @app.route('/edit_subject/<subject_id>/<session>')
-@app.view('edit_session')
+@view('edit_session')
 def edit_session(subject_id,session):
     subject = p.load(subject_id)
     return {
@@ -121,7 +121,7 @@ def edit_session(subject_id,session):
     }
 
 @app.post('/save_subject/<subject_id>/<session>')
-@app.view('save_session')
+@view('save_session')
 def save_session(subject_id,session):
     with p.maint.commit_wrap():
         subj = p.load(subject_id)
@@ -198,7 +198,7 @@ def delete_tag(subject,session,tag):
     redirect('/edit_subject/%s/%s' % (subject,session))
 
 @app.post('/search_form')
-@app.view('list_subjects')
+@view('list_subjects')
 def search_form():
     search_string = request.forms.get('search_field')
     matches = [x[0] for x in process.extract(search_string,[str(x) for x in p.subjects()]) if x[1]>90]

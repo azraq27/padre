@@ -44,27 +44,53 @@ class Dset(object):
     you can manually cast them as a string, ``str(dset)``. To return only the filename,
     with no directory information, you can call :meth:`__str__` with the argument ``False``
     
-    Other information contained in the objects include:
+    .. autoinstanceattribute:: Dset.complete
+        :annotation:
     
-    :complete:      Whether this is a complete, usable dataset
-    :date:          Date this was acquired
-    :experiment:    Experiment in which this was aquired
-    :label:         Kind of dataset (e.g., ``anatomy``)
-    :tags:          Tags of session this was acquired during
-    :session:       Label of session this was acquired during
-    :md5:           md5 checksum of dataset file (used for checking for data corruption)
-    :meta:          dictionary of meta data associated with this dataset (e.g., ``eprime`` or ``eprime-txt``)
-    :info:          object containing information from a call to ``3dinfo`` (for more information see the neural library)'''
+    .. autoinstanceattribute:: Dset.date
+        :annotation:
+        
+    .. autoinstanceattribute:: Dset.experiment
+        :annotation:
+    
+    .. autoinstanceattribute:: Dset.label
+        :annotation:
+    
+    .. autoinstanceattribute:: Dset.tags
+        :annotation:
+    
+    .. autoinstanceattribute:: Dset.session
+        :annotation:
+    
+    .. autoinstanceattribute:: Dset.meta
+        :annotation:
+    
+    .. autoinstanceattribute:: Dset.md5
+        :annotation:
+    
+    .. instanceattribute:: Dset.info
+        object containing information from a call to ``3dinfo`` (for more information see the neural library)
+    
+    .. automethod:: Dset.get_match
+    
+    .. automethod:: Dset.from_dict
+    '''
     
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
         self._dset_fname = dset_fname
+        #: Whether this is a complete, usable dataset
         self.complete = complete
+        #: dictionary of meta data associated with this dataset (e.g., ``eprime`` or ``eprime-txt``)
         self.meta = PrefixDict(meta)
         self.meta.prefix = os.path.join(p.sessions_dir(subject),session) + '/'
+        #: md5 checksum of dataset file (used for checking for data corruption)
         self.md5 = md5
         
+        #: Date this was acquired
         self.date = subject._sessions[session]['date'] if 'date' in subject._sessions[session] else None
+        #: Experiment in which this was aquired
         self.experiment = subject._sessions[session]['experiment'] if 'experiment' in subject._sessions[session] else None
+        #: Kind of dataset (e.g., ``anatomy``)
         self.label = label
         if self.label == None:
             try:
@@ -75,7 +101,9 @@ class Dset(object):
                             raise StopIteration
             except StopIteration:
                 pass
+        #: Tags of session this was acquired during
         self.tags = subject._sessions[session]['tags'] if 'tags' in subject._sessions[session] else None
+        #: Label of session this was acquired during
         self.session = session
         
         self._info = None

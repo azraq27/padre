@@ -9,6 +9,14 @@ subject
     |- meta('demographics','clinical','behavioral','neuropsych')
         # list available options:
     |- sessions, experiments, labels, tags
+    
+session
+    |- date
+    |- labels
+    |- experiment
+    |- tags (list)
+    |- include (T/F)
+    |- unverified (T/F)
 
 dset
     |- complete
@@ -52,7 +60,7 @@ class Dset(object):
         self._dset_fname = dset_fname
         self.complete = complete
         self.meta = PrefixDict(meta)
-        self.meta.prefix = os.path.join(p.sessions_dir(subject),session)
+        self.meta.prefix = os.path.join(p.sessions_dir(subject),session) + '/'
         self.md5 = md5
         
         self.date = subject._sessions[session]['date'] if 'date' in subject._sessions[session] else None
@@ -85,13 +93,19 @@ class Dset(object):
             'meta': self.meta
         }
     
+    def get_match(self,label=None,experiment=None,tags=None,include_all=False):
+        '''acts exactly like :meth:`subject.dsets`, except that it will only find datasets in the same session as this one
+        For example, if you want to find the anatomy for a particular EPI, you could get the epi using ``epi = subj.dsets('epi_name')``
+        and then get the anatomy using ``epi.get_match('anatomy')``'''
+        return self._subject.dsets(label,experiment,self.session,tags,include_all)        
+    
     @classmethod
     def from_dict(cls,subject,session,dict_source):
         dset = Dset(subject,session,dict_source['filename'])
         dset.complete = dict_source['complete'] if 'complete' in dict_source else True
         dset.md5 = dict_source['md5'] if 'md5' in dict_source else None
         dset.meta = PrefixDict(dict_source['meta'])
-        dset.meta.prefix = os.path.join(p.sessions_dir(subject),session)
+        dset.meta.prefix = os.path.join(p.sessions_dir(subject),session) + '/'
         return dset
     
     def __str__(self,absolute=True):

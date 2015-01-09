@@ -35,7 +35,7 @@ class PrefixDict(dict):
             return self.prefix + dict.__getitem__(self,key)
         return dict.__getitem__(self,key)
 
-class Dset(object):
+class Dset(str):
     '''object to contain dataset filename and meta-data
     
     Calling :meth:`subject.dsets` with return a list of these objects. They can be treated as 
@@ -69,12 +69,16 @@ class Dset(object):
         :annotation:
     
     .. instanceattribute:: Dset.info
-        object containing information from a call to ``3dinfo`` (for more information see the neural library)
+        object containing information from a call to ``3dinfo`` (for more information see the neural library) 
     
     .. automethod:: Dset.get_match
     
     .. automethod:: Dset.from_dict
     '''
+    
+    def __new__(cls,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
+        return str.__new__(cls,str(subject))
+    
     
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
         self._dset_fname = dset_fname
@@ -156,7 +160,7 @@ class Dset(object):
         else:
             return object.__getattribute__(self,name)
 
-class Subject(object):
+class Subject(str):
     '''abstract container for subject information
     
     If cast as string(``str(subject)``), will return subject id. Subject objects can be obtained by 
@@ -186,6 +190,9 @@ class Subject(object):
     .. automethod:: Subject.dsets
     
     '''
+    def __new__(cls,subject_id,initial_data={}):
+        return str.__new__(cls,subject_id)
+    
     def __init__(self,subject_id,initial_data={}):
         self._subject_id = subject_id
         #: If ``False``, this subject will be excluded from standard analyses

@@ -76,11 +76,18 @@ class Dset(str):
     .. automethod:: Dset.from_dict
     '''
     
+    @classmethod
+    def abspath(cls,_subj=None,_sess=None,_fname=None):
+        '''return the absolute path to an arbitrary file'''
+        return os.path.join(p.sessions_dir(_subj),_sess,_fname)
+        
+    
     def __new__(cls,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
-        return str.__new__(cls,str(subject))
+        return str.__new__(cls,Dset.abspath(subject,session,dset_fname))
     
     
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
+        str.__init__(self,Dset.abspath(subject,session,dset_fname))
         self._dset_fname = dset_fname
         #: Whether this is a complete, usable dataset
         self.complete = complete
@@ -112,10 +119,12 @@ class Dset(str):
         
         self._info = None
         self._subject = subject
+        
+        str.__init__(self,self.__abspath__())
     
     def __abspath__(self):
-        '''return the absolute path the the dataset'''
-        return os.path.join(p.sessions_dir(self._subject),self.session,self._dset_fname)
+        '''return the absolute path of this dataset'''
+        return Dset.abspath(self._subject,self.session,self._dset_fname)
     
     def __dict__(self):
         return {

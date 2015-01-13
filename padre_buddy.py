@@ -180,7 +180,7 @@ def padre_list(args):
             subj = p.load(params['subject'])
             if subj:
                 sessions = list(subj.sessions)
-                sessions = [x for x in sessions if len(subj.dsets(session=x,tag=params['tag'],label=params['label'],experiment=params['experiment']))>0]
+                sessions = [x for x in sessions if len(subj.dsets(session=x,tags=params['tag'],label=params['label'],experiment=params['experiment']))>0]
                 print '\n'.join(sessions)
         return
     if listable=='dsets':
@@ -189,7 +189,7 @@ def padre_list(args):
         else:
             subj = p.load(params['subject'])
             if subj:
-                dsets = subj.dsets(session=params['session'],tag=params['tag'],label=params['label'],experiment=params['experiment'])
+                dsets = subj.dsets(session=params['session'],tags=params['tag'],label=params['label'],experiment=params['experiment'])
                 print '\n'.join([str(x) for x in dsets])
         return
 
@@ -201,9 +201,12 @@ def padre_link(args):
     subj = p.load(params['subject'])
     if not subj:
         error('Error: Couldn\'t load subject %s' % params['subject'])
-    dsets = subj.dsets(session=params['session'],tag=params['tag'],label=params['label'],experiment=params['experiment'])
+    dsets = subj.dsets(session=params['session'],tags=params['tag'],label=params['label'],experiment=params['experiment'])
     for dset in dsets:
-        os.symlink(str(dset),os.path.basename(str(dset)))
+        try:
+            os.symlink(str(dset),os.path.basename(str(dset)))
+        except OSError:
+            pass
 
 def padre_add_meta(args):
     (params,listable,unidentified_args) = identify_params(args,True)

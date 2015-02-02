@@ -72,7 +72,7 @@ Do not include any other qualifiers like "run1"</p>
 	<h3>Session Notes:<br/>
 	<textarea cols=60 rows=5 name="notes">{{subject._sessions[session]['notes'] if 'notes' in subject._sessions[session] else ''}}</textarea></h3>
 	<h3>Move this session to subject: <input name='new_subject_id'/>
-	<h3><input type='checkbox' name='include'{{"checked='checked'" if subject.include else ""}}/>&nbsp;
+	<h3><input type='checkbox' name='include'{{"checked='checked'" if 'include' not in subj._sessions[session] or subj._sessions[session]['include']==True else ""}}/>&nbsp;
 		Include this session?</h3>
 	<table width=300>
 		<tr>

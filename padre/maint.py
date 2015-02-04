@@ -182,6 +182,8 @@ def merge_session(subj_from,subj_to,sess):
         while os.path.exists(new_dir):
             new_dir += '_1'
         os.rename(from_sess_dir,new_dir)
+    subj_from.save()
+    subj_to.save()
 
 def merge(subject_id_from,subject_id_into):
     nl.notify('Trying to merge %s into %s' % (subject_id_from,subject_id_into))

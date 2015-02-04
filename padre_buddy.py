@@ -214,8 +214,11 @@ def padre_add_meta(args):
     (all_dsets,unidentified_args) = identify_dsets(unidentified_args,all_subjs)
     if len(all_dsets)!=1:
         error('Error: To add meta-data, you need to give me the name of exactly one dataset')
-    (subj,sess,label,dset,i) = all_dsets[0]
-    subj._sessions[sess][label][i]['meta'][args.meta_type] = os.path.basename(args.filename)
+    (subj,sess,label,dset,i) = all_dsets.values()[0]
+    if 'meta' not in subj._sessions[sess]['labels'][label][i]:
+        subj._sessions[sess]['labels'][label][i]['meta'] = {}
+    subj._sessions[sess]['labels'][label][i]['meta'][args.meta_type] = os.path.basename(args.filename)
+    subj.save()
     shutil.copy(args.filename,os.path.join(p.sessions_dir(subj),sess))
     print 'Added %s (%s) to %s' % (os.path.basename(args.filename),args.meta_type,str(subj))
  

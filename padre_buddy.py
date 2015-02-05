@@ -120,7 +120,32 @@ def link_dsets(args):
                     pass
         else:
             nl.notify('Nope, that didn\'t look like a "y"...',level=nl.level.warning)
-        
+
+def error(msg,miss=None):
+    nl.notify(msg + '\n',level=nl.level.error)
+    if miss:
+        try:
+            import urllib,urllib2
+            data = {'miss':miss}
+            data_enc = urllib.urlencode(data)
+            urllib2.urlopen('http://wolflion.org/cgi-bin/report.py?%s' % data_enc)
+        except:
+            pass
+    sys.exit()
+
+'''def padre_add_meta(args):
+    (params,listable,unidentified_args) = identify_params(args,True)
+    all_subjs = subjects_from_params(params)
+    (all_dsets,unidentified_args) = identify_dsets(unidentified_args,all_subjs)
+    if len(all_dsets)!=1:
+        error('Error: To add meta-data, you need to give me the name of exactly one dataset')
+    (subj,sess,label,dset,i) = all_dsets.values()[0]
+    if 'meta' not in subj._sessions[sess]['labels'][label][i]:
+        subj._sessions[sess]['labels'][label][i]['meta'] = {}
+    subj._sessions[sess]['labels'][label][i]['meta'][args.meta_type] = os.path.basename(args.filename)
+    subj.save()
+    shutil.copy(args.filename,os.path.join(p.sessions_dir(subj),sess))
+    print 'Added %s (%s) to %s' % (os.path.basename(args.filename),args.meta_type,str(subj))'''
         
 p.subjects()
 bottle.vocab = {

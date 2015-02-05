@@ -1,3 +1,5 @@
 neural-fmri
 pydicom
 fuzzywuzzy
+openpyxl
+gini

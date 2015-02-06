@@ -203,7 +203,8 @@ def delete_tag(subject,session,tag):
 def search_form():
     search_string = request.forms.get('search_field')
 
-    subjects = padre.matching.filter_subjs(p.subjects(),search_string)
+    args = padre.matching.bottle.parse_string(search_string)
+    subjects = padre.matching.filter_subjs(p.subjects(),args)
     unverified = []
     for subj in subjects:
         for sess in subj._sessions:

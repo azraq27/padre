@@ -2,6 +2,7 @@
 import gini
 import padre as p
 import neural as nl
+import copy
 
 bottle = gini.semantics.Bottle()
 
@@ -16,9 +17,12 @@ bottle.vocab = {
     'session_do': ['sessions','scans','dates'],
     'dset_do': ['dsets','datasets','runs','files'],
     'metadata_do': ['meta','metadata','behavioral','eprime'],
+    'eprime_do': ['eprime','edat'],
+    'eprime-txt_do': ['eprime-txt'],
     # Actions
     'list': ['list','show','get','print'],
     'link': ['link','copy','symlink'],
+    'add': ['add','attach','upload'],
     # Objects
     'subject': p.subject._all_subjects.keys(),
     'label': p.subject.tasks,
@@ -26,6 +30,29 @@ bottle.vocab = {
     'experiment': p.subject.experiments,
     'quiet': ['quiet','quietly','-q','--quiet']
 }
+
+def recursive_parse_string(bottle,string):
+    '''calls :meth:`bottle.parse_string` and then adds subject-specific information and re-runs it to get things like dataset names'''
+    matches = bottle.parse_string(string)
+    if 'other' in matches:
+        # There were some strings that didn't match anything
+        matching_subjects = filter_subjs(p.subjects(),matches)
+        new_bottle = copy.deepcopy(bottle)
+        new_bottle.vocab['dset'] = []
+        # Not finished -- add dset filenames, metadata, 
+        # Would be nice to keep track of where they came from (what subject is this dset from?)
+
+def dsets_with(subj,args):
+    '''returns the result of :meth:`Subject.dsets`, using the relevant keyword arguments from args'''
+    def get(dict,key,only_one=True):
+        if key in dict:
+            if only_one and isinstance(dict[key],list):
+                return dict[key][0]
+            else:
+                return dict[key]
+        else:
+            return None
+    return subj.dsets(label=get(args,'label'),tags=get(args,'tag',False),experiment=get(args,'experiment'))
 
 def filter_subjs(subjects,args):
     if not any([x in args for x in ['subject','session','label','experiment','tag']]):

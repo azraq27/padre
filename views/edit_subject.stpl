@@ -13,14 +13,14 @@
 		<th>Session</th>
 		<th>Date</th>
 		<th>Experiment</th>
-		<th>Type</th>
+		<th>Tags</th>
 	</tr>
 	% for sess in unverified:
 	<tr class='not_include'>
 		<td><a href='/edit_subject/{{subject}}/{{sess}}'>{{sess}}</a></td>
 		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions[sess] else ''}}</td>
 		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions[sess] else ''}}</td>
-		<td>{{subject._sessions[sess]['type'] if 'type' in subject._sessions[sess] else ''}}</td>
+		<td>{{' '.join(subject._sessions[sess]['tags']) if 'tags' in subject._sessions[sess] else ''}}</td>
 	</tr>
 	% end
 </table>
@@ -33,7 +33,7 @@
 		<th>Session</th>
 		<th>Date</th>
 		<th>Experiment</th>
-		<th>Type</th>
+		<th>Tags</th>
 	</tr>
 	% for sess in sessions:
 	<tr
@@ -44,7 +44,7 @@
 		<td><a href='/edit_subject/{{subject}}/{{sess}}'>{{sess}}</a></td>
 		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions[sess] else ''}}</td>
 		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions[sess] else ''}}</td>
-		<td>{{subject._sessions[sess]['type'] if 'type' in subject._sessions[sess] else ''}}</td>
+		<td>{{' '.join(subject._sessions[sess]['tags']) if 'tags' in subject._sessions[sess] else ''}}</td>
 	</tr>
 	% end
 </table>

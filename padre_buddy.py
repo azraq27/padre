@@ -10,7 +10,7 @@ from fuzzywuzzy import process
 import padre as p
 import neural as nl
 import openpyxl
-from padre.matching import bottle,filter_subjs
+from padre.matching import bottle,filter_subjs,dsets_with
 
 
 def list_objects(args):
@@ -44,15 +44,6 @@ def list_objects(args):
             experiments = set([x['experiment'] for x in sessions if 'experiment' in x and x['experiment']])
             print '\n'.join(experiments)
 
-def get(dict,key,only_one=True):
-    if key in dict:
-        if isinstance(dict[key],list):
-            return dict[key][0]
-        else:
-            return dict[key]
-    else:
-        return None
-
 def link_dsets(args):
     with nl.notify('Trying to link the following datasets...'):
         subjects = filter_subjs(p.subjects(),args)
@@ -60,7 +51,7 @@ def link_dsets(args):
         
         for subj in subjects:
             with nl.notify(str(subj)):
-                for dset in subj.dsets(label=get(args,'label'),tags=get(args,'tag',False),experiment=get(args,'experiment')):
+                for dset in dsets_with(subj,args):
                     nl.notify(dset.__str__(False))
                     dsets_to_link.append(dset)
         nl.notify('Does that all look good? (y/n)')

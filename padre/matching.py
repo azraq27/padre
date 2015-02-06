@@ -1,6 +1,7 @@
 '''uses methods from the ``gini`` library for flexible matching'''
 import gini
 import padre as p
+import neural as nl
 
 bottle = gini.semantics.Bottle()
 

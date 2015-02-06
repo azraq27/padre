@@ -20,7 +20,7 @@
 		<td><a href='/edit_subject/{{subject}}/{{sess}}'>{{sess}}</a></td>
 		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions[sess] else ''}}</td>
 		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions[sess] else ''}}</td>
-		<td>{{' '.join(subject._sessions[sess]['tags']) if 'tags' in subject._sessions[sess] else ''}}</td>
+		<td>{{', '.join(subject._sessions[sess]['tags']) if 'tags' in subject._sessions[sess] else ''}}</td>
 	</tr>
 	% end
 </table>
@@ -44,7 +44,7 @@
 		<td><a href='/edit_subject/{{subject}}/{{sess}}'>{{sess}}</a></td>
 		<td>{{subject._sessions[sess]['date'] if 'date' in subject._sessions[sess] else ''}}</td>
 		<td>{{subject._sessions[sess]['experiment'] if 'experiment' in subject._sessions[sess] else ''}}</td>
-		<td>{{' '.join(subject._sessions[sess]['tags']) if 'tags' in subject._sessions[sess] else ''}}</td>
+		<td>{{', '.join(subject._sessions[sess]['tags']) if 'tags' in subject._sessions[sess] else ''}}</td>
 	</tr>
 	% end
 </table>

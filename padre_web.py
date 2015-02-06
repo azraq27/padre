@@ -7,6 +7,7 @@ import datetime
 from dateutil.parser import parse
 from fuzzywuzzy import process
 import sys,os
+import padre.matching
 import HTMLParser
 h = HTMLParser.HTMLParser()
 
@@ -201,8 +202,8 @@ def delete_tag(subject,session,tag):
 @view('list_subjects')
 def search_form():
     search_string = request.forms.get('search_field')
-    matches = [x[0] for x in process.extract(search_string,[str(x) for x in p.subjects()]) if x[1]>90]
-    subjects = [p.load(x) for x in matches]
+
+    subjects = padre.matching.filter_subjs(p.subjects(),search_string)
     unverified = []
     for subj in subjects:
         for sess in subj._sessions:

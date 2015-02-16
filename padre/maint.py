@@ -234,7 +234,9 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
                 if not os.path.exists(dset_fname):
                     shutil.move(full_dset,dset_fname)
         for raw in raw_data:
-            if not os.path.exists(os.path.join(p.raw_dir(subj),raw)):
+            try:
                 shutil.move(os.path.join(dir_prefix,'raw',raw),p.raw_dir(subj))
+            except:
+                pass
         subj._sessions[session] = session_dict
         subj.save()

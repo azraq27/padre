@@ -25,7 +25,7 @@ def save_log():
     with open(import_log_file,'w') as f:
         f.write(json.dumps(import_log))    
 
-def import_archive(full_file,subject_guess):
+def import_archive(full_file,subject_guess,slice_order='alt+z',sort_order='zt'):
     tmp_dir = tempfile.mkdtemp()
     try:
         tmp_location = os.path.join(tmp_dir,'_tmp_unarchive')
@@ -58,7 +58,7 @@ def import_archive(full_file,subject_guess):
                             continue
                     nl.notify('creating dataset from %s' % subdir)
                     import_log[full_file][subdir] = {}
-                    if not nl.dicom.create_dset(subdir):
+                    if not nl.dicom.create_dset(subdir,slice_order,sort_order):
                         import_log[full_file][subdir]['error'] = True
                     if os.path.exists(subdir + '.nii.gz'):
                         import_log[full_file][subdir]['complete'] = True

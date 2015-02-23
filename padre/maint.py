@@ -240,3 +240,39 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
                 pass
         subj._sessions[session] = session_dict
         subj.save()
+
+def dsets_identical(dset1,dset2):
+    '''Tests if given datasets are identical'''
+    max_tolerance = 1.0
+    
+    with nl.notify('Comparing %s with %s' % (dset1,dset2)):
+#        info = [nl.afni.dset_info(dset) for dset in [dset1,dset2]]
+#        for param in ['reps','voxel_size','voxel_dims']:
+#            if getattr(info[0],param) != getattr(info[1],param):
+#                nl.notify('Datasets differ in at least %s (%s vs. %s)' % (param,getattr(info[0],param),getattr(info[1],param)),level=nl.level.warning)
+#                return False
+        max_diff = nl.dicom.max_diff(dset1,dset2)
+        if max_diff > max_tolerance:
+            nl.notify('Datasets have a maximal differenence >%.1f (max_diff = %.1f)' % (max_tolerance, max_diff),level=nl.level.warning)
+            return False
+        
+        if max_diff==0:
+            nl.notify('Datasets appear to be identical')
+            return True
+        
+        nl.notify('Datasets are minimally different (max_diff = %.1f)' % max_diff)
+        return True
+
+def sessions_identical(subj1,sess1,subj2,sess2):
+    '''Tests the given sessions to make sure the datasets are the same'''
+    dsets1 = [os.path.basename(str(x)) for x in subj1.dsets(session=sess1)]
+    dsets2 = [os.path.basename(str(x)) for x in subj2.dsets(session=sess2)]
+    dsets = list(set(dsets1+dsets2))
+    return_val = True
+    with nl.notify('Comparing sessions %s.%s and %s.%s:' % (subj1,sess1,subj2,sess2)):
+        for dset in dsets:
+            if not dsets_identical(os.path.join(p.sessions_dir(subj1),sess1,dset),os.path.join(p.sessions_dir(subj2),sess2,dset)):
+                return_val = False
+                continue
+    return return_val
+    

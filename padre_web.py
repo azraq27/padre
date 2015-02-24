@@ -97,6 +97,8 @@ def edit_subject(subject_id):
 def save_subject():
     old_subject_id = request.forms.get('old_subject_id').rstrip('/')
     new_subject_id = request.forms.get('subject_id').rstrip('/')
+    if old_subject_id==new_subject_id:
+        return
     if p.subject.subject_exists(new_subject_id):
         with p.maint.commit_wrap():
             p.maint.merge(old_subject_id,new_subject_id)
@@ -168,7 +170,10 @@ def save_session(subject_id,session):
             if add_meta:
                 meta_type = request.forms.get('meta_type_%s'%dset_fname)
                 subj._sessions[session]['labels'][dset.label][i]['meta'][meta_type] = add_meta.filename
-                add_meta.save(os.path.join(p.sessions_dir(subj),session))
+                try:
+                    add_meta.save(os.path.join(p.sessions_dir(subj),session))
+                except IOError:
+                    pass
         if 'unverified' in subj._sessions[session]:
             del(subj._sessions[session]['unverified'])
         subj.save()

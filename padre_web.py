@@ -9,6 +9,7 @@ from fuzzywuzzy import process
 import sys,os
 import HTMLParser
 h = HTMLParser.HTMLParser()
+from padre.matching import filter_subjs
 
 app = application = bottle.Bottle()
 
@@ -206,8 +207,7 @@ def delete_tag(subject,session,tag):
 @view('list_subjects')
 def search_form():
     search_string = request.forms.get('search_field')
-    matches = [x[0] for x in process.extract(search_string,[str(x) for x in p.subjects()]) if x[1]>90]
-    subjects = [p.load(x) for x in matches]
+    subjects = filter_subjs(string=search_string)
     unverified = []
     for subj in subjects:
         for sess in subj._sessions:

@@ -15,9 +15,10 @@ from padre.matching import bottle,filter_subjs,dsets_with
 
 def list_objects(args):
     with nl.notify('Listing objects I can find that match that...'):
-        subjects = filter_subjs(p.subjects(),args)
-    
-        if 'subject_do' in args:
+        subjects = filter_subjs(p.subjects(),matches=args)
+        
+        dos = [x[0].concept.name for x in args if x[0].concept.name.endswith('_do')]
+        if 'subject_do' in dos:
             nl.notify('Subjects:')
             print '\n'.join(subjects)
     
@@ -97,4 +98,4 @@ bottle.set_action('list',list_objects)
 bottle.set_action('link',link_dsets)
 
 if __name__ == '__main__':    
-    bottle.process(sys.argv[1:])
+    bottle.process_string(sys.argv[1:])

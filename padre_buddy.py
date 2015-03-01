@@ -93,10 +93,8 @@ def error(msg,miss=None):
     print 'Added %s (%s) to %s' % (os.path.basename(args.filename),args.meta_type,str(subj))'''
         
 
-bottle.actions = {
-    'list':list_objects,
-    'link':link_dsets
-}
+bottle.set_action('list',list_objects)
+bottle.set_action('link',link_dsets)
 
 if __name__ == '__main__':    
     bottle.process(sys.argv[1:])

@@ -23,7 +23,8 @@ bottle.vocab = [
     # Actions
     Concept('list', ['list','show','get','print']),
     Concept('link', ['link','copy','symlink']),
-    Concept('add', ['add','attach','upload']),
+    Concept('add', ['add','attach','upload','import']),
+    Concept('new', ['new','create']),
     # Objects
     Concept('subject', [[x] for x in p.subject._all_subjects.keys()]),
     Concept('label', [[x] for x in p.subject.tasks]),

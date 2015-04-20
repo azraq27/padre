@@ -210,7 +210,7 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
             pass
         session_dict = dict(subj._sessions[session])
         session_dict['unverified'] = True
-        session_dict['date'] = datetime.datetime.strftime(nl.dicom.date_for_str(session),'%Y-%m-%d')
+        session_dict['date'] = datetime.datetime.strftime(nl.date_for_str(session),'%Y-%m-%d')
         inverted_labels = {}
         for label in c.dset_labels:
             for dset in c.dset_labels[label]:
@@ -219,7 +219,7 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
             dset = {}
             dset['filename'] = os.path.basename(full_dset)
             if dset['filename'] not in [x.__str__(False) for x in subj.dsets(include_all=True)]:
-                dset['md5'] = nl.utils.hash(full_dset)
+                dset['md5'] = nl.hash(full_dset)
                 dset['complete'] = True
                 dset['meta'] = {}
                 label_match = process.extractOne(dset['filename'].split('-')[3],inverted_labels.keys())
@@ -251,7 +251,7 @@ def dsets_identical(dset1,dset2):
 #            if getattr(info[0],param) != getattr(info[1],param):
 #                nl.notify('Datasets differ in at least %s (%s vs. %s)' % (param,getattr(info[0],param),getattr(info[1],param)),level=nl.level.warning)
 #                return False
-        max_diff = nl.dicom.max_diff(dset1,dset2)
+        max_diff = nl.max_diff(dset1,dset2)
         if max_diff > max_tolerance:
             nl.notify('Datasets have a maximal differenence >%.1f (max_diff = %.1f)' % (max_tolerance, max_diff),level=nl.level.warning)
             return False

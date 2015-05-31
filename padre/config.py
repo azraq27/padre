@@ -35,6 +35,7 @@ trash_dir = os.path.join(padre_root,'Trash')
 
 Contains deleted subjects and sessions (instead of actually deleting them). Currently just stores them forever.
 '''
+freesurfer_dir = os.path.join(padre_root,'Freesurfer') #: [padre_root]/Freesurfer
 
 
 def subject_dir(subject):

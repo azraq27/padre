@@ -229,6 +229,8 @@ class Subject(str):
         self.labels = list(set(self.labels))
         self.experiments = list(set(self.labels))
         
+        self.freesurfer = nl.freesurfer.FreesurferDir(p.freesurfer_dir,subject_id) if os.path.exists(os.path.join(p.freesurfer_dir,subject_id)) else None
+        
         self.meta = p.ForgivingDict.copy_nested_dict(initial_data['meta']) if 'meta' in initial_data else p.ForgivingDict()
         '''Dictionary of meta-data
         Standard entries include: ``clinical``, ``demo`` (i.e., demographic), ``neuropsych``, and ``behavioral``'''

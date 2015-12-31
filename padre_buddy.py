@@ -10,7 +10,7 @@ from fuzzywuzzy import process
 import padre as p
 import neural as nl
 import openpyxl
-from padre.matching import bottle,filter_subjs,dsets_with
+from padre.matching import bottle,filter_subjs,dsets_with,bottle_help
 
 
 def list_objects(args):
@@ -132,5 +132,8 @@ bottle.set_action('link',link_dsets)
 bottle.set_action('new',new_object)
 bottle.set_action('add',add_data)
 
-if __name__ == '__main__':    
-    bottle.process_string(sys.argv[1:])
+if __name__ == '__main__':
+    if len(sys.argv)==1:
+        bottle_help()
+    else:
+        bottle.process_string(sys.argv[1:])

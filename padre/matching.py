@@ -33,6 +33,29 @@ bottle.vocab = [
     Concept('quiet', ['quiet','quietly','-q','--quiet'])
 ]
 
+def bottle_help():
+    nl.notify('''This program uses freeform text fuzzy matching. It will try to correct for misspellings and
+    synonyms as it can.
+    
+    General syntax:
+    [action] [objects]
+    
+    Currently supported actions are:
+        list    print something to the screen (add quiet to do it less loud)
+        add     add on something to an existing subject
+        new     create a new subject
+        link    create symbolic links to datasets in current directory
+    
+    Examples:
+        list subjects
+        list subjects ExperimentName
+        get dsets SubjectName
+        get subjects LabelName Tag1
+    
+    Just try stuff...
+
+    ''')
+
 
 def recursive_parse_string(bottle,string):
     raise RuntimeError('Need to update to newest gini version')

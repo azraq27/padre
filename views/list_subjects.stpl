@@ -1,28 +1,20 @@
 % include('header.stpl',title='PaDRe: Patient Data Repository for fMRI Data',tab='subjects')
 % include('sidebar.stpl')
 
-% if len(unverified)>0:
-<h1>Subjects with unverified Scans:</h1>
-<table>
-	<tr>
-		<th>Subject ID</th>
-		<th>Last scan</th>
-		<th>Last experiment</th>
-	</tr>
-	% for subj in unverified:
-	<tr>
-		<td><a href='/edit_subject/{{str(subj)}}'>{{str(subj)}}</a></td>
-		<td>{{subj._sessions.values()[-1]['date'] if len(subj._sessions.values())>0 and 'date' in subj._sessions.values()[-1] else ''}}</td>
-		<td>{{subj._sessions.values()[-1]['experiment'] if len(subj._sessions.values())>0 and 'experiment' in subj._sessions.values()[-1] else ''}}</td>
-	</tr>
-	% end
-</table>
-%end
+<style>
+.unverified {
+	font-color: #444;
+}
+</style>
 
 % if len(subjects)>0:
 <h1>Subject List</h1>
 <table>
-	<tr>
+	<tr
+	% if subj in unverified:
+	class='unverified'
+	%end
+	>
 		<th>Subject ID</th>
 		<th>Last scan</th>
 		<th>Last experiment</th>

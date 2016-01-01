@@ -61,7 +61,6 @@ def subjects():
                     raise StopIteration
         except StopIteration:
             pass
-    subjects = list(set(subjects) - set(unverified))
     
     def sort_key(s):
         dates = sorted([parse(s._sessions[sess]['date']) for sess in s._sessions if 'date' in s._sessions[sess]])

@@ -92,21 +92,21 @@ def filter_by_match(match,subjects):
         # Combine experiments by OR
         filtered = []
         for subj in subjects:
-            if any([subj._sessions[sess]['experiment'] in match.examples for sess in subj.sessions if 'experiment' in subj._sessions[sess] and subj._sessions[sess]['experiment']]):
+            if any([subj._sessions[sess]['experiment'] in match.examples for sess in subj._sessions if 'experiment' in subj._sessions[sess] and subj._sessions[sess]['experiment']]):
                 filtered.append(subj)
         return filtered
     if match.concept.name=='label':
         # Combine with AND per subject (not necessarily the same session)
         filtered = []
         for subj in subjects:
-            if any([any([label in match.examples for label in subj._sessions[sess]['labels']]) for sess in subj.sessions]):
+            if any([any([label in match.examples for label in subj._sessions[sess]['labels']]) for sess in subj._sessions]):
                 filtered.append(subj)
         return filtered
     if match.concept.name=='tag':
         # Combine with AND per subject (not necessarily the same session)
         filtered = []
         for subj in subjects:
-            if any([any([tag in match.examples for tag in subj._sessions[sess]['tags']]) for sess in subj.sessions if 'tags' in subj._sessions[sess]]):
+            if any([any([tag in match.examples for tag in subj._sessions[sess]['tags']]) for sess in subj._sessions if 'tags' in subj._sessions[sess]]):
                 filtered.append(subj)
         return filtered
 
@@ -129,7 +129,6 @@ def filter_subjs(subjects=None,string=None,matches=None,require_match=True):
             subjects = p.subjects(only_included=False)
         else:
             subjects = p.subjects()
-    print u'eu-008' in [str(x) for x in subjects]
     running_exclusions = {}
     if not any([[x in sub_matches for x in match_concepts] for sub_matches in matches]):
         if require_match:

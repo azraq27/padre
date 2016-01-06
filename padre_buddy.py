@@ -15,7 +15,7 @@ from padre.matching import bottle,filter_subjs,dsets_with,bottle_help
 
 def list_objects(args):
     with nl.notify('Listing objects I can find that match that...'):
-        subjects = filter_subjs(p.subjects(),matches=args)
+        subjects = filter_subjs(matches=args)
         
         dos = [x[0].concept.name for x in args if 'concept' in dir(x[0]) and x[0].concept.name.endswith('_do')]
         if 'subject_do' in dos:

@@ -124,13 +124,12 @@ def filter_subjs(subjects=None,string=None,matches=None,require_match=True):
         matches = bottle.parse_string(string)
     
     if subjects==None:
-        print [x[0].concept.name for x in matches]
         if 'all' in [x[0].concept.name for x in matches]:
-            print 'ding!'
+            nl.notify('Including incomplete sessions')
             subjects = p.subjects(only_included=False)
         else:
             subjects = p.subjects()
-    
+    print u'eu-008' in [str(x) for x in subjects]
     running_exclusions = {}
     if not any([[x in sub_matches for x in match_concepts] for sub_matches in matches]):
         if require_match:

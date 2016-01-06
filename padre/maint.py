@@ -86,7 +86,7 @@ def new_session(subj,session_name):
     the directory on disk.
     '''
     with commit_wrap():
-        if session_name in subj.sessions:
+        if session_name in subj._sessions:
             raise SessionExists
         session_dir = os.path.join(p.sessions_dir(subj),session_name)
         if not os.path.exists(session_dir):

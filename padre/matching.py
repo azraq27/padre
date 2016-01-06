@@ -30,7 +30,9 @@ bottle.vocab = [
     Concept('label', [[x] for x in p.subject.tasks]),
     Concept('tag', [[x] for x in p.subject.tags]),
     Concept('experiment', [[x] for x in p.subject.experiments]),
+    # Options
     Concept('quiet', ['quiet','quietly','-q','--quiet'])
+    Concept('all',['all','include','incomplete','everything'])
 ]
 
 def bottle_help():
@@ -113,12 +115,20 @@ def filter_subjs(subjects=None,string=None,matches=None,require_match=True):
     is not given, will parse the string ``string`` instead. If ``require_match``, will return ``None`` if it fails to find
     any constraints, otherwise it returns ``subjects``'''
     match_concepts = ['subject','session','label','experiment','tag']
-    if subjects==None:
-        subjects = p.subjects()
     if matches==None:
         if string==None:
-            return subjects
+            if subjects==None:
+                return p.subjects()
+            else:
+                return subjects
         matches = bottle.parse_string(string)
+    
+    if subjects==None:
+        if 'all' in [x[0].name for x in matches]:
+            subjects = p.subjects(only_included=False)
+        else:
+            subjects = p.subjects()
+    
     running_exclusions = {}
     if not any([[x in sub_matches for x in match_concepts] for sub_matches in matches]):
         if require_match:

@@ -31,7 +31,7 @@ bottle.vocab = [
     Concept('tag', [[x] for x in p.subject.tags]),
     Concept('experiment', [[x] for x in p.subject.experiments]),
     # Options
-    Concept('quiet', ['quiet','quietly','-q','--quiet'])
+    Concept('quiet', ['quiet','quietly','-q','--quiet']),
     Concept('all',['all','include','incomplete','everything'])
 ]
 

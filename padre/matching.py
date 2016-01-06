@@ -124,8 +124,9 @@ def filter_subjs(subjects=None,string=None,matches=None,require_match=True):
         matches = bottle.parse_string(string)
     
     if subjects==None:
-        print matches
+        print [x[0].concept.name for x in matches]
         if 'all' in [x[0].concept.name for x in matches]:
+            print 'ding!'
             subjects = p.subjects(only_included=False)
         else:
             subjects = p.subjects()

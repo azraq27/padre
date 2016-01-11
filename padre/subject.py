@@ -322,6 +322,21 @@ class Subject(str):
                     if label in self._sessions[sess]['labels']:
                         return_dsets += [Dset.from_dict(self,sess,dset) for dset in self._sessions[sess]['labels'][label] if include_all or dset['complete']]
         return return_dsets
+    
+    def _index_of_dset_named(self,dset_fname,sess=None,label=None):
+        '''returns the first ``(sess,label,index)`` of ``self._sessions`` that has a dataset with filename ``dset_fname``, or None'''
+        sessions = [sess]
+        if sess==None:
+            sessions = self._sessions.keys()
+        for sess in sessions:
+            labels = [label]
+            if label==None:
+                labels = self._sessions[sess]['labels'].keys()
+            for label in labels:
+                for i in xrange(len(self._sessions[sess]['labels'][label])):
+                    if self._sessions[sess]['labels'][label][i]['filename']==dset_fname:
+                        return (sess,label,i)
+        return None
 
 
 tasks = set()

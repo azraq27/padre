@@ -275,4 +275,84 @@ def sessions_identical(subj1,sess1,subj2,sess2):
                 return_val = False
                 continue
     return return_val
+
+def synchronize_to_disk(subj,add_missing=True,delete_duplicates=True,delete_missing=True):
+    '''Will try to clean up a subject's JSON file based on what files actually exist on disk
     
+    :add_missing:           adds new JSON entries for files that exist on disk but aren't listed
+    :delete_duplicates:     delete duplicate JSON entries if they refer to the same file
+    :delete_missing:        delete JSON entries that have no file on disk'''
+    
+    def dset_in_dict(fname,l):
+        return len([x for x in nl.flatten(l.values()) if fname==x['filename']])>1
+    
+    with nl.notify('Trying to clean up subject %s' % subj):
+        s = p.load(subj)
+        if s==None:
+            nl.notify('Error: couldn\'t load subject %s!' % subj,level=nl.level.error)
+            return False
+        with commit_wrap():
+            sess_on_disk = os.listdir(os.path.join(p.sessions_dir(s)))
+            sess_extra_JSON = list(set(s._sessions.keys()) - set(sess_on_disk))
+            sess_extra_disk = list(set(sess_on_disk) - set(s._sessions.keys()))
+            if len(sess_extra_disk)>0:
+                if add_missing:
+                    for sess in sess_extra_disk:
+                        nl.notify('Creating missing session %s' % sess,level=nl.level.warning)
+                        new_session(s,sess)
+                else:
+                    nl.notify('Warning: found sessions on disk with no entries: %s' % (' '.join(sess_extra_disk)),level=nl.level.warning)
+            if len(sess_extra_JSON)>0:
+                if delete_missing:
+                    for sess in sess_extra_JSON:
+                        nl.notify('Removing session %s (missing from disk)' % sess, level=nl.level.warning)
+                        del(s._sessions[sess])
+                else:
+                    nl.notify('Warning: found sessions missing from disk: %s' % (' '.join(sess_extra_disk)),level=nl.level.warning)
+            for sess in s._sessions:
+                with nl.notify('Checking session "%s"...' % sess):
+                    new_sess = {}
+                    for fname in os.listdir(os.path.join(p.sessions_dir(s),sess)):
+                        if nl.is_dset(fname):
+                            res = s._index_of_dset_named(fname,sess)
+                            if res:
+                                # At least one copy of this in the old session
+                                (_,label,i) = res
+                                nl.notify('Found %s' % fname)
+                                if label not in new_sess:
+                                    new_sess[label] = []
+                                new_sess[label].append(s._sessions[sess]['labels'][label][i])
+                                del(s._sessions[sess]['labels'][label][i])
+                            else:
+                                # File on disk, but no entry
+                                if add_missing:
+                                    nl.notify('Adding new entry for file %s' % fname,level=nl.level.warning)
+                                    dset = {}
+                                    dset['filename'] = fname
+                                    full_dset = os.path.join(p.sessions_dir(s),sess,fname)
+                                    dset['md5'] = nl.hash(full_dset)
+                                    dset['complete'] = True
+                                    dset['meta'] = {}
+                                    if 'unsorted' not in new_sess:
+                                        new_sess['unsorted'] = []
+                                    new_sess['unsorted'].append(dset)
+                    for label in s._sessions[sess]['labels']:
+                        if len(s._sessions[sess]['labels'][label])>0:
+                            # Leftover entries that have no file
+                            for dset in s._sessions[sess]['labels'][label]:
+                                if dset_in_dict(dset['filename'],new_sess):
+                                    # Already have seen this dataset somewhere...
+                                    if delete_duplicates:
+                                        nl.notify('Deleting duplicate entry for file %s' % dset['filename'],level=nl.level.warning)
+                                    else:
+                                        nl.notify('Warning: found duplicate entry for file %s (leaving in place)' % dset['filename'],level=nl.level.warning)
+                                        new_sess[label].append(dset)
+                                else:
+                                    # Entry in JSON, but no file on disk
+                                    if delete_missing:
+                                        nl.notify('Deleting missing dataset %s (no corresponding file on disk)' % dset['filename'],level=nl.level.warning)
+                                    else:
+                                        nl.notify('Warning: found entry for %s, but no corresponding file on disk (leaving empty entry in place)' % dset['filename'],level=nl.level.warning)
+                                        new_sess[label].append(dset)
+                    s._sessions[sess]['labels'] = new_sess
+            s.save()

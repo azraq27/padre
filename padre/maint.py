@@ -200,6 +200,19 @@ def merge(subject_id_from,subject_id_into):
             subj_to.save()
             delete_subject(subj_from)
 
+def guess_label(filename):
+    inverted_labels = {}
+    for label in c.dset_labels:
+        for dset in c.dset_labels[label]:
+            inverted_labels[dset] = label
+    label_match = process.extractOne(filename,inverted_labels.keys())
+    if label_match[1] >= fuzzyness:
+        label = inverted_labels[label_match[0]]
+    else:
+        label = 'unsorted'
+    return label
+
+
 def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
     with commit_wrap():
         fuzzyness = 80
@@ -211,10 +224,6 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
         session_dict = dict(subj._sessions[session])
         session_dict['unverified'] = True
         session_dict['date'] = datetime.datetime.strftime(nl.date_for_str(session),'%Y-%m-%d')
-        inverted_labels = {}
-        for label in c.dset_labels:
-            for dset in c.dset_labels[label]:
-                inverted_labels[dset] = label
         for full_dset in sorted(dsets,key=lambda x:(int(os.path.basename(x).split('-')[1]),int(os.path.basename(x).split('-')[2]))):
             dset = {}
             dset['filename'] = os.path.basename(full_dset)
@@ -222,11 +231,7 @@ def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
                 dset['md5'] = nl.hash(full_dset)
                 dset['complete'] = True
                 dset['meta'] = {}
-                label_match = process.extractOne(dset['filename'].split('-')[3],inverted_labels.keys())
-                if label_match[1] >= fuzzyness:
-                    label = inverted_labels[label_match[0]]
-                else:
-                    label = 'unsorted'
+                label = guess_label(dset['filename'].split('-')[3])
                 if label not in session_dict['labels']:
                     session_dict['labels'][label] = []
                 session_dict['labels'][label].append(dset)

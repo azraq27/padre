@@ -318,9 +318,9 @@ class Subject(str):
                     include_labels = [label]
                 else:
                     include_labels = self._sessions[sess]['labels']
-                for label in include_labels:
-                    if label in self._sessions[sess]['labels']:
-                        return_dsets += [Dset.from_dict(self,sess,dset) for dset in self._sessions[sess]['labels'][label] if include_all or dset['complete']]
+                for lab in include_labels:
+                    if lab in self._sessions[sess]['labels']:
+                        return_dsets += [Dset.from_dict(self,sess,dset) for dset in self._sessions[sess]['labels'][lab] if include_all or dset['complete']]
         return return_dsets
     
     def _index_of_dset_named(self,dset_fname,sess=None,label=None):
@@ -332,10 +332,10 @@ class Subject(str):
             labels = [label]
             if label==None:
                 labels = self._sessions[sess]['labels'].keys()
-            for label in labels:
-                for i in xrange(len(self._sessions[sess]['labels'][label])):
-                    if self._sessions[sess]['labels'][label][i]['filename']==dset_fname:
-                        return (sess,label,i)
+            for lab in labels:
+                for i in xrange(len(self._sessions[sess]['labels'][lab])):
+                    if self._sessions[sess]['labels'][lab][i]['filename']==dset_fname:
+                        return (sess,lab,i)
         return None
 
 

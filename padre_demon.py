@@ -102,10 +102,12 @@ def import_archive(full_file,subject_guess,slice_order='alt+z',sort_order='zt'):
     finally:
         shutil.rmtree(tmp_dir,True)
     save_log()
+    return dsets_made
 
 
 
 def unpack_new_archives(pi):
+    new_files = []
     with nl.notify('Scanning PI %s for new archives' % pi):
         for root,dirs,files in os.walk(os.path.join(import_location,pi)):
             for fname in files + dirs:
@@ -116,15 +118,77 @@ def unpack_new_archives(pi):
                         with nl.notify('Found new archive "%s"' % full_file):
                             subject_guess = os.path.basename(os.path.dirname(full_file))
                             nl.notify('guessing the subject number is %s' % subject_guess)
-                            import_archive(full_file,subject_guess)
+                            dsets = import_archive(full_file,subject_guess)
+                            new_files.append({'dir':os.path.dirname(full_file),'subj':subject_guess,'fname':fname,'dsets':dsets})
 
 def rsync_remote(pi):
     with nl.notify('rsync\'ing data for PI %s' % pi):
         nl.run([c.rsync,c.rsync_options,'-e','ssh -i %s' % c.server_id,'%s/%s' % (c.server_name,pi),import_location])
 
+def email_updates(updates):
+    '''Send update email to selected emails when new datsets arrives
+    
+    Expects the following to be set in ``padre_config.py``:
+    
+    Required:
+    
+    :demon_update_emails:       list of emails to send notifications to
+    :demon_update_subject:      subject line
+    :demon_update_from:         email to list as "From" address
+    :demon_update_smtp_server:  SMTP server
+    
+    Optional:
+    
+    :demon_update_from_name:    name to list as "From"
+    :demon_update_username      username for SMTP server (optional)
+    :demon_update_password      password for SMTP server (optional)
+    :demon_update_template:     method that takes the updated files as a block of text
+                                and returns the full text of the email as string. 
+                                Allows you to add any text you want to frame the email
+    '''
+    if 'demon_update_emails' not in dir(c):
+        return
+    
+    for pi in updates:
+        update_text += pi + ':\n'
+        for archive in updates[pi]:
+            update_text += '\t%s/%s (subject = %s)' % (updates[pi]['dir'],updates[pi]['fname'],updates[pi]['subj'])
+            for sess in updates[pi]['dsets']:
+                update_text += '\t\t%s:' % sess
+                for dset in updates[pi]['dsets'][sess]:
+                    update_text += '\t\t\t- %s' % os.path.basename(dset)
+    
+    try:
+        update_text = c.demon_update_template(update_text)
+    except:
+        pass
+    opts = {}
+    try:
+        opts['from_name'] = c.demon_update_from_name
+    except:
+        pass
+    try:
+        opts['username'] = c.demon_update_username
+    except:
+        pass
+    try:
+        opts['password'] = c.demon_update_password
+    except:
+        pass
+    
+    nl.notification.enable_email(c.demon_update_from,c.demon_update_smtp_server,**opts)
+    nl.notification.email(c.demon_update_emails,update_text,c.demon_update_subject)
+    
+
+
 if __name__ == '__main__':
+    updates = {}
     for pi in c.pis:
         rsync_remote(pi)
-        unpack_new_archives(pi)
+        updates_pi = unpack_new_archives(pi)
+        if len(updates_pi)>0:
+            updates[pi] = updates_pi
+    if len(updates)>0:
+        email_updates(updates)
                 
             

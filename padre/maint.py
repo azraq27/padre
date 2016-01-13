@@ -200,7 +200,7 @@ def merge(subject_id_from,subject_id_into):
             subj_to.save()
             delete_subject(subj_from)
 
-def guess_label(filename):
+def guess_label(filename,fuzzyness = 80):
     inverted_labels = {}
     for label in c.dset_labels:
         for dset in c.dset_labels[label]:
@@ -215,7 +215,6 @@ def guess_label(filename):
 
 def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):
     with commit_wrap():
-        fuzzyness = 80
         subj = create_subject(subject_id)
         try:
             new_session(subj,session)

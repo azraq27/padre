@@ -120,6 +120,7 @@ def unpack_new_archives(pi):
                             nl.notify('guessing the subject number is %s' % subject_guess)
                             dsets = import_archive(full_file,subject_guess)
                             new_files.append({'dir':full_file.lstrip(os.path.join(import_location,pi)).lstrip('/'),'subj':subject_guess,'fname':fname,'dsets':dsets})
+    return new_files
 
 def rsync_remote(pi):
     with nl.notify('rsync\'ing data for PI %s' % pi):

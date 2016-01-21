@@ -29,7 +29,7 @@ def list_objects(args):
             print '\n'.join(set([x.keys() for x in session_dicts]))
 
         sessions = [a for b in [x.values() for x in session_dicts] for a in b]
-    
+        
         if 'label_do' in dos:
             nl.notify('Labels:')
             labels = set([a for b in [x['labels'].keys() for x in sessions] for a in b])
@@ -50,12 +50,12 @@ def list_objects(args):
             dsets = []
             # Find any restricting labels:
             labels = [x[0].item for x in args if 'concept' in dir(x[0]) and x[0].concept.name=='label']
-            for sess in sessions:                
-                if labels == []:
-                    labels = sess['labels'].keys()
-                for label in labels:
-                    if label in sess['labels']:
-                        dsets += [x['filename'] for x in sess['labels'][label]]
+            for subj in subjects:
+                for sess in subj.sessions:                
+                    if labels == []:
+                        labels = subj._sessions[sess]['labels'].keys()
+                    for label in labels:
+                        dsets += subj.dsets(session=sess,label=label)
             print '\n'.join(dsets)
 
 def link_dsets(args):

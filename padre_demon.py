@@ -150,6 +150,7 @@ def email_updates(updates):
     if 'demon_update_emails' not in dir(c):
         return
     
+    update_text = ''
     for pi in updates:
         update_text += pi + ':\n'
         for archive in updates[pi]:

@@ -1,44 +1,51 @@
 padre_buddy.py - Your friendly command-line helper
 ===================================================
 
+This script was created as a blending of my desire to make a very easy, user-friendly script,
+my interest in artificial intelligence, and my loose grip on reality. The result is a sometimes
+amazing, sometimes broken script.
+
 Usage:
 ----------
 
-padre_buddy.py [-h] [--quiet] [-s SUBJECT] [-n SESSION] [-t TAG]
-                      [-l LABEL] [-e EXPERIMENT]
-                      {info,list,link} ...
+padre_buddy.py [action_word] [direct_objects] [modifiers]
 
-optional arguments::
+The syntax is very loose. The library tries to match each word to a known concept. It will try to correct for
+simple spelling errors and has an internal dictionary of synonyms as well.
 
-  -h, --help            show this help message and exit
-  --quiet, -q           just print the bare information (good for scripts)
+Actions (currently working):
 
-explicitly specify object::
+	:list:		Currently the most useful. Try to match a direct object and
+			list all of them that match the modifiers. For example, if the
+			direct object was "dsets" and the modifier was "subject-4", it
+			would print out all of the datasets for "subject-4"
+	:link:		Will find all datasets matching the given modifiers and
+			create symbolic links within the current working directory. Useful
+			if you want to "play" with the data without moving it out of Padre
+			or using really long filenames
 
-  (certain commands are also able to parse fuzzy keyword arguments)
+Direct Objects:
 
-  -s SUBJECT, --subject SUBJECT
-                        subject id
-  -n SESSION, --session SESSION
-                        session identifier, by convention date of the scanning
-                        session in the format YYYYMMDD, but could really be
-                        any unique string
-  -t TAG, --tag TAG  session tag
-  -l LABEL, --label LABEL
-                        label for dataset (the type of dataset; anatomy,
-                        sdtones)
-  -e EXPERIMENT, --experiment EXPERIMENT
-                        experiment identifier
+	* Atlases
+	* Subjects
+	* Experiments
+	* Labels
+	* Tags
+	* Sessions
+	* Dsets
+	* Metadata
+	* Edat, Eprime-txt
 
-commands::
+Example of command line usage::
 
-:info:                get details on a single object
-:list:                retrieve a list of things
-:link:                create symbolic links in the current directory to
-                      datasets matching the given parameters
-		      
+	padre_buddy.py list subjects ExperimentName
+	
+	padre_buddy.py list labels
+	
+	padre_buddy.py list dsets subject_one task_name
 
-Example of usage (although CSH burns my eyes...)::
+
+Example of script usage (although CSH burns my eyes...)::
 
 	#!/bin/csh
 
@@ -68,4 +75,4 @@ Example of usage (although CSH burns my eyes...)::
 	echo $dsets[2]
 
 	echo ''
-	echo 'not necessarily in chronological order (that requires more beer)'
+	echo 'not necessarily in chronological order'

@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-version = '2.5.3'
+version = '2.5.4'
 
 setup(
   name = 'padre',

@@ -2,7 +2,7 @@
 
 Library to organize participant imaging data'''
 
-version = '2.5.3'
+version = '2.5.4'
 
 _global_experiment = None
 _include_all = False

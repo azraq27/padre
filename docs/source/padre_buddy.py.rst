@@ -36,3 +36,36 @@ commands::
 :list:                retrieve a list of things
 :link:                create symbolic links in the current directory to
                       datasets matching the given parameters
+		      
+
+Example of usage (although CSH burns my eyes...)::
+
+	#!/bin/csh
+
+	echo 'Running the weird, crazy, padre machine to try to figure out where the heck my data is...'
+
+	set subject = "11334"
+	set task = "sdtones"
+
+	set dsets = `padre_buddy.py list dsets $task $subject`
+
+	if( "$dsets" == "" ) then
+		echo 'AHHH! No DATA! '
+		echo ''
+		echo 'Did you make sure everything looks good in Padre Web? '
+		echo '...'
+		echo '...'
+		exit
+	endif
+
+	echo ''
+	echo 'Ok... phew. Found the data. Now I can return to the sanity of CSH'
+	echo ''
+	echo 'First SDT dataset:'
+	echo $dsets[1]
+
+	echo '...and the second:'
+	echo $dsets[2]
+
+	echo ''
+	echo 'not necessarily in chronological order (that requires more beer)'

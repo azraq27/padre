@@ -44,6 +44,19 @@ def list_objects(args):
             nl.notify('Experiments:')
             experiments = set([x['experiment'] for x in sessions if 'experiment' in x and x['experiment']])
             print '\n'.join(experiments)
+        
+        if 'dset_do' in dos:
+            nl.notify('Datasets:')
+            dsets = []
+            # Find any restricting labels:
+            labels = [x[0].item for x in args if 'concept' in dir(x[0]) and x[0].concept.name=='label']
+            for sess in sessions:                
+                if labels == []:
+                    labels = sess['labels'].keys()
+                for label in labels:
+                    if label in sess['labels']:
+                        dsets += [x['filename'] for x in sess['labels'][label]]
+            print '\n'.join(dsets)
 
 def link_dsets(args):
     with nl.notify('Trying to link the following datasets...'):

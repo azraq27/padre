@@ -1,7 +1,7 @@
 import neural as nl
 import padre as p
 import os,shutil,glob,subprocess,datetime
-from fuzzywuzzy import process
+from fuzzywuzzy import process,fuzz
 
 _git_ignore = [
     '*','!Data','!Data/*',
@@ -205,12 +205,13 @@ def guess_label(filename,fuzzyness = 80):
     for label in c.dset_labels:
         for dset in c.dset_labels[label]:
             inverted_labels[dset] = label
+    for label in inverted_labels:
+        if fuzz.partial_ratio(filename.lower(),label.lower())>fuzzyness:
+            return inverted_labels[label]
     label_match = process.extractOne(filename,inverted_labels.keys())
     if label_match[1] >= fuzzyness:
-        label = inverted_labels[label_match[0]]
-    else:
-        label = 'unsorted'
-    return label
+        return inverted_labels[label_match[0]]
+    return 'unsorted'
 
 
 def import_to_padre(subject_id,session,dsets,raw_data=[],dir_prefix=''):

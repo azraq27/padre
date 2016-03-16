@@ -23,7 +23,7 @@ if os.path.exists(import_log_file):
 
 def save_log():
     with open(import_log_file,'w') as f:
-        f.write(json.dumps(import_log))    
+        f.write(json.dumps(import_log))
 
 def import_archive(full_file,subject_guess,slice_order='alt+z',sort_order='zt'):
     tmp_dir = tempfile.mkdtemp()
@@ -122,34 +122,45 @@ def unpack_new_archives(pi):
                             new_files.append({'dir':full_file.lstrip(os.path.join(import_location,pi)).lstrip('/'),'subj':subject_guess,'fname':fname,'dsets':dsets})
     return new_files
 
-def rsync_remote(pi):
+def rsync_remote(pi,verify=False):
     with nl.notify('rsync\'ing data for PI %s' % pi):
-        nl.run([c.rsync,c.rsync_options,'-e','ssh -i %s' % c.server_id,'%s/%s' % (c.server_name,pi),import_location])
+        opts = c.rsync_options
+        if verify:
+            opts += 'v'
+            nl.notify('If running as a non-administrator, you may be prompted for the server (%s) password' % c.server_name)
+        o = nl.run([c.rsync,opts,'-e','ssh -i %s' % c.server_id,'%s/%s' % (c.server_name,pi),import_location])
+        if verify:
+            if o.return_code!=0:
+                nl.notify('Error: Rsync returned status code of %d' % o.return_code,level=nl.level.error)
+            else:
+                nl.notify('Rsync completed successfully')
+            if o.output:
+                nl.notify('Output:\n' + o.output)
 
 def email_updates(updates):
     '''Send update email to selected emails when new datsets arrives
-    
+
     Expects the following to be set in ``padre_config.py``:
-    
+
     Required:
-    
+
     :demon_update_emails:       list of emails to send notifications to
     :demon_update_subject:      subject line
     :demon_update_from:         email to list as "From" address
     :demon_update_smtp_server:  SMTP server
-    
+
     Optional:
-    
+
     :demon_update_from_name:    name to list as "From"
     :demon_update_username      username for SMTP server (optional)
     :demon_update_password      password for SMTP server (optional)
     :demon_update_template:     method that takes the updated files as a block of text
-                                and returns the full text of the email as string. 
+                                and returns the full text of the email as string.
                                 Allows you to add any text you want to frame the email
     '''
     if 'demon_update_emails' not in dir(c):
         return
-    
+
     update_text = ''
     for pi in updates:
         update_text += pi + ':\n'
@@ -159,7 +170,7 @@ def email_updates(updates):
                 update_text += '\t\t%s:' % sess
                 for dset in updates[pi]['dsets'][sess]:
                     update_text += '\t\t\t- %s' % os.path.basename(dset)
-    
+
     try:
         update_text = c.demon_update_template(update_text)
     except:
@@ -177,20 +188,30 @@ def email_updates(updates):
         opts['password'] = c.demon_update_password
     except:
         pass
-    
+
     nl.notification.enable_email(c.demon_update_from,c.demon_update_smtp_server,**opts)
     nl.notification.email(c.demon_update_emails,update_text,c.demon_update_subject)
-    
+
 
 
 if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--pi',nargs='?',default=c.pis,choices=c.pis,help="Only run on specified PI's directory")
+    parser.add_argument('--rsync',action='store_true',help="Only run the rsync")
+    parser.add_argument('--verify',action='store_true',help="Increase verbosity of rsync so you're able to verify it finished properly")
+    parser.add_argument('--email',action='store_true',help="Send email with updates")
+
+    args = parser.parse_args()
     updates = {}
-    for pi in c.pis:
-        rsync_remote(pi)
+    for pi in args.pi:
+        rsync_remote(pi,args.verify)
+        if args.rsync:
+            continue
         updates_pi = unpack_new_archives(pi)
         if len(updates_pi)>0:
             updates[pi] = updates_pi
-    if len(updates)>0:
+    if len(updates)>0 and args.email:
         email_updates(updates)
-                
-            

@@ -165,11 +165,11 @@ def email_updates(updates):
     for pi in updates:
         update_text += pi + ':\n'
         for archive in updates[pi]:
-            update_text += '\t%s/%s (subject = %s)' % (archive['dir'],archive['fname'],archive['subj'])
+            update_text += '\t%s/%s (subject = %s)\n' % (archive['dir'],archive['fname'],archive['subj'])
             for sess in archive['dsets']:
-                update_text += '\t\t%s:' % sess
+                update_text += '\t\t%s:\n' % sess
                 for dset in archive['dsets'][sess]:
-                    update_text += '\t\t\t- %s' % os.path.basename(dset)
+                    update_text += '\t\t\t- %s\n' % os.path.basename(dset)
 
     try:
         update_text = c.demon_update_template(update_text)

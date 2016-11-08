@@ -87,7 +87,7 @@ class Dset(str):
     
     
     def __init__(self,subject,session,dset_fname,label=None,complete=True,md5=None,meta={}):
-        str.__init__(self,Dset.abspath(subject,session,dset_fname))
+        str.__init__(self)#,Dset.abspath(subject,session,dset_fname))
         self._dset_fname = dset_fname
         #: Whether this is a complete, usable dataset
         self.complete = complete
@@ -120,7 +120,7 @@ class Dset(str):
         self._info = None
         self._subject = subject
         
-        str.__init__(self,self.__abspath__())
+        str.__init__(self)#,self.__abspath__())
     
     def __abspath__(self):
         '''return the absolute path of this dataset'''

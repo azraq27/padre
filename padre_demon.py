@@ -113,7 +113,8 @@ def unpack_new_archives(pi):
         for root,dirs,files in os.walk(os.path.join(import_location,pi)):
             for fname in files + dirs:
                 full_file = os.path.join(root,fname)
-                if full_file not in import_log:
+                padre_dir = full_file.replace(import_location,"PADRE/Import")
+                if padre_dir not in import_log:
                     # Add in a check for the modification date
                     if any([fnmatch.fnmatch(fname,m) for m in c.archive_masks]):
                         with nl.notify('Found new archive "%s"' % full_file):

@@ -60,6 +60,7 @@ Documentation: http://padre.readthedocs.org
       'fuzzywuzzy',
       'python-Levenshtein',
       'openpyxl',
-      'gini'
+      'gini',
+      'python-dateutil'
   ]
 )

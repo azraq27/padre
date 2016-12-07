@@ -28,12 +28,13 @@ def save_log():
 def import_archive(full_file,subject_guess,slice_order='alt+z',sort_order='zt'):
     tmp_dir = tempfile.mkdtemp()
     try:
+        padre_dir = full_file.replace(import_location,"PADRE/Import")
         tmp_location = os.path.join(tmp_dir,'_tmp_unarchive')
         out_dir = os.path.join(processed_location,subject_guess)
         for d in [tmp_location,tmp_location + '-sorted']:
             if os.path.exists(d):
                 shutil.rmtree(d)
-        import_log[full_file] = {'modified':os.path.getmtime(full_file)}
+        import_log[padre_dir] = {'modified':os.path.getmtime(full_file)}
         if nl.is_archive(full_file):
             with nl.notify('uncompressing files...'):
                 os.makedirs(tmp_location)
@@ -57,18 +58,18 @@ def import_archive(full_file,subject_guess,slice_order='alt+z',sort_order='zt'):
                         if ignore:
                             continue
                     nl.notify('creating dataset from %s' % subdir)
-                    import_log[full_file][subdir] = {}
+                    import_log[padre_dir][subdir] = {}
                     if not nl.dicom.create_dset(subdir,slice_order,sort_order):
-                        import_log[full_file][subdir]['error'] = True
+                        import_log[padre_dir][subdir]['error'] = True
                     if os.path.exists(subdir + '.nii.gz'):
-                        import_log[full_file][subdir]['complete'] = True
+                        import_log[padre_dir][subdir]['complete'] = True
                         shutil.move(subdir + '.nii.gz',os.path.join(out_dir,subdir+'.nii.gz'))
                         session_name = subdir.split('-')[1]
                         if session_name not in dsets_made:
                             dsets_made[session_name] = []
                         dsets_made[session_name].append(os.path.join(out_dir,subdir+'.nii.gz'))
-                    if 'complete' in import_log[full_file][subdir] and import_log[full_file][subdir]['complete']:
-                        if 'error' in import_log[full_file][subdir] and import_log[full_file][subdir]['error']:
+                    if 'complete' in import_log[padre_dir][subdir] and import_log[padre_dir][subdir]['complete']:
+                        if 'error' in import_log[padre_dir][subdir] and import_log[padre_dir][subdir]['error']:
                             nl.notify('created dataset %s, but Dimon returned an error' % (subdir+'.nii.gz'),nl.level.error)
                         else:
                             nl.notify('successfully created dataset %s' % (subdir+'.nii.gz'))

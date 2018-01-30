@@ -4,6 +4,9 @@ import padre as p
 import neural as nl
 import argparse,os,shutil
 
+# Recognize unverified sessions so we don't get confused as we're importing
+p._include_all = True
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("subject")
@@ -26,7 +29,7 @@ with p.maint.commit_wrap():
     if args.session not in subj.sessions:
         nl.notify('Creating new session (%s)' % args.session)
         p.maint.new_session(subj,args.session)
-    
+
     sess = subj._sessions[args.session]
 
     if args.experiment:
@@ -47,7 +50,7 @@ with p.maint.commit_wrap():
         sess['unverified'] = False
     else:
         sess['unverified'] = True
-    
+
     subj.save()
 
 sess_dir = os.path.join(p.sessions_dir(subj),args.session)

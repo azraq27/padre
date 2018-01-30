@@ -40,7 +40,9 @@ with p.maint.commit_wrap():
         nl.notify('Adding tags: %s' % repr(args.tag))
         if 'tags' not in sess:
                 sess['tags'] = []
-        sess['tags'] += args.tag
+        for t in args.tag:
+            if t not in sess['tags']:
+                sess['tags'].append(t)
 
     if args.date:
         nl.notify('Setting date to %s' % args.date)
